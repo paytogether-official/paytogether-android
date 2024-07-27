@@ -1,0 +1,55 @@
+*.iml
+.gradle/
+/local.properties
+.idea/*
+
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Log/OS Files
+*.log
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
+*.aar
+*.ap_
+*.aab
+# Files for the ART/Dalvik VM
+*.dex
+# Java class files
+*.class
+# Generated files
+bin/
+gen/
+out/
+# App Release Files
+app/release/*
+
+# IntelliJ
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Android Profiling
+*.hprof
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
