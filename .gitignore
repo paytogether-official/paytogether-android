@@ -8,7 +8,7 @@
 /captures
 .externalNativeBuild
 .cxx
-
+.kotlin/
 # Log/OS Files
 *.log
 

@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.composeCompiler)
 }
 
 android {
@@ -27,8 +30,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    composeCompiler {
+        enableStrongSkippingMode = true
+        includeSourceInformation = true
+        // composeCompiler 블록내의 설정들은 하단 Reference를 참고해보세요
+        // Compose compiler -> Compose compiler options dsl
+    }
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+        }
     }
 }
 
