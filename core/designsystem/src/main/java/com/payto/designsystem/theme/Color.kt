@@ -1,6 +1,12 @@
 package com.payto.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
+import com.payto.designsystem.theme.Colors.Error
+import com.payto.designsystem.theme.Colors.Neutrals
+import com.payto.designsystem.theme.Colors.Primary
+import com.payto.designsystem.theme.Colors.Secondary
+import com.payto.designsystem.theme.Colors.Success
+import com.payto.designsystem.theme.Colors.Warning
 
 object Colors {
     internal object Primary {
@@ -32,7 +38,7 @@ object Colors {
     }
 
     internal object Neutrals {
-        val baseWhite = Color(0xFFFAFAFA)
+        val baseWhite = Color(0xFFFFFFFF)
         val baseBlack = Color(0xFF0A0A0B)
         val neutrals100 = Color(0xFFFAFAFB)
         val neutrals200 = Color(0xFFF3F4F8)
@@ -67,57 +73,58 @@ object Colors {
         val error300 = Color(0xFFB42B17)
     }
 
-    object Color {
-        object Primary {
-            val normal = Colors.Primary.primary
-        }
+}
 
-        object Label {
-            val normal = Neutrals.neutrals1000
-            val neutral = Neutrals.neutrals700
-            val alternative = Neutrals.neutrals500
-            val disable = Neutrals.neutrals400
-        }
-
-        object Background {
-            val normal = Neutrals.baseWhite
-            val alternative = Neutrals.neutrals200
-        }
-
-        object Line {
-            val normal = Neutrals.neutrals300
-            val neutral = Neutrals.neutrals200
-            val alternative = Neutrals.neutrals100
-        }
-
-        object Status {
-            val success = Success.success
-            val warning = Warning.warning
-            val error = Error.error
-        }
-
-        object Inverse {
-            val primary = Colors.Primary.primary
-            val background = Neutrals.baseBlack
-            val label = Secondary.secondary100
-        }
-
-        object Static {
-            val white = Neutrals.baseWhite
-            val black = Neutrals.baseBlack
-        }
+object Color {
+    object Primary {
+        val normal = Colors.Primary.primary
     }
 
-    object Component {
-        object Fill {
-            val primary = Primary.primary100
-            val normal = Neutrals.neutrals100
-            val strong = Neutrals.neutrals300
-            val alternative = Neutrals.neutrals200
-        }
+    object Label {
+        val normal = Neutrals.neutrals1000
+        val neutral = Neutrals.neutrals700
+        val alternative = Neutrals.neutrals500
+        val disable = Neutrals.neutrals400
+    }
 
-        object Material {
-            val dimmer = Neutrals.baseBlack.copy(alpha = 0.4f)
-        }
+    object Background {
+        val normal = Neutrals.baseWhite
+        val alternative = Neutrals.neutrals200
+    }
+
+    object Line {
+        val normal = Neutrals.neutrals300
+        val neutral = Neutrals.neutrals200
+        val alternative = Neutrals.neutrals100
+    }
+
+    object Status {
+        val success = Success.success
+        val warning = Warning.warning
+        val error = Error.error
+    }
+
+    object Inverse {
+        val primary = Colors.Primary.primary
+        val background = Neutrals.baseBlack
+        val label = Secondary.secondary100
+    }
+
+    object Static {
+        val white = Neutrals.baseWhite
+        val black = Neutrals.baseBlack
+    }
+}
+
+object Component {
+    object Fill {
+        val primary = Primary.primary100
+        val normal = Neutrals.neutrals100
+        val strong = Neutrals.neutrals300
+        val alternative = Neutrals.neutrals200
+    }
+
+    object Material {
+        val dimmer = Neutrals.baseBlack.copy(alpha = 0.4f)
     }
 }
