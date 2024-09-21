@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.2"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
+kotlinSerialization = "1.7.2"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,7 +11,10 @@ activityCompose = "1.9.1"
 composeBom = "2024.08.00"
 appcompat = "1.7.0"
 material = "1.12.0"
-jetbrainsKotlinJvm = "1.9.0"
+navigationCompose = "2.7.7"
+ksp = "2.0.20-1.0.25"
+hilt = "2.52"
+androidHilt = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,13 +33,22 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation", version.ref = "androidHilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidHilt" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+googleHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [bundles]
 compose = ["androidx-compose-bom",
@@ -46,5 +59,12 @@ compose = ["androidx-compose-bom",
     "androidx-ui-tooling",
     "androidx-ui-tooling-preview",
     "androidx-material3",
-    "androidx-ui-test-manifest"
+    "androidx-ui-test-manifest",
+    "androidx-navigation-compose"
+]
+
+hilt = [
+    "hilt-android",
+    "hilt-navigation",
+    "hilt-navigation-compose"
 ]

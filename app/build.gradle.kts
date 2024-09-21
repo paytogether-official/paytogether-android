@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.googleKsp)
+    alias(libs.plugins.googleHilt)
 }
 
 android {
@@ -42,7 +45,6 @@ android {
         }
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         includeSourceInformation = true
     }
     buildFeatures {
@@ -59,6 +61,10 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.kotlinx.serialization.json)
+
+    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.hilt)
 
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))

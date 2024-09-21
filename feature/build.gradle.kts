@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleKsp)
+    alias(libs.plugins.googleHilt)
 }
 
 android {
@@ -36,7 +38,6 @@ android {
         }
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         includeSourceInformation = true
     }
     kotlinOptions {
@@ -53,6 +54,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.hilt)
 
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))

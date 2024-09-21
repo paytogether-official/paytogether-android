@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleKsp)
+    alias(libs.plugins.googleHilt)
 }
 
 android {
@@ -31,10 +33,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeCompiler {
-        enableStrongSkippingMode = true
         includeSourceInformation = true
-        // composeCompiler 블록내의 설정들은 하단 Reference를 참고해보세요
-        // Compose compiler -> Compose compiler options dsl
     }
     kotlin {
         compilerOptions {
@@ -48,6 +47,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.hilt)
+
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
 
