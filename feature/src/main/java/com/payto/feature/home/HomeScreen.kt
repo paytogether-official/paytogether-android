@@ -2,6 +2,7 @@ package com.payto.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.payto.common.navigate.CreateJourney
+import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
 import com.payto.designsystem.theme.Color
@@ -25,12 +28,12 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 
 @Composable
-fun HomeRoute() {
-    HomeScreen()
+fun HomeRoute(onNavigate: (Any) -> Unit) {
+    HomeScreen(onNavigate = onNavigate)
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onNavigate: (Any) -> Unit) {
     Column(
         modifier = Modifier
             .background(Color.Static.white)
@@ -38,7 +41,7 @@ fun HomeScreen() {
             .padding(start = 16.dp, end = 16.dp, top = 122.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        CreateJourneyBox()
+        CreateJourneyBox(onNavigate = onNavigate)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -50,9 +53,10 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun CreateJourneyBox() {
+private fun CreateJourneyBox(onNavigate: (Any) -> Unit) {
     Column(
         modifier = Modifier
+            .rippleClickable { onNavigate(CreateJourney) }
             .fillMaxWidth()
             .background(Color.Primary.normal, shape = RoundedCornerShape(24.dp))
             .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
@@ -142,5 +146,5 @@ private fun LastJourneyBox(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen {}
 }

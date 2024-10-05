@@ -81,4 +81,5 @@ dependencies {
     implementation(project(":feature"))
     implementation(project(":core"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:common"))
 }
