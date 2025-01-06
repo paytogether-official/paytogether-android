@@ -57,7 +57,7 @@ fun PaytoButton(
         Button(
             colors = ButtonColors(
                 containerColor = backgroundColor,
-                contentColor = backgroundColor,
+                contentColor = androidx.compose.ui.graphics.Color.Unspecified,
                 disabledContentColor = Color.Label.disable,
                 disabledContainerColor = Color.Label.disable
             ),
@@ -84,7 +84,7 @@ fun PaytoOutlineButton(
             shape = RoundedCornerShape(16.dp),
             colors = ButtonColors(
                 containerColor = Component.Fill.primary,
-                contentColor = Component.Fill.primary,
+                contentColor = androidx.compose.ui.graphics.Color.Unspecified,
                 disabledContentColor = Component.Fill.primary,
                 disabledContainerColor = Component.Fill.primary
             ),

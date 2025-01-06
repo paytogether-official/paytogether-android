@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.addFocusCleaner
 import com.payto.designsystem.component.ContentBox
+import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.component.PaytoOutlineButton
 import com.payto.designsystem.component.TextBox
 import com.payto.designsystem.icon.IconPack
@@ -37,6 +39,9 @@ import com.payto.designsystem.icon.iconpack.Circleplus
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.UiEvent
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun CreateJourneyRoute(
@@ -57,18 +62,34 @@ private fun CreateJourneyScreen(
     uiEvent: (UiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .addFocusCleaner(focusManager)
     ) {
-        Header()
-        Contents(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            journeyData = journeyData,
-            uiEvent = uiEvent
+                .align(Alignment.TopCenter)
+        ) {
+            Header()
+            Contents(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                journeyData = journeyData,
+                uiEvent = uiEvent
+            )
+        }
+        PaytoButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            text = "생성하기",
+            onClick = {
+                uiEvent.invoke(ClickCreate)
+            }
         )
     }
 }
@@ -111,7 +132,7 @@ private fun Contents(
             JourneyTitleBox(title = journeyData.title, uiEvent = uiEvent)
         }
         item(contentType = "JourneyDateBox") {
-            JourneyDateBox()
+            JourneyDateBox(date = journeyData.journeyDate, uiEvent = uiEvent)
         }
         item(contentType = "JourneyCountryBox") {
             JourneyCountryBox()
@@ -147,9 +168,34 @@ private fun JourneyTitleBox(
 }
 
 @Composable
-private fun JourneyDateBox() {
-    var journeyDate by remember {
-        mutableStateOf("")
+private fun JourneyDateBox(
+    date: JourneyData.JourneyDate?,
+    uiEvent: (UiEvent) -> Unit
+) {
+    val journeyDate by remember(date) {
+        derivedStateOf {
+            date?.let {
+                val start = Date(date.startTimeMill)
+                val end = Date(date.endTimeMill)
+                SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(start) +
+                        " - " +
+                        SimpleDateFormat("yy.MM.dd", Locale.getDefault()).format(end)
+
+            }
+        }
+    }
+    var isShowPeriodDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (isShowPeriodDialog) {
+        PeriodDialog(
+            modifier = Modifier.fillMaxWidth(),
+            onDismissRequest = { start, end ->
+                uiEvent.invoke(OnJourneyDateChange(start, end))
+                isShowPeriodDialog = false
+            }
+        )
     }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -160,11 +206,11 @@ private fun JourneyDateBox() {
             style = typography.contentAccent
         )
         ContentBox(
-            value = journeyDate,
+            value = journeyDate ?: "",
             placeholder = "언제 여행을 떠나시나요?",
             endIcon = IconPack.Calendar
         ) {
-            // TODO 달력 다이얼로그
+            isShowPeriodDialog = true
         }
     }
 }

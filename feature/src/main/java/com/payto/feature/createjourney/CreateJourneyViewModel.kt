@@ -41,6 +41,21 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
             is OnJourneyTitleChange -> {
                 journeyData.value = journeyData.value.copy(title = event.title)
             }
+
+            ClickCreate -> {
+                // TODO
+            }
+
+            is OnJourneyDateChange -> {
+                if (event.startTimeMill != null && event.endTimeMill != null) {
+                    journeyData.value = journeyData.value.copy(
+                        journeyDate = JourneyData.JourneyDate(
+                            startTimeMill = event.startTimeMill,
+                            endTimeMill = event.endTimeMill
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -59,8 +74,9 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
 
 data class JourneyData(
     val title: String? = null,
-    val startDate: String? = null,
-    val endDate: String? = null,
+    val journeyDate: JourneyDate? = null,
     val country: String? = null,
     val people: Set<String> = emptySet(),
-)
+) {
+    data class JourneyDate(val startTimeMill: Long, val endTimeMill: Long)
+}
