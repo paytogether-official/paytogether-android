@@ -13,7 +13,7 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
 
     private val randomNameSet: MutableSet<String>
 
-    val journeyData = MutableStateFlow(JourneyData(people = setOf("요정")))
+    val journeyData = MutableStateFlow(JourneyData(people = listOf("요정")))
 
     init {
         Log.e("흐흐", "CreateJourneyViewModel init ${this.hashCode()}")
@@ -44,6 +44,9 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
 
             ClickCreate -> {
                 // TODO
+                if (journeyData.value.hasDuplicateName()) {
+                    // 중복 처리
+                }
             }
 
             is OnJourneyDateChange -> {
@@ -55,6 +58,15 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
                         )
                     )
                 }
+            }
+
+            is OnNameChange -> {
+                val name = event.name
+                val people = journeyData.value.people
+                val newPeople = people.toMutableList().apply {
+                    this[event.index] = name
+                }
+                journeyData.value = journeyData.value.copy(people = newPeople.toList())
             }
         }
     }
@@ -72,11 +84,3 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
     }
 }
 
-data class JourneyData(
-    val title: String? = null,
-    val journeyDate: JourneyDate? = null,
-    val country: String? = null,
-    val people: Set<String> = emptySet(),
-) {
-    data class JourneyDate(val startTimeMill: Long, val endTimeMill: Long)
-}

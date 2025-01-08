@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -62,6 +63,11 @@ private fun CreateJourneyScreen(
     uiEvent: (UiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val enableButton by remember(journeyData) {
+        derivedStateOf {
+            journeyData.isFullyFilled()
+        }
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -86,6 +92,7 @@ private fun CreateJourneyScreen(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
+            enabled = enableButton,
             text = "생성하기",
             onClick = {
                 uiEvent.invoke(ClickCreate)
@@ -126,7 +133,8 @@ private fun Contents(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        state = rememberLazyListState()
+        state = rememberLazyListState(),
+        contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         item(contentType = "JourneyTitleBox") {
             JourneyTitleBox(title = journeyData.title, uiEvent = uiEvent)
@@ -243,7 +251,7 @@ private fun JourneyCountryBox() {
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 private fun JourneyParticipantBox(
-    people: Set<String>,
+    people: List<String>,
     uiEvent: (UiEvent) -> Unit
 ) {
     Column(
@@ -268,22 +276,19 @@ private fun JourneyParticipantBox(
 
 @Composable
 private fun ParticipantList(
-    people: Set<String>,
+    people: List<String>,
     uiEvent: (UiEvent) -> Unit,
 ) {
-    val list by remember(people) {
-        mutableStateOf(people.toList())
-    }
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        list.forEachIndexed { index, name ->
+        people.forEachIndexed { index, name ->
             TextBox(
                 value = name,
                 placeholder = "이름을 입력해주세요"
             ) {
-
+                uiEvent.invoke(OnNameChange(index, it))
             }
         }
     }
@@ -292,5 +297,5 @@ private fun ParticipantList(
 @Preview(showBackground = true)
 @Composable
 private fun CreateJourneyScreenPreview() {
-    CreateJourneyScreen(journeyData = JourneyData(people = setOf("정산요정")), uiEvent = {})
+    CreateJourneyScreen(journeyData = JourneyData(people = listOf("정산요정")), uiEvent = {})
 }

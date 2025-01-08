@@ -11,4 +11,9 @@ data class OnJourneyDateChange(
     val endTimeMill: Long?
 ) : CreateJourneyEvent
 
+data class OnNameChange(
+    val index: Int,
+    val name: String,
+) : CreateJourneyEvent
+
 data object ClickCreate : CreateJourneyEvent
