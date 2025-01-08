@@ -1,6 +1,5 @@
 package com.payto.feature.createjourney
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +52,7 @@ fun CreateJourneyRoute(
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
 
     CreateJourneyScreen(
-        journeyData = journeyData,
+        journeyData = { journeyData },
         uiEvent = viewModel::onEvent
     )
 }
@@ -59,13 +60,13 @@ fun CreateJourneyRoute(
 @Composable
 private fun CreateJourneyScreen(
     modifier: Modifier = Modifier,
-    journeyData: JourneyData,
+    journeyData: () -> JourneyData,
     uiEvent: (UiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val enableButton by remember(journeyData) {
+    val enableButton by remember(journeyData()) {
         derivedStateOf {
-            journeyData.isFullyFilled()
+            journeyData().isFullyFilled()
         }
     }
     Box(
@@ -127,38 +128,44 @@ private fun Header(modifier: Modifier = Modifier) {
 @Composable
 private fun Contents(
     modifier: Modifier,
-    journeyData: JourneyData,
+    journeyData: () -> JourneyData,
     uiEvent: (UiEvent) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
         state = rememberLazyListState(),
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         item(contentType = "JourneyTitleBox") {
-            JourneyTitleBox(title = journeyData.title, uiEvent = uiEvent)
+            JourneyTitleBox(
+                modifier = Modifier.padding(bottom = 16.dp),
+                title = journeyData().title,
+                uiEvent = uiEvent
+            )
         }
         item(contentType = "JourneyDateBox") {
-            JourneyDateBox(date = journeyData.journeyDate, uiEvent = uiEvent)
+            JourneyDateBox(
+                modifier = Modifier.padding(bottom = 16.dp),
+                date = journeyData().journeyDate,
+                uiEvent = uiEvent
+            )
         }
         item(contentType = "JourneyCountryBox") {
-            JourneyCountryBox()
+            JourneyCountryBox(modifier = Modifier.padding(bottom = 16.dp))
         }
 
-        item {
-            JourneyParticipantBox(people = journeyData.people, uiEvent = uiEvent)
-        }
+        this@LazyColumn.journeyParticipantBox(people = { journeyData().people }, uiEvent = uiEvent)
     }
 }
 
 @Composable
 private fun JourneyTitleBox(
+    modifier: Modifier,
     title: String?,
     uiEvent: (UiEvent) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
@@ -177,6 +184,7 @@ private fun JourneyTitleBox(
 
 @Composable
 private fun JourneyDateBox(
+    modifier: Modifier,
     date: JourneyData.JourneyDate?,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -206,7 +214,7 @@ private fun JourneyDateBox(
         )
     }
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
@@ -224,12 +232,12 @@ private fun JourneyDateBox(
 }
 
 @Composable
-private fun JourneyCountryBox() {
+private fun JourneyCountryBox(modifier: Modifier) {
     var country by remember {
         mutableStateOf("")
     }
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
@@ -248,22 +256,25 @@ private fun JourneyCountryBox() {
     }
 }
 
-@SuppressLint("MutableCollectionMutableState")
-@Composable
-private fun JourneyParticipantBox(
-    people: List<String>,
+private fun LazyListScope.journeyParticipantBox(
+    people: () -> List<String>,
     uiEvent: (UiEvent) -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Text(
-            modifier = Modifier.padding(bottom = 4.dp),
-            text = "인원설정",
-            color = Color.Label.normal,
-            style = typography.contentAccent
-        )
-        ParticipantList(people = people, uiEvent = uiEvent)
+    item {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = "인원설정",
+                color = Color.Label.normal,
+                style = typography.contentAccent
+            )
+        }
+    }
+
+    this.participantList(people = people, uiEvent = uiEvent)
+    item {
         PaytoOutlineButton(
             modifier = Modifier
                 .fillMaxWidth()
@@ -274,22 +285,17 @@ private fun JourneyParticipantBox(
     }
 }
 
-@Composable
-private fun ParticipantList(
-    people: List<String>,
+private fun LazyListScope.participantList(
+    people: () -> List<String>,
     uiEvent: (UiEvent) -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        people.forEachIndexed { index, name ->
-            TextBox(
-                value = name,
-                placeholder = "이름을 입력해주세요"
-            ) {
-                uiEvent.invoke(OnNameChange(index, it))
-            }
+    itemsIndexed(people()) { index, name ->
+        TextBox(
+            modifier = Modifier.padding(bottom = 8.dp),
+            value = name,
+            placeholder = "이름을 입력해주세요"
+        ) {
+            uiEvent.invoke(OnNameChange(index, it))
         }
     }
 }
@@ -297,5 +303,5 @@ private fun ParticipantList(
 @Preview(showBackground = true)
 @Composable
 private fun CreateJourneyScreenPreview() {
-    CreateJourneyScreen(journeyData = JourneyData(people = listOf("정산요정")), uiEvent = {})
+    CreateJourneyScreen(journeyData = { JourneyData(people = listOf("정산요정")) }, uiEvent = {})
 }
