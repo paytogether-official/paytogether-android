@@ -13,7 +13,7 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
 
     private val randomNameSet: MutableSet<String>
 
-    val journeyData = MutableStateFlow(JourneyData(people = listOf("요정")))
+    val journeyData = MutableStateFlow(CreateJourneyData(people = listOf("요정")))
 
     init {
         Log.e("흐흐", "CreateJourneyViewModel init ${this.hashCode()}")
@@ -52,7 +52,7 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
             is OnJourneyDateChange -> {
                 if (event.startTimeMill != null && event.endTimeMill != null) {
                     journeyData.value = journeyData.value.copy(
-                        journeyDate = JourneyData.JourneyDate(
+                        journeyDate = CreateJourneyData.JourneyDate(
                             startTimeMill = event.startTimeMill,
                             endTimeMill = event.endTimeMill
                         )

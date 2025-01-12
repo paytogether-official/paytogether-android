@@ -3,7 +3,7 @@ package com.payto.feature.createjourney
 import androidx.compose.runtime.Stable
 
 @Stable
-data class JourneyData(
+data class CreateJourneyData(
     val title: String? = null,
     val journeyDate: JourneyDate? = null,
     val country: String? = null,

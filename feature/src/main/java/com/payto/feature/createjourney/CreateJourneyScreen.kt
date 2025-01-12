@@ -1,7 +1,5 @@
 package com.payto.feature.createjourney
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -36,10 +33,10 @@ import com.payto.designsystem.component.TextBox
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Calendar
 import com.payto.designsystem.icon.iconpack.Caretdown
-import com.payto.designsystem.icon.iconpack.Chevronleft
 import com.payto.designsystem.icon.iconpack.Circleplus
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
+import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.UiEvent
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -60,7 +57,7 @@ fun CreateJourneyRoute(
 @Composable
 private fun CreateJourneyScreen(
     modifier: Modifier = Modifier,
-    journeyData: () -> JourneyData,
+    journeyData: () -> CreateJourneyData,
     uiEvent: (UiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -79,7 +76,13 @@ private fun CreateJourneyScreen(
                 .fillMaxSize()
                 .align(Alignment.TopCenter)
         ) {
-            Header()
+            DefaultToolbar(
+                modifier = Modifier.fillMaxWidth(),
+                title = "여정 생성하기",
+                onBackClick = {
+                    // TODO
+                }
+            )
             Contents(
                 modifier = Modifier
                     .fillMaxSize()
@@ -102,33 +105,10 @@ private fun CreateJourneyScreen(
     }
 }
 
-// TODO 툴바 공통화~
-@Composable
-private fun Header(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        Image(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .clickable {
-                    // TODO
-                }
-                .padding(12.dp)
-                .size(24.dp),
-            imageVector = IconPack.Chevronleft,
-            contentDescription = "뒤로가기"
-        )
-        Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = "여정 생성하기",
-            style = typography.highlightBold
-        )
-    }
-}
-
 @Composable
 private fun Contents(
     modifier: Modifier,
-    journeyData: () -> JourneyData,
+    journeyData: () -> CreateJourneyData,
     uiEvent: (UiEvent) -> Unit,
 ) {
     LazyColumn(
@@ -185,7 +165,7 @@ private fun JourneyTitleBox(
 @Composable
 private fun JourneyDateBox(
     modifier: Modifier,
-    date: JourneyData.JourneyDate?,
+    date: CreateJourneyData.JourneyDate?,
     uiEvent: (UiEvent) -> Unit
 ) {
     val journeyDate by remember(date) {
@@ -303,5 +283,5 @@ private fun LazyListScope.participantList(
 @Preview(showBackground = true)
 @Composable
 private fun CreateJourneyScreenPreview() {
-    CreateJourneyScreen(journeyData = { JourneyData(people = listOf("정산요정")) }, uiEvent = {})
+    CreateJourneyScreen(journeyData = { CreateJourneyData(people = listOf("정산요정")) }, uiEvent = {})
 }
