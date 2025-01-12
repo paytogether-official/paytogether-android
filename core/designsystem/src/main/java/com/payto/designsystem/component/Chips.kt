@@ -19,7 +19,7 @@ fun Chips(modifier: Modifier, text: String) {
     Box(
         modifier = modifier
             .background(
-                Color.Primary.normal,
+                color = Color.Primary.normal,
                 shape = RoundedCornerShape(8.dp)
             )
             .height(20.dp)
@@ -34,7 +34,7 @@ fun Chips(modifier: Modifier, text: String) {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ChipsPreview() {
     Chips(modifier = Modifier, text = "여행")
