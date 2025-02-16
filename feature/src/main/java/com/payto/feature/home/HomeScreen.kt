@@ -16,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.payto.common.navigate.CreateJourney
+import com.payto.common.navigate.PastJourney
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
@@ -46,7 +48,7 @@ fun HomeScreen(onNavigate: (Any) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             JoinJourneyBox(modifier = Modifier.weight(1f))
-            LastJourneyBox()
+            LastJourneyBox(onNavigate = onNavigate)
         }
     }
 }
@@ -116,11 +118,15 @@ private fun JoinJourneyBox(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun LastJourneyBox(modifier: Modifier = Modifier) {
+private fun LastJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> Unit) {
     Column(
         modifier = modifier
+            .clip(RoundedCornerShape(24.dp))
+            .rippleClickable {
+                onNavigate(PastJourney)
+            }
             .width(147.dp)
-            .background(Component.Fill.normal, shape = RoundedCornerShape(24.dp))
+            .background(Component.Fill.normal)
             .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {

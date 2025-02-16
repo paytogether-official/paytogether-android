@@ -1,7 +1,6 @@
 package com.payto.feature.common
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Chevronleft
 import com.payto.designsystem.theme.typography
@@ -26,7 +26,7 @@ fun DefaultToolbar(
         Image(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .clickable(onClick = onBackClick)
+                .rippleClickable(onClick = onBackClick)
                 .padding(12.dp)
                 .size(24.dp),
             imageVector = IconPack.Chevronleft,

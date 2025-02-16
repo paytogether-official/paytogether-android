@@ -3,20 +3,26 @@ package com.payto.feature.pastjourney
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.theme.Color
@@ -25,24 +31,58 @@ import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 
 @Composable
-fun PastJourneyRoute() {
-    PastJourneyScreen()
+fun PastJourneyRoute(
+    viewModel: PastJourneyViewModel = hiltViewModel(),
+    onBackClick: () -> Unit
+) {
+    val list by viewModel.pastJourneyList.collectAsStateWithLifecycle()
+    PastJourneyScreen(list, onBackClick)
 }
 
 @Composable
-private fun PastJourneyScreen() {
+private fun PastJourneyScreen(
+    list: List<PastJourneyData>,
+    onBackClick: () -> Unit
+) {
     Column(
         modifier = Modifier
+            .background(Color.Static.white)
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ) {
         DefaultToolbar(
             modifier = Modifier.fillMaxWidth(),
             title = "지난 여정",
-            onBackClick = {
-                // TODO
-            }
+            onBackClick = onBackClick
         )
+        PastJourneyList(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            list = list
+        )
+    }
+}
+
+@Composable
+private fun PastJourneyList(modifier: Modifier, list: List<PastJourneyData>) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 40.dp)
+    ) {
+        list.forEach {
+            item(contentType = "PastJourneyDate") {
+                PastJourneyDate(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                )
+            }
+            items(it.list) {
+                PastJourneyCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                )
+            }
+        }
     }
 }
 
@@ -62,10 +102,8 @@ private fun PastJourneyCard(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                Component.Fill.normal,
-                shape = RoundedCornerShape(16.dp)
-            )
+            .clip(RoundedCornerShape(16.dp))
+            .background(Component.Fill.normal)
             .rippleClickable {
                 // TODO
             }
@@ -139,7 +177,27 @@ private fun PastJourneyCard(modifier: Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun PastJourneyScreenPreview() {
-    PastJourneyScreen()
+    val list = listOf(
+        PastJourneyData(
+            date = "24년 2월",
+            list = List((1..5).random()) {
+                PastJourneyInfo("title $it")
+            }
+        ),
+        PastJourneyData(
+            date = "24년 1월",
+            list = List((1..5).random()) {
+                PastJourneyInfo("title $it")
+            }
+        ),
+        PastJourneyData(
+            date = "23년 12월",
+            list = List((1..5).random()) {
+                PastJourneyInfo("title $it")
+            }
+        )
+    )
+    PastJourneyScreen(list = list, onBackClick = {})
 }
 
 @Preview(showBackground = true)
@@ -147,6 +205,7 @@ private fun PastJourneyScreenPreview() {
 private fun PastJourneyCardPreview() {
     Column(Modifier.padding(horizontal = 16.dp)) {
         PastJourneyDate(modifier = Modifier)
+        PastJourneyCard(modifier = Modifier)
         PastJourneyCard(modifier = Modifier)
     }
 }

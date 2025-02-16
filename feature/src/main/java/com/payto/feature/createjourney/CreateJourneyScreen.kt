@@ -45,12 +45,14 @@ import java.util.Locale
 
 @Composable
 fun CreateJourneyRoute(
-    viewModel: CreateJourneyViewModel = hiltViewModel()
+    viewModel: CreateJourneyViewModel = hiltViewModel(),
+    onBackClick: () -> Unit
 ) {
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
 
     CreateJourneyScreen(
         modifier = Modifier.background(Color.Static.white),
+        onBackClick = onBackClick,
         journeyData = { journeyData },
         uiEvent = viewModel::onEvent
     )
@@ -59,6 +61,7 @@ fun CreateJourneyRoute(
 @Composable
 private fun CreateJourneyScreen(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
     journeyData: () -> CreateJourneyData,
     uiEvent: (UiEvent) -> Unit,
 ) {
@@ -81,9 +84,7 @@ private fun CreateJourneyScreen(
             DefaultToolbar(
                 modifier = Modifier.fillMaxWidth(),
                 title = "여정 생성하기",
-                onBackClick = {
-                    // TODO
-                }
+                onBackClick = onBackClick,
             )
             Contents(
                 modifier = Modifier
@@ -285,5 +286,8 @@ private fun LazyListScope.participantList(
 @Preview(showBackground = true)
 @Composable
 private fun CreateJourneyScreenPreview() {
-    CreateJourneyScreen(journeyData = { CreateJourneyData(people = listOf("정산요정")) }, uiEvent = {})
+    CreateJourneyScreen(
+        journeyData = { CreateJourneyData(people = listOf("정산요정")) },
+        onBackClick = {},
+        uiEvent = {})
 }

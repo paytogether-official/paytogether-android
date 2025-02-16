@@ -7,3 +7,6 @@ data object Home
 
 @Serializable
 data object CreateJourney
+
+@Serializable
+data object PastJourney
