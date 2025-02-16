@@ -11,14 +11,12 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface {
 
-    private val randomNameSet: MutableSet<String>
+    private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
     val journeyData = MutableStateFlow(CreateJourneyData(people = listOf("요정")))
 
     init {
         Log.e("흐흐", "CreateJourneyViewModel init ${this.hashCode()}")
-        randomNameSet = createRandomNameSet()
-
     }
 
     private fun createRandomNameSet(): MutableSet<String> {

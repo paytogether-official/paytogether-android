@@ -1,5 +1,6 @@
 package com.payto.feature.createjourney
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ fun CreateJourneyRoute(
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
 
     CreateJourneyScreen(
+        modifier = Modifier.background(Color.Static.white),
         journeyData = { journeyData },
         uiEvent = viewModel::onEvent
     )

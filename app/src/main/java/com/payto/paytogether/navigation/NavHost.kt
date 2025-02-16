@@ -1,5 +1,9 @@
 package com.payto.paytogether.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,7 +17,28 @@ import com.payto.feature.home.HomeRoute
 
 @Composable
 fun PayToNavHost(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController, startDestination = Home) {
+    NavHost(
+        navController = navController,
+        startDestination = Home,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(500)
+            )
+        },
+        exitTransition = {
+            ExitTransition.None
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(500)
+            )
+        },
+        popEnterTransition = {
+            EnterTransition.None
+        }
+    ) {
         composable<Home> { HomeRoute(onNavigate = { navController.navigate(it) }) }
         composable<CreateJourney> { CreateJourneyRoute() }
     }
