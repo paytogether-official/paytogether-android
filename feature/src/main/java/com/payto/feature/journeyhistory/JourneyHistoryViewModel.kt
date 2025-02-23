@@ -1,4 +1,4 @@
-package com.payto.feature.pastjourney
+package com.payto.feature.journeyhistory
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -11,35 +11,35 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class PastJourneyViewModel @Inject constructor() : ViewModel() {
+class JourneyHistoryViewModel @Inject constructor() : ViewModel() {
 
-    val pastJourneyList = flow<List<PastJourneyData>> {
-        emit(getPastJourneyList())
+    val journeyHistoryList = flow<List<JourneyHistoryData>> {
+        emit(getJourneyHistoryList())
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     init {
-        Log.e("흐흐", "PastJourneyViewModel init ${this.hashCode()}")
+        Log.e("흐흐", "JourneyHistoryViewModel init ${this.hashCode()}")
     }
 
-    private suspend fun getPastJourneyList(): List<PastJourneyData> {
+    private suspend fun getJourneyHistoryList(): List<JourneyHistoryData> {
         delay(300)
         return listOf(
-            PastJourneyData(
+            JourneyHistoryData(
                 date = "24년 2월",
                 list = List((1..5).random()) {
-                    PastJourneyInfo("title $it")
+                    JourneyHistoryInfo("title $it")
                 }
             ),
-            PastJourneyData(
+            JourneyHistoryData(
                 date = "24년 1월",
                 list = List((1..5).random()) {
-                    PastJourneyInfo("title $it")
+                    JourneyHistoryInfo("title $it")
                 }
             ),
-            PastJourneyData(
+            JourneyHistoryData(
                 date = "23년 12월",
                 list = List((1..5).random()) {
-                    PastJourneyInfo("title $it")
+                    JourneyHistoryInfo("title $it")
                 }
             )
         )
@@ -47,6 +47,6 @@ class PastJourneyViewModel @Inject constructor() : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        Log.e("흐흐", "PastJourneyViewModel onCleared ${this.hashCode()}")
+        Log.e("흐흐", "JourneyHistoryViewModel onCleared ${this.hashCode()}")
     }
 }

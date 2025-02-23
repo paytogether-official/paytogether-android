@@ -9,7 +9,7 @@ data object Home
 data object CreateJourney
 
 @Serializable
-data object PastJourney
+data object JourneyHistory
 
 @Serializable
 data class JourneyDetail(val journeyId: String)

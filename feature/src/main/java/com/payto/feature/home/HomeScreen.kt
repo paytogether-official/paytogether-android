@@ -20,7 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.payto.common.navigate.CreateJourney
-import com.payto.common.navigate.PastJourney
+import com.payto.common.navigate.JourneyHistory
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
@@ -123,7 +123,7 @@ private fun LastJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> U
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
             .rippleClickable {
-                onNavigate(PastJourney)
+                onNavigate(JourneyHistory)
             }
             .width(147.dp)
             .background(Component.Fill.normal)

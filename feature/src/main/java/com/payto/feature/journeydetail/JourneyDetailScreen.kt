@@ -66,7 +66,7 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.R
-import com.payto.feature.pastjourney.JourneyDate
+import com.payto.feature.journeyhistory.JourneyDate
 import kotlinx.coroutines.launch
 
 @Composable

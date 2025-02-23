@@ -1,4 +1,4 @@
-package com.payto.feature.pastjourney
+package com.payto.feature.journeyhistory
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,18 +32,18 @@ import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 
 @Composable
-fun PastJourneyRoute(
-    viewModel: PastJourneyViewModel = hiltViewModel(),
+fun JourneyHistoryRoute(
+    viewModel: JourneyHistoryViewModel = hiltViewModel(),
     onNavigate: (JourneyDetail) -> Unit,
     onBackClick: () -> Unit
 ) {
-    val list by viewModel.pastJourneyList.collectAsStateWithLifecycle()
-    PastJourneyScreen(list = list, onNavigate = onNavigate, onBackClick = onBackClick)
+    val list by viewModel.journeyHistoryList.collectAsStateWithLifecycle()
+    JourneyHistoryScreen(list = list, onNavigate = onNavigate, onBackClick = onBackClick)
 }
 
 @Composable
-private fun PastJourneyScreen(
-    list: List<PastJourneyData>,
+private fun JourneyHistoryScreen(
+    list: List<JourneyHistoryData>,
     onNavigate: (JourneyDetail) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -57,7 +57,7 @@ private fun PastJourneyScreen(
             title = "지난 여정",
             onBackClick = onBackClick
         )
-        PastJourneyList(
+        JourneyHistoryList(
             modifier = Modifier.padding(horizontal = 16.dp),
             list = list,
             onNavigate = onNavigate
@@ -66,9 +66,9 @@ private fun PastJourneyScreen(
 }
 
 @Composable
-private fun PastJourneyList(
+private fun JourneyHistoryList(
     modifier: Modifier,
-    list: List<PastJourneyData>,
+    list: List<JourneyHistoryData>,
     onNavigate: (JourneyDetail) -> Unit,
 ) {
     LazyColumn(
@@ -76,7 +76,7 @@ private fun PastJourneyList(
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         list.forEach {
-            item(contentType = "PastJourneyDate") {
+            item(contentType = "JourneyHistoryDate") {
                 JourneyDate(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -84,8 +84,8 @@ private fun PastJourneyList(
                     it.date
                 )
             }
-            items(it.list, contentType = { "PastJourneyCard" }) { model ->
-                PastJourneyCard(
+            items(it.list, contentType = { "JourneyHistoryCard" }) { model ->
+                JourneyHistoryCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
@@ -109,10 +109,10 @@ fun JourneyDate(modifier: Modifier, date: String = "") {
 }
 
 @Composable
-private fun PastJourneyCard(
+private fun JourneyHistoryCard(
     modifier: Modifier,
     onNavigate: (JourneyDetail) -> Unit = {},
-    model: PastJourneyInfo
+    model: JourneyHistoryInfo
 ) {
     Column(
         modifier = modifier
@@ -120,7 +120,7 @@ private fun PastJourneyCard(
             .clip(RoundedCornerShape(16.dp))
             .background(Component.Fill.normal)
             .rippleClickable {
-                onNavigate.invoke(JourneyDetail(model.title)) // TODO
+                onNavigate.invoke(JourneyDetail(model.title))
             }
             .padding(16.dp)
     ) {
@@ -191,26 +191,26 @@ private fun PastJourneyCard(
 
 @Preview(showBackground = true)
 @Composable
-private fun PastJourneyScreenPreview() {
+private fun JourneyHistoryScreenPreview() {
     val list = listOf(
-        PastJourneyData(
+        JourneyHistoryData(
             date = "24년 2월",
             list = List((1..5).random()) {
-                PastJourneyInfo("여정 제목 $it")
+                JourneyHistoryInfo("여정 제목 $it")
             }
         ),
-        PastJourneyData(
+        JourneyHistoryData(
             date = "24년 1월",
             list = List((1..5).random()) {
-                PastJourneyInfo("여정 제목 $it")
+                JourneyHistoryInfo("여정 제목 $it")
             }
         ),
-        PastJourneyData(
+        JourneyHistoryData(
             date = "23년 12월",
             list = List((1..5).random()) {
-                PastJourneyInfo("여정 제목 $it")
+                JourneyHistoryInfo("여정 제목 $it")
             }
         )
     )
-    PastJourneyScreen(list = list, onBackClick = {}, onNavigate = {})
+    JourneyHistoryScreen(list = list, onBackClick = {}, onNavigate = {})
 }
