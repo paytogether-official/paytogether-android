@@ -10,3 +10,6 @@ data object CreateJourney
 
 @Serializable
 data object PastJourney
+
+@Serializable
+data class JourneyDetail(val journeyId: String)

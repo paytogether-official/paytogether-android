@@ -15,11 +15,16 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 
 @Composable
-fun Chips(modifier: Modifier, text: String) {
+fun Chips(
+    modifier: Modifier,
+    text: String,
+    color: androidx.compose.ui.graphics.Color = Color.Primary.normal,
+    textColor: androidx.compose.ui.graphics.Color = Color.Inverse.label
+) {
     Box(
         modifier = modifier
             .background(
-                color = Color.Primary.normal,
+                color = color,
                 shape = RoundedCornerShape(8.dp)
             )
             .height(20.dp)
@@ -29,7 +34,7 @@ fun Chips(modifier: Modifier, text: String) {
             modifier = Modifier.align(Alignment.Center),
             text = text,
             style = typography.contentAccent,
-            color = Color.Inverse.label
+            color = textColor
         )
     }
 }

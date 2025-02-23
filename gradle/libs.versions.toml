@@ -15,6 +15,8 @@ navigationCompose = "2.8.2"
 ksp = "2.0.20-1.0.25"
 hilt = "2.52"
 androidHilt = "1.2.0"
+googleService = "4.4.2"
+firebaseBom = "33.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +51,7 @@ jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 googleHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "googleService"}
 
 [bundles]
 compose = ["androidx-compose-bom",

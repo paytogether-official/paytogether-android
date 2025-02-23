@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.navigate.JourneyDetail
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.theme.Color
@@ -33,15 +34,17 @@ import com.payto.feature.common.DefaultToolbar
 @Composable
 fun PastJourneyRoute(
     viewModel: PastJourneyViewModel = hiltViewModel(),
+    onNavigate: (JourneyDetail) -> Unit,
     onBackClick: () -> Unit
 ) {
     val list by viewModel.pastJourneyList.collectAsStateWithLifecycle()
-    PastJourneyScreen(list, onBackClick)
+    PastJourneyScreen(list = list, onNavigate = onNavigate, onBackClick = onBackClick)
 }
 
 @Composable
 private fun PastJourneyScreen(
     list: List<PastJourneyData>,
+    onNavigate: (JourneyDetail) -> Unit,
     onBackClick: () -> Unit
 ) {
     Column(
@@ -56,30 +59,38 @@ private fun PastJourneyScreen(
         )
         PastJourneyList(
             modifier = Modifier.padding(horizontal = 16.dp),
-            list = list
+            list = list,
+            onNavigate = onNavigate
         )
     }
 }
 
 @Composable
-private fun PastJourneyList(modifier: Modifier, list: List<PastJourneyData>) {
+private fun PastJourneyList(
+    modifier: Modifier,
+    list: List<PastJourneyData>,
+    onNavigate: (JourneyDetail) -> Unit,
+) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         list.forEach {
             item(contentType = "PastJourneyDate") {
-                PastJourneyDate(
+                JourneyDate(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    it.date
                 )
             }
-            items(it.list) {
+            items(it.list, contentType = { "PastJourneyCard" }) { model ->
                 PastJourneyCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    onNavigate = onNavigate,
+                    model = model
                 )
             }
         }
@@ -87,25 +98,29 @@ private fun PastJourneyList(modifier: Modifier, list: List<PastJourneyData>) {
 }
 
 @Composable
-private fun PastJourneyDate(modifier: Modifier) {
+fun JourneyDate(modifier: Modifier, date: String = "") {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 8.dp)
     ) {
-        Text(text = "25년 1월", style = typography.captionAccent, color = Color.Label.neutral)
+        Text(text = date, style = typography.captionAccent, color = Color.Label.neutral)
     }
 }
 
 @Composable
-private fun PastJourneyCard(modifier: Modifier) {
+private fun PastJourneyCard(
+    modifier: Modifier,
+    onNavigate: (JourneyDetail) -> Unit = {},
+    model: PastJourneyInfo
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Component.Fill.normal)
             .rippleClickable {
-                // TODO
+                onNavigate.invoke(JourneyDetail(model.title)) // TODO
             }
             .padding(16.dp)
     ) {
@@ -115,7 +130,7 @@ private fun PastJourneyCard(modifier: Modifier) {
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "여정 제목",
+                text = model.title,
                 overflow = TextOverflow.Ellipsis,
                 style = typography.highlightBold,
                 color = Color.Label.normal
@@ -181,31 +196,21 @@ private fun PastJourneyScreenPreview() {
         PastJourneyData(
             date = "24년 2월",
             list = List((1..5).random()) {
-                PastJourneyInfo("title $it")
+                PastJourneyInfo("여정 제목 $it")
             }
         ),
         PastJourneyData(
             date = "24년 1월",
             list = List((1..5).random()) {
-                PastJourneyInfo("title $it")
+                PastJourneyInfo("여정 제목 $it")
             }
         ),
         PastJourneyData(
             date = "23년 12월",
             list = List((1..5).random()) {
-                PastJourneyInfo("title $it")
+                PastJourneyInfo("여정 제목 $it")
             }
         )
     )
-    PastJourneyScreen(list = list, onBackClick = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PastJourneyCardPreview() {
-    Column(Modifier.padding(horizontal = 16.dp)) {
-        PastJourneyDate(modifier = Modifier)
-        PastJourneyCard(modifier = Modifier)
-        PastJourneyCard(modifier = Modifier)
-    }
+    PastJourneyScreen(list = list, onBackClick = {}, onNavigate = {})
 }

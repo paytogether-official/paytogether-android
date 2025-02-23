@@ -7,4 +7,5 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.googleKsp) apply false
     alias(libs.plugins.googleHilt) apply false
+    alias(libs.plugins.googleServices) apply false
 }

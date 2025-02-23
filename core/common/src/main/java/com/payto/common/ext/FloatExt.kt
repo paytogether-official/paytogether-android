@@ -1,0 +1,14 @@
+package com.payto.common.ext
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+
+@Composable
+fun Float.toDp(): Dp {
+    val density = LocalDensity.current
+    return with(density) { toDp() }
+}
+
+fun Float.toDp(density: Density): Dp = with(density) { this@toDp.toDp() }
