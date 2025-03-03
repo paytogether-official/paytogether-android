@@ -56,6 +56,9 @@ import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.component.PaytoButtonStatus
+import com.payto.designsystem.dialog.DialogData
+import com.payto.designsystem.dialog.DialogStyle
+import com.payto.designsystem.dialog.PaytoDialog
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Caretdown
@@ -66,6 +69,7 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.R
+import com.payto.feature.common.HistoryToolbar
 import com.payto.feature.journeyhistory.JourneyDate
 import kotlinx.coroutines.launch
 
@@ -74,17 +78,51 @@ fun JourneyDetailRoute(
     viewModel: JourneyDetailViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
+    var isShowDeleteDialog by remember {
+        mutableStateOf(false)
+    }
+
+    PaytoDialog(
+        isShowDialog = isShowDeleteDialog,
+        model = DialogData(
+            style = DialogStyle.RED,
+            title = "여정을 삭제하시겠어요?",
+            subtitle = "삭제시 모든 데이터가 사라집니다.",
+            firstButton = "닫기",
+            secondButton = "삭제하기",
+            icon = R.drawable.dialog_delete
+        ),
+        onDismissRequest = {
+            isShowDeleteDialog = false
+        },
+        secondButtonClick = {
+            // TODO 삭제하기
+        }
+    )
+
     JourneyDetailScreen(
         modifier = Modifier.background(color = Color.Static.white),
-        title = viewModel.detail.journeyId
+        title = viewModel.detail.journeyId,
+        toolbar = {
+            HistoryToolbar(
+                modifier = Modifier.fillMaxWidth(),
+                onBackClick = onBackClick,
+                onShareClick = {
+                    // TODO
+                },
+                onDeleteClick = {
+                    isShowDeleteDialog = true
+                }
+            )
+        }
     )
 }
-
 
 @Composable
 fun JourneyDetailScreen(
     modifier: Modifier = Modifier,
     title: String,
+    toolbar: @Composable () -> Unit = {}
 ) {
     val list = remember {
         List((1..10).random()) {
@@ -101,6 +139,7 @@ fun JourneyDetailScreen(
         modifier = modifier
             .fillMaxWidth()
     ) {
+        toolbar.invoke()
         TitleHeader(modifier = Modifier, title = title)
         DetailContent()
         JourneyDetailList(
@@ -479,5 +518,16 @@ private fun JourneyItem(
 @Preview(showBackground = true)
 @Composable
 private fun JourneyDetailScreenPreview() {
-    JourneyDetailScreen(modifier = Modifier.background(Color.Static.white), title = "여정 제목")
+    JourneyDetailScreen(
+        modifier = Modifier.background(Color.Static.white),
+        title = "여정 제목",
+        toolbar = {
+            HistoryToolbar(
+                modifier = Modifier.fillMaxWidth(),
+                onBackClick = {},
+                onShareClick = {},
+                onDeleteClick = {}
+            )
+        }
+    )
 }

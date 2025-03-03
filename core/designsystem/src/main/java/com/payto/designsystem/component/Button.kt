@@ -40,6 +40,7 @@ fun PaytoButton(
                 PaytoButtonStatus.PRIMARY -> Color.Primary.normal
                 PaytoButtonStatus.SECONDARY -> Component.Fill.primary
                 PaytoButtonStatus.NORMAL -> Component.Fill.normal
+                PaytoButtonStatus.ERROR -> Color.Status.error
             }
         )
     }
@@ -50,6 +51,7 @@ fun PaytoButton(
                 PaytoButtonStatus.PRIMARY -> Color.Inverse.label
                 PaytoButtonStatus.SECONDARY -> Color.Inverse.primary
                 PaytoButtonStatus.NORMAL -> Color.Label.normal
+                PaytoButtonStatus.ERROR -> Color.Inverse.label
             }
         )
     }
@@ -119,5 +121,5 @@ private fun PaytoOutlineButtonPreview() {
 
 @Stable
 enum class PaytoButtonStatus {
-    PRIMARY, SECONDARY, NORMAL
+    PRIMARY, SECONDARY, NORMAL, ERROR
 }
