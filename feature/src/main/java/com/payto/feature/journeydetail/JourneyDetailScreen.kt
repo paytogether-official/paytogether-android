@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.payto.common.ext.toPx
+import com.payto.common.navigate.JourneyItemDetail
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
@@ -78,6 +79,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun JourneyDetailRoute(
     viewModel: JourneyDetailViewModel = hiltViewModel(),
+    onNavigate: (Any) -> Unit,
     onBackClick: () -> Unit
 ) {
     var isShowDeleteDialog by remember {
@@ -108,6 +110,7 @@ fun JourneyDetailRoute(
             .navigationBarsPadding()
             .background(color = Color.Static.white),
         title = viewModel.detail.journeyId,
+        onNavigate = onNavigate,
         toolbar = {
             HistoryToolbar(
                 modifier = Modifier.fillMaxWidth(),
@@ -127,6 +130,7 @@ fun JourneyDetailRoute(
 fun JourneyDetailScreen(
     modifier: Modifier = Modifier,
     title: String,
+    onNavigate: (Any) -> Unit,
     toolbar: @Composable () -> Unit = {}
 ) {
     val list = remember {
@@ -149,7 +153,8 @@ fun JourneyDetailScreen(
         DetailContent()
         JourneyDetailList(
             modifier = Modifier.weight(1f),
-            list = list
+            list = list,
+            onNavigate = onNavigate
         )
     }
 }
@@ -441,7 +446,11 @@ private fun JourneyDetailOrder(modifier: Modifier) {
 }
 
 @Composable
-private fun JourneyDetailList(modifier: Modifier, list: List<JourneyDetailData>) {
+private fun JourneyDetailList(
+    modifier: Modifier,
+    list: List<JourneyDetailData>,
+    onNavigate: (Any) -> Unit,
+) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -454,7 +463,7 @@ private fun JourneyDetailList(modifier: Modifier, list: List<JourneyDetailData>)
                 JourneyDate(modifier = Modifier, date = it.date)
             }
             items(it.list) { model ->
-                JourneyItem(modifier = Modifier, model = model)
+                JourneyItem(modifier = Modifier, model = model, onNavigate = onNavigate)
             }
         }
     }
@@ -463,14 +472,15 @@ private fun JourneyDetailList(modifier: Modifier, list: List<JourneyDetailData>)
 @Composable
 private fun JourneyItem(
     modifier: Modifier,
-    model: JourneyDetailInfo
+    model: JourneyDetailInfo,
+    onNavigate: (Any) -> Unit,
 ) {
     Row(
         modifier
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(16.dp))
             .rippleClickable {
-
+                onNavigate.invoke(JourneyItemDetail(title = model.title))
             }
             .background(color = Component.Fill.normal)
             .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -526,6 +536,7 @@ private fun JourneyDetailScreenPreview() {
     JourneyDetailScreen(
         modifier = Modifier.background(Color.Static.white),
         title = "여정 제목",
+        onNavigate = {},
         toolbar = {
             HistoryToolbar(
                 modifier = Modifier.fillMaxWidth(),

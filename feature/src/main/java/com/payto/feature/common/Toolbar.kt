@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.payto.designsystem.extension.rippleClickable
@@ -24,6 +25,10 @@ import com.payto.designsystem.theme.typography
 fun DefaultToolbar(
     modifier: Modifier = Modifier,
     title: String = "",
+    firstIcon: ImageVector? = null,
+    secondIcon: ImageVector? = null,
+    onFirstIconClick: () -> Unit = {},
+    onSecondIconClick: () -> Unit = {},
     onBackClick: () -> Unit
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -41,6 +46,31 @@ fun DefaultToolbar(
             text = title,
             style = typography.highlightBold
         )
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (firstIcon != null) {
+                Image(
+                    modifier = Modifier
+                        .rippleClickable(onClick = onFirstIconClick)
+                        .padding(12.dp)
+                        .size(24.dp),
+                    imageVector = firstIcon,
+                    contentDescription = null
+                )
+            }
+            if (secondIcon != null) {
+                Image(
+                    modifier = Modifier
+                        .rippleClickable(onClick = onSecondIconClick)
+                        .padding(12.dp)
+                        .size(24.dp),
+                    imageVector = secondIcon,
+                    contentDescription = null
+                )
+            }
+        }
     }
 }
 
@@ -89,7 +119,13 @@ fun HistoryToolbar(
 @Preview(showBackground = true)
 @Composable
 private fun ToolbarPreview() {
-    DefaultToolbar(modifier = Modifier.fillMaxWidth(), title = "여정 생성하기", onBackClick = {})
+    DefaultToolbar(
+        modifier = Modifier.fillMaxWidth(),
+        title = "여정 생성하기",
+        onBackClick = {},
+        firstIcon = IconPack.Shareios,
+        secondIcon = IconPack.Trash,
+    )
 }
 
 @Preview(showBackground = true)
