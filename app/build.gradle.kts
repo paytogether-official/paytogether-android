@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.kotlinParcelize)
     alias(libs.plugins.googleKsp)
     alias(libs.plugins.googleHilt)
     alias(libs.plugins.googleServices)

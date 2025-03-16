@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +39,8 @@ fun HomeRoute(onNavigate: (Any) -> Unit) {
 fun HomeScreen(onNavigate: (Any) -> Unit) {
     Column(
         modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .background(Color.Static.white)
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 122.dp),

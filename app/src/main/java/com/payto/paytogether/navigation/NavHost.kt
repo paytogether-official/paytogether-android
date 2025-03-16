@@ -45,7 +45,11 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
     ) {
         composable<Home> { HomeRoute(onNavigate = { navController.navigate(it) }) }
         composable<CreateJourney> { CreateJourneyRoute(onBackClick = { navController.popBackStack() }) }
-        composable<JourneyHistory> { JourneyHistoryRoute(onNavigate = { navController.navigate(it) },onBackClick = { navController.popBackStack() }) }
+        composable<JourneyHistory> {
+            JourneyHistoryRoute(
+                onNavigate = { navController.navigate(it) },
+                onBackClick = { navController.popBackStack() })
+        }
         composable<JourneyDetail> { JourneyDetailRoute(onBackClick = { navController.popBackStack() }) }
     }
 }

@@ -1,12 +1,13 @@
 package com.payto.feature.createjourney
 
 import androidx.compose.runtime.Stable
+import com.payto.feature.createjourney.countrydialog.Country
 
 @Stable
 data class CreateJourneyData(
     val title: String? = null,
     val journeyDate: JourneyDate? = null,
-    val country: String? = null,
+    val country: Country? = null,
     val people: List<String> = emptyList(),
 ) {
     data class JourneyDate(val startTimeMill: Long, val endTimeMill: Long)
@@ -14,7 +15,7 @@ data class CreateJourneyData(
     fun isFullyFilled(): Boolean {
         return !title.isNullOrBlank() &&
                 journeyDate != null &&
-                !country.isNullOrBlank() &&
+                country != null &&
                 people.isNotEmpty()
     }
 

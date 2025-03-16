@@ -47,6 +47,7 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinParcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin"}
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -58,7 +59,6 @@ compose = ["androidx-compose-bom",
     "androidx-activity-compose",
     "androidx-ui",
     "androidx-ui-graphics",
-    "androidx-activity-compose",
     "androidx-ui-tooling",
     "androidx-ui-tooling-preview",
     "androidx-material3",

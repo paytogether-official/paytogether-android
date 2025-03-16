@@ -66,6 +66,11 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
                 }
                 journeyData.value = journeyData.value.copy(people = newPeople.toList())
             }
+
+            is OnCountryChange -> {
+                val country = event.country
+                journeyData.value = journeyData.value.copy(country = country)
+            }
         }
     }
 

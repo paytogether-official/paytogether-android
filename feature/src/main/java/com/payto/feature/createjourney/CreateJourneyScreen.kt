@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -39,6 +41,8 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.UiEvent
+import com.payto.feature.createjourney.countrydialog.Country
+import com.payto.feature.createjourney.countrydialog.CountrySelectionDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,7 +55,10 @@ fun CreateJourneyRoute(
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
 
     CreateJourneyScreen(
-        modifier = Modifier.background(Color.Static.white),
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .background(Color.Static.white),
         onBackClick = onBackClick,
         journeyData = { journeyData },
         uiEvent = viewModel::onEvent
@@ -134,7 +141,11 @@ private fun Contents(
             )
         }
         item(contentType = "JourneyCountryBox") {
-            JourneyCountryBox(modifier = Modifier.padding(bottom = 16.dp))
+            JourneyCountryBox(
+                modifier = Modifier.padding(bottom = 16.dp),
+                country = journeyData().country,
+                uiEvent = uiEvent
+            )
         }
 
         this@LazyColumn.journeyParticipantBox(people = { journeyData().people }, uiEvent = uiEvent)
@@ -201,7 +212,8 @@ private fun JourneyDateBox(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = "여행기간", color = Color.Label.normal,
+            text = "여행기간",
+            color = Color.Label.normal,
             style = typography.contentAccent
         )
         ContentBox(
@@ -215,10 +227,24 @@ private fun JourneyDateBox(
 }
 
 @Composable
-private fun JourneyCountryBox(modifier: Modifier) {
-    var country by remember {
-        mutableStateOf("")
+private fun JourneyCountryBox(
+    modifier: Modifier,
+    country: Country? = null,
+    uiEvent: (UiEvent) -> Unit
+) {
+    var isShowCountryDialog by remember {
+        mutableStateOf(false)
     }
+    CountrySelectionDialog(
+        isShow = isShowCountryDialog,
+        onDismissRequest = {
+            isShowCountryDialog = false
+        },
+        onSelectedCountry = {
+            uiEvent.invoke(OnCountryChange(it))
+            isShowCountryDialog = false
+        }
+    )
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -229,11 +255,11 @@ private fun JourneyCountryBox(modifier: Modifier) {
             style = typography.contentAccent
         )
         ContentBox(
-            value = country,
+            value = country?.koreanName ?: "",
             placeholder = "어디로 여행을 떠나시나요?",
             endIcon = IconPack.Caretdown
         ) {
-            // TODO 국가 다이얼로그
+            isShowCountryDialog = true
         }
         // TODO 국가 설정 시 환율 설정
     }
