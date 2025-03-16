@@ -16,3 +16,6 @@ data class JourneyDetail(val journeyId: String)
 
 @Serializable
 data class JourneyItemDetail(val title: String) //todo 데이터 정의 논의
+
+@Serializable
+data object JoinJourney

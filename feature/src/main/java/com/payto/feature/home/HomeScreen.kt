@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.payto.common.navigate.CreateJourney
+import com.payto.common.navigate.JoinJourney
 import com.payto.common.navigate.JourneyHistory
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
@@ -51,7 +52,7 @@ fun HomeScreen(onNavigate: (Any) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            JoinJourneyBox(modifier = Modifier.weight(1f))
+            JoinJourneyBox(modifier = Modifier.weight(1f), onNavigate = onNavigate)
             LastJourneyBox(onNavigate = onNavigate)
         }
     }
@@ -61,9 +62,10 @@ fun HomeScreen(onNavigate: (Any) -> Unit) {
 private fun CreateJourneyBox(onNavigate: (Any) -> Unit) {
     Column(
         modifier = Modifier
+            .clip(shape = RoundedCornerShape(24.dp))
             .rippleClickable { onNavigate(CreateJourney) }
             .fillMaxWidth()
-            .background(Color.Primary.normal, shape = RoundedCornerShape(24.dp))
+            .background(Color.Primary.normal)
             .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
@@ -91,10 +93,14 @@ private fun CreateJourneyBox(onNavigate: (Any) -> Unit) {
 }
 
 @Composable
-private fun JoinJourneyBox(modifier: Modifier = Modifier) {
+private fun JoinJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> Unit) {
     Column(
         modifier = modifier
-            .background(Component.Fill.primary, shape = RoundedCornerShape(24.dp))
+            .clip(shape = RoundedCornerShape(24.dp))
+            .rippleClickable {
+                onNavigate.invoke(JoinJourney)
+            }
+            .background(Component.Fill.primary)
             .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {

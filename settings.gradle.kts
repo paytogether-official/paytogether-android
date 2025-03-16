@@ -21,7 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "paytogether"
 include(":app")
-include(":core")
 include(":core:designsystem")
-include(":feature")
 include(":core:common")
+include(":feature")

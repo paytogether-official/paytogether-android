@@ -3,13 +3,19 @@ package com.payto.feature.createjourney
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.payto.feature.common.EventInterface
+import com.payto.feature.common.SideEffectEvent
 import com.payto.feature.common.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface {
+
+    private val _sideEffectEvent = MutableSharedFlow<SideEffectEvent>()
+    override val sideEffectEvent: SharedFlow<SideEffectEvent> = _sideEffectEvent
 
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 

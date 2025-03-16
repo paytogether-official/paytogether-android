@@ -11,11 +11,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.payto.common.navigate.CreateJourney
 import com.payto.common.navigate.Home
+import com.payto.common.navigate.JoinJourney
 import com.payto.common.navigate.JourneyDetail
 import com.payto.common.navigate.JourneyHistory
 import com.payto.common.navigate.JourneyItemDetail
 import com.payto.feature.createjourney.CreateJourneyRoute
 import com.payto.feature.home.HomeRoute
+import com.payto.feature.joinjourney.JoinJourneyRoute
 import com.payto.feature.journeydetail.JourneyDetailRoute
 import com.payto.feature.journeydetail.item.JourneyItemDetailRoute
 import com.payto.feature.journeyhistory.JourneyHistoryRoute
@@ -59,7 +61,14 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable<JourneyItemDetail> {
             JourneyItemDetailRoute(
-                onBackClick = { navController.popBackStack() })
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable<JoinJourney> {
+            JoinJourneyRoute(
+                onNavigate = { navController.navigate(it) },
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
