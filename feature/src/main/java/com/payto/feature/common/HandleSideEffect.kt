@@ -1,19 +1,27 @@
 package com.payto.feature.common
 
-import android.widget.Toast
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import com.payto.designsystem.toast.ErrorPaytoToast
+import com.payto.designsystem.toast.SuccessPaytoToast
+import com.payto.feature.common.ShowSnackbar.Status.*
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun HandleSideEffect(
     event: EventInterface,
     onNavigate: (Any) -> Unit
 ) {
-    val context = LocalContext.current
+    val errorSnackbarState = remember { SnackbarHostState() }
+    val successSnackbarState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(event) {
         event.sideEffectEvent.collectLatest { sideEffect ->
             when (sideEffect) {
                 is Navigate -> {
@@ -21,10 +29,33 @@ fun HandleSideEffect(
                 }
 
                 is ShowSnackbar -> {
-                    // TODO 커스텀
-                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+                    coroutineScope.launch {
+                        errorSnackbarState.currentSnackbarData?.dismiss()
+                        successSnackbarState.currentSnackbarData?.dismiss()
+                        when (sideEffect.status) {
+                            SUCCESS -> {
+                                successSnackbarState.showSnackbar(
+                                    message = sideEffect.message,
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+
+                            FAIL -> {
+                                errorSnackbarState.showSnackbar(
+                                    message = sideEffect.message,
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
+
+                            NONE -> {}
+                        }
+
+                    }
                 }
             }
         }
     }
+
+    ErrorPaytoToast(snackbarHostState = errorSnackbarState)
+    SuccessPaytoToast(snackbarHostState = successSnackbarState)
 }

@@ -26,15 +26,15 @@ class JoinJourneyViewModel @Inject constructor() : ViewModel(), EventInterface {
         when (event) {
             is CheckInviteCode -> {
                 val isValid = isValidInviteCode(event.code)
-                if (isValid) {
-                    sendSideEffectEvent(Navigate(JourneyDetail(journeyId = "33")))
-                }
                 sendSideEffectEvent(
                     ShowSnackbar(
                         message = if (isValid) "초대된 여정으로 이동합니다" else "초대코드를 확인해주세요.",
                         status = if (isValid) ShowSnackbar.Status.SUCCESS else ShowSnackbar.Status.FAIL
                     )
                 )
+                if (isValid) {
+                    sendSideEffectEvent(Navigate(JourneyDetail(journeyId = "33"))) // TODO 여정 생성 완료 화면임 (진행중)
+                }
             }
         }
     }
