@@ -12,10 +12,10 @@ plugins {
 
 android {
     namespace = "com.payto.feature"
-    compileSdk = 34
+    compileSdk = AppConfig.COMPILE_SDK
 
     defaultConfig {
-        minSdk = 26
+        minSdk = AppConfig.MIN_SDK
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

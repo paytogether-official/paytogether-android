@@ -13,14 +13,14 @@ plugins {
 
 android {
     namespace = "com.payto.paytogether"
-    compileSdk = 34
+    compileSdk = AppConfig.COMPILE_SDK
 
     defaultConfig {
         applicationId = "com.payto.paytogether"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = AppConfig.MIN_SDK
+        targetSdk = AppConfig.COMPILE_SDK
+        versionCode = AppConfig.VERSION_CODE
+        versionName = AppConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -83,4 +83,5 @@ dependencies {
     implementation(project(":feature"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
 }

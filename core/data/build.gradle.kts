@@ -1,15 +1,10 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.kotlinParcelize)
-    alias(libs.plugins.googleKsp)
-    alias(libs.plugins.googleHilt)
 }
 
 android {
-    namespace = "com.payto.common"
+    namespace = "com.example.data"
     compileSdk = AppConfig.COMPILE_SDK
 
     defaultConfig {
@@ -25,31 +20,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    ksp(libs.hilt.compiler)
-    implementation(libs.bundles.hilt)
-
-    implementation(libs.bundles.compose)
-    implementation(platform(libs.androidx.compose.bom))
-
-    implementation(libs.kotlinx.serialization.json)
-
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
 }

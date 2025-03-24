@@ -66,7 +66,10 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable<JoinJourney> {
             JoinJourneyRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = {
+                    navController.popBackStack()
+                    navController.navigate(it)
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }

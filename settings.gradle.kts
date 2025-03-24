@@ -23,4 +23,5 @@ rootProject.name = "paytogether"
 include(":app")
 include(":core:designsystem")
 include(":core:common")
+include(":core:data")
 include(":feature")
