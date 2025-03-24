@@ -2,21 +2,24 @@
 agp = "8.5.2"
 kotlin = "2.0.20"
 kotlinSerialization = "1.7.2"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.03"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.10.1"
+composeBom = "2025.03.00"
 appcompat = "1.7.0"
 material = "1.12.0"
-navigationCompose = "2.8.2"
+navigationCompose = "2.8.9"
 ksp = "2.0.21-1.0.27"
 hilt = "2.52"
 androidHilt = "1.2.0"
 googleService = "4.4.2"
 firebaseBom = "33.9.0"
+retrofit = "2.11.0"
+retrofitKotlinConvertor = "1.0.0"
+okHttp = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +44,9 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation", version.ref = "androidHilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidHilt" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofitKotlinConvertor = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinConvertor" }
+okHttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -55,7 +61,8 @@ googleHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleService"}
 
 [bundles]
-compose = ["androidx-compose-bom",
+compose = [
+    "androidx-compose-bom",
     "androidx-activity-compose",
     "androidx-ui",
     "androidx-ui-graphics",
@@ -70,4 +77,10 @@ hilt = [
     "hilt-android",
     "hilt-navigation",
     "hilt-navigation-compose"
+]
+
+network = [
+    "retrofit",
+    "retrofitKotlinConvertor",
+    "okHttp"
 ]

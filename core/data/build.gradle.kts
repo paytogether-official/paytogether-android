@@ -1,10 +1,13 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.googleKsp)
+    alias(libs.plugins.googleHilt)
 }
 
 android {
-    namespace = "com.example.data"
+    namespace = "com.payto.data"
     compileSdk = AppConfig.COMPILE_SDK
 
     defaultConfig {
@@ -29,6 +32,10 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.bundles.network)
+    ksp(libs.hilt.compiler)
+    implementation(libs.bundles.hilt)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
