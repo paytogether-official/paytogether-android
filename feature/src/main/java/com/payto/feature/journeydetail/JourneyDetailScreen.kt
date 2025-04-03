@@ -55,6 +55,7 @@ import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.payto.common.ext.toPx
 import com.payto.common.navigate.JourneyItemDetail
+import com.payto.common.navigate.JourneyResult
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
@@ -110,6 +111,7 @@ fun JourneyDetailRoute(
             .navigationBarsPadding()
             .background(color = Color.Static.white),
         title = viewModel.detail.journeyId,
+        id = viewModel.detail.journeyId,
         onNavigate = onNavigate,
         toolbar = {
             HistoryToolbar(
@@ -130,6 +132,7 @@ fun JourneyDetailRoute(
 fun JourneyDetailScreen(
     modifier: Modifier = Modifier,
     title: String,
+    id: String,
     onNavigate: (Any) -> Unit,
     toolbar: @Composable () -> Unit = {}
 ) {
@@ -149,7 +152,7 @@ fun JourneyDetailScreen(
             .fillMaxSize()
     ) {
         toolbar.invoke()
-        TitleHeader(modifier = Modifier, title = title)
+        TitleHeader(modifier = Modifier, title = title, id = id, onNavigate = onNavigate)
         DetailContent()
         JourneyDetailList(
             modifier = Modifier.weight(1f),
@@ -163,7 +166,9 @@ fun JourneyDetailScreen(
 @Composable
 private fun TitleHeader(
     modifier: Modifier,
-    title: String
+    title: String,
+    id: String,
+    onNavigate: (Any) -> Unit,
 ) {
     var selectedOption by remember { mutableStateOf("KRW") }
     var isExpanded by remember { mutableStateOf(false) }
@@ -237,7 +242,9 @@ private fun TitleHeader(
                 .padding(horizontal = 16.dp)
                 .padding(top = 16.dp, bottom = 8.dp),
             text = "정산결과",
-            onClick = {}, // TODO
+            onClick = {
+                onNavigate.invoke(JourneyResult(id))
+            },
             status = PaytoButtonStatus.SECONDARY
         )
         HorizontalDivider(color = Color.Line.neutral, thickness = 4.dp)
@@ -537,6 +544,7 @@ private fun JourneyDetailScreenPreview() {
         modifier = Modifier.background(Color.Static.white),
         title = "여정 제목",
         onNavigate = {},
+        id = "effe",
         toolbar = {
             HistoryToolbar(
                 modifier = Modifier.fillMaxWidth(),
