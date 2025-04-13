@@ -6,7 +6,7 @@ data class JourneyResultModel(
 )
 
 data class ResultRatioModel(
-    val title: String, // todo shortcut 객체?
+    val title: String, // todo category 객체?
     val ratio: Double,
     val amount: String,
 )

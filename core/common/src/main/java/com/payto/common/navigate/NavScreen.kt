@@ -22,3 +22,8 @@ data object JoinJourney
 
 @Serializable
 data class JourneyResult(val journeyId: String)
+
+@Serializable
+data object CategoryDetail
+
+

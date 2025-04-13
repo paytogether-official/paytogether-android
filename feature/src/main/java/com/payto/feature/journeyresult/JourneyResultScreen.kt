@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.navigate.CategoryDetail
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.extension.rippleClickable
@@ -94,7 +95,7 @@ private fun JourneyResultScreen(
             onBackClick = onBackClick
         )
         TitleHeader(modifier = Modifier.fillMaxWidth(), title = "타이틀")
-        Content(modifier = Modifier.weight(1f), model = model)
+        Content(modifier = Modifier.weight(1f), onNavigate = onNavigate, model = model)
     }
 }
 
@@ -203,6 +204,7 @@ private fun UsageItem() {
 @Composable
 private fun Content(
     modifier: Modifier,
+    onNavigate: (Any) -> Unit,
     model: JourneyResultModel
 ) {
     val tabs = listOf("비율보기", "정산결과")
@@ -227,7 +229,12 @@ private fun Content(
             userScrollEnabled = false,
         ) {
             when (it) {
-                0 -> RatioList(modifier = Modifier.weight(1f), list = model.ratioModel)
+                0 -> RatioList(
+                    modifier = Modifier.weight(1f),
+                    onNavigate = onNavigate,
+                    list = model.ratioModel
+                )
+
                 else -> SettlementSummary(Modifier.weight(1f), list = model.settlementSummaryModel)
             }
         }
@@ -277,6 +284,7 @@ private fun ContentTab(
 @Composable
 private fun RatioList(
     modifier: Modifier,
+    onNavigate: (Any) -> Unit,
     list: List<ResultRatioModel>
 ) {
     LazyColumn(
@@ -285,7 +293,7 @@ private fun RatioList(
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         items(list) {
-            RatioItem(modifier = Modifier, model = it)
+            RatioItem(modifier = Modifier, onNavigate = onNavigate, model = it)
         }
     }
 }
@@ -293,12 +301,16 @@ private fun RatioList(
 @Composable
 private fun RatioItem(
     modifier: Modifier,
+    onNavigate: (Any) -> Unit,
     model: ResultRatioModel
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .rippleClickable {
+                onNavigate.invoke(CategoryDetail)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

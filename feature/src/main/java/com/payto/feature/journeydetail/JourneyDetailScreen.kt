@@ -145,7 +145,6 @@ fun JourneyDetailScreen(
                 }
             )
         }
-
     }
     Column(
         modifier = modifier
@@ -453,7 +452,7 @@ private fun JourneyDetailOrder(modifier: Modifier) {
 }
 
 @Composable
-private fun JourneyDetailList(
+internal fun JourneyDetailList(
     modifier: Modifier,
     list: List<JourneyDetailData>,
     onNavigate: (Any) -> Unit,
