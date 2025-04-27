@@ -1,7 +1,7 @@
 package com.payto.feature.createjourney
 
 import androidx.compose.runtime.Stable
-import com.payto.feature.createjourney.countrydialog.Country
+import com.payto.model.Country
 
 @Stable
 data class CreateJourneyData(

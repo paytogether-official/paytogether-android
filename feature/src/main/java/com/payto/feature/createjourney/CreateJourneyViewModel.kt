@@ -2,6 +2,8 @@ package com.payto.feature.createjourney
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.payto.data.repository.CreateJourneyRepository
 import com.payto.feature.common.EventInterface
 import com.payto.feature.common.SideEffectEvent
 import com.payto.feature.common.UiEvent
@@ -9,10 +11,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface {
+class CreateJourneyViewModel @Inject constructor(
+    val repository: CreateJourneyRepository
+) : ViewModel(), EventInterface {
 
     private val _sideEffectEvent = MutableSharedFlow<SideEffectEvent>()
     override val sideEffectEvent: SharedFlow<SideEffectEvent> = _sideEffectEvent
@@ -20,10 +25,6 @@ class CreateJourneyViewModel @Inject constructor() : ViewModel(), EventInterface
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
     val journeyData = MutableStateFlow(CreateJourneyData(people = listOf("요정")))
-
-    init {
-        Log.e("흐흐", "CreateJourneyViewModel init ${this.hashCode()}")
-    }
 
     private fun createRandomNameSet(): MutableSet<String> {
         val surnames = listOf("정산", "페이", "나눔", "돈", "머니", "여행")

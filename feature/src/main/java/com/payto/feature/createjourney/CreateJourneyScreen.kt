@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,8 +42,9 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.UiEvent
-import com.payto.feature.createjourney.countrydialog.Country
 import com.payto.feature.createjourney.countrydialog.CountrySelectionDialog
+import com.payto.feature.localcomposition.LocalCreateJourneyRepository
+import com.payto.model.Country
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -53,16 +55,17 @@ fun CreateJourneyRoute(
     onBackClick: () -> Unit
 ) {
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
-
-    CreateJourneyScreen(
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .background(Color.Static.white),
-        onBackClick = onBackClick,
-        journeyData = { journeyData },
-        uiEvent = viewModel::onEvent
-    )
+    CompositionLocalProvider(LocalCreateJourneyRepository provides viewModel.repository) {
+        CreateJourneyScreen(
+            modifier = Modifier
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .background(Color.Static.white),
+            onBackClick = onBackClick,
+            journeyData = { journeyData },
+            uiEvent = viewModel::onEvent
+        )
+    }
 }
 
 @Composable

@@ -1,7 +1,7 @@
 package com.payto.feature.createjourney
 
 import com.payto.feature.common.UiEvent
-import com.payto.feature.createjourney.countrydialog.Country
+import com.payto.model.Country
 
 sealed interface CreateJourneyEvent : UiEvent
 

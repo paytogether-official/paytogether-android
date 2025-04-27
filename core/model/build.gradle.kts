@@ -1,13 +1,11 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.googleKsp)
-    alias(libs.plugins.googleHilt)
+    alias(libs.plugins.kotlinParcelize)
 }
 
 android {
-    namespace = "com.payto.data"
+    namespace = "com.payto.model"
     compileSdk = AppConfig.COMPILE_SDK
 
     defaultConfig {
@@ -20,6 +18,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -32,13 +34,6 @@ android {
 }
 
 dependencies {
-
-    implementation(project(":core:model"))
-
-    implementation(libs.bundles.network)
-    ksp(libs.hilt.compiler)
-    implementation(libs.bundles.hilt)
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

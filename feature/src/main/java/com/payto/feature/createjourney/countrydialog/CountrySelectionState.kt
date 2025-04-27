@@ -7,21 +7,29 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import com.payto.data.repository.CreateJourneyRepository
+import com.payto.feature.localcomposition.LocalCreateJourneyRepository
+import com.payto.model.Continent
+import com.payto.model.Country
+import com.payto.model.FilterState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun rememberCountrySelectionState(
 ): CountrySelectionState {
     val coroutineScope = rememberCoroutineScope()
+    val repository = LocalCreateJourneyRepository.current
     return remember {
-        CountrySelectionImpl(coroutineScope)
+        CountrySelectionImpl(coroutineScope, repository)
     }
 }
 
@@ -36,14 +44,12 @@ interface CountrySelectionState {
 
 @Stable
 private class CountrySelectionImpl(
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
+    private val repository: CreateJourneyRepository,
 ) : CountrySelectionState {
 
-    constructor(filterState: FilterState) : this(coroutineScope = CoroutineScope(Dispatchers.Default)) {
-        _filterState.value = filterState
-    }
-
-    private val allCountries = Country.entries.toList()
+    private val allCountriesFlow =
+        flow { emit(repository.getLocales()) }.catch { listOf<Country>() }
 
     override val continent: List<Continent?> =
         mutableListOf<Continent?>(null).apply {
@@ -58,16 +64,14 @@ private class CountrySelectionImpl(
 
     init {
         Log.e("흐흐", "CountrySelectionImpl init")
-        _filterState
-            .map { filterState ->
-                allCountries
-                    .filter { country ->
-                        country.isMatchingContinent(filterState.continent)
-                                && country.isMatchingQuery(filterState.query)
-                    }
-                    .sortedBy { it.koreanName }
-            }
-            .distinctUntilChanged()
+        _filterState.combine(allCountriesFlow) { filterState, allCountries ->
+            allCountries
+                .filter { country ->
+                    country.isMatchingContinent(filterState.continent)
+                            && country.isMatchingQuery(filterState.query)
+                }
+                .sortedBy { it.koreanName }
+        }.distinctUntilChanged()
             .flowOn(Dispatchers.IO)
             .onEach {
                 _countries.value = it

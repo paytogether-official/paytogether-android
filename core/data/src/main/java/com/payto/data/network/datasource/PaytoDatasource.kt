@@ -1,0 +1,14 @@
+package com.payto.data.network.datasource
+
+import com.payto.data.network.service.PaytoService
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+internal class PaytoDatasource @Inject constructor(
+    private val service: PaytoService
+) {
+    suspend fun getExchangeRate() = service.getExchangeRate()
+
+    suspend fun getLocales() = service.getLocales()
+}
