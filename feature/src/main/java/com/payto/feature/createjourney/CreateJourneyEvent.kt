@@ -2,6 +2,7 @@ package com.payto.feature.createjourney
 
 import com.payto.feature.common.UiEvent
 import com.payto.model.Country
+import com.payto.model.ExchangeRateModel
 
 sealed interface CreateJourneyEvent : UiEvent
 
@@ -20,3 +21,8 @@ data class OnNameChange(
 data class OnCountryChange(val country: Country) : CreateJourneyEvent
 
 data object ClickCreate : CreateJourneyEvent
+
+data class OnExchangeRateChange(
+    val rate: String,
+    val exchangeRateModel: ExchangeRateModel
+) : CreateJourneyEvent

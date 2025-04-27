@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +36,8 @@ fun TextBox(
     value: String,
     enabled: Boolean = true,
     placeholder: String = "",
-    onValueChange: (String) -> Unit
+    endDecoration: @Composable () -> Unit = {},
+    onValueChange: (String) -> Unit,
 ) {
     var isFocused: Boolean by remember {
         mutableStateOf(false)
@@ -44,6 +46,7 @@ fun TextBox(
     Box(
         modifier = modifier
             .height(48.dp)
+            .clip(RoundedCornerShape(16.dp))
             .background(Component.Fill.normal)
             .border(
                 width = 1.dp,
@@ -58,7 +61,6 @@ fun TextBox(
                 },
                 shape = RoundedCornerShape(16.dp)
             )
-            .clip(RoundedCornerShape(16.dp))
     ) {
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.Center),
@@ -75,24 +77,30 @@ fun TextBox(
                 style = typography.contentAccent,
             )
         }
-        BasicTextField(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .align(Alignment.Center)
-                .onFocusChanged {
-                    isFocused = it.isFocused
-                },
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            ),
-            value = value,
-            enabled = enabled,
-            onValueChange = onValueChange,
-            textStyle = typography.contentAccent.copy(color = Color.Label.normal),
-        )
+        ) {
+            BasicTextField(
+                modifier = Modifier
+                    .weight(1f)
+                    .onFocusChanged {
+                        isFocused = it.isFocused
+                    },
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                    }
+                ),
+                value = value,
+                enabled = enabled,
+                onValueChange = onValueChange,
+                textStyle = typography.contentAccent.copy(color = Color.Label.normal),
+            )
+            endDecoration.invoke()
+        }
     }
 }
 
@@ -108,6 +116,9 @@ private fun TextBoxPreview() {
         placeholder = "플레이스 홀더",
         onValueChange = {
             text = it
+        },
+        endDecoration = {
+            Text("데코레이션")
         }
     )
 }

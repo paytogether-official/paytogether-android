@@ -1,14 +1,18 @@
 package com.payto.feature.createjourney
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -24,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,13 +44,18 @@ import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Calendar
 import com.payto.designsystem.icon.iconpack.Caretdown
 import com.payto.designsystem.icon.iconpack.Circleplus
+import com.payto.designsystem.icon.iconpack.Circlequestionfill
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
+import com.payto.feature.R
 import com.payto.feature.common.DefaultToolbar
+import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
 import com.payto.feature.createjourney.countrydialog.CountrySelectionDialog
 import com.payto.feature.localcomposition.LocalCreateJourneyRepository
+import com.payto.model.Continent
 import com.payto.model.Country
+import com.payto.model.ExchangeRateModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,9 +63,11 @@ import java.util.Locale
 @Composable
 fun CreateJourneyRoute(
     viewModel: CreateJourneyViewModel = hiltViewModel(),
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigate: (Any) -> Unit,
 ) {
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
+    HandleSideEffect(viewModel, onNavigate)
     CompositionLocalProvider(LocalCreateJourneyRepository provides viewModel.repository) {
         CreateJourneyScreen(
             modifier = Modifier
@@ -147,6 +160,7 @@ private fun Contents(
             JourneyCountryBox(
                 modifier = Modifier.padding(bottom = 16.dp),
                 country = journeyData().country,
+                exchangeRateModel = journeyData().exchangeRateModel,
                 uiEvent = uiEvent
             )
         }
@@ -233,6 +247,7 @@ private fun JourneyDateBox(
 private fun JourneyCountryBox(
     modifier: Modifier,
     country: Country? = null,
+    exchangeRateModel: ExchangeRateModel,
     uiEvent: (UiEvent) -> Unit
 ) {
     var isShowCountryDialog by remember {
@@ -264,7 +279,78 @@ private fun JourneyCountryBox(
         ) {
             isShowCountryDialog = true
         }
-        // TODO 국가 설정 시 환율 설정
+        AnimatedVisibility(country != null) {
+            ExchangeRate(
+                modifier = Modifier.padding(top = 16.dp),
+                model = exchangeRateModel,
+                uiEvent = uiEvent
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExchangeRate(
+    modifier: Modifier,
+    model: ExchangeRateModel,
+    uiEvent: (UiEvent) -> Unit,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "환율설정",
+                color = Color.Label.normal,
+                style = typography.contentAccent
+            )
+            Image(
+                modifier = Modifier.size(20.dp),
+                imageVector = IconPack.Circlequestionfill,
+                contentDescription = null
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            ContentBox(
+                modifier = Modifier.weight(1f),
+                value = "1",
+                enabled = false,
+                endDecoration = {
+                    Text(
+                        model.currency ?: "",
+                        style = typography.contentAccent,
+                        color = Color.Label.disable
+                    )
+                }
+            )
+            Image(
+                modifier = Modifier.size(24.dp),
+                imageVector = ImageVector.vectorResource(R.drawable.equal),
+                contentDescription = null
+            )
+            TextBox(
+                modifier = Modifier.weight(2f),
+                value = model.exchangeRate.toString(),
+                placeholder = "10,000",
+                endDecoration = {
+                    Text(
+                        "원",
+                        style = typography.contentAccent,
+                        color = Color.Label.neutral
+                    )
+                }
+            ) {
+                uiEvent.invoke(OnExchangeRateChange(it, model))
+            }
+        }
     }
 }
 
@@ -316,7 +402,12 @@ private fun LazyListScope.participantList(
 @Composable
 private fun CreateJourneyScreenPreview() {
     CreateJourneyScreen(
-        journeyData = { CreateJourneyData(people = listOf("정산요정")) },
+        journeyData = {
+            CreateJourneyData(
+                people = listOf("정산요정"),
+                country = Country(continent = Continent.ASIA, currency = "USD", koreanName = "한국")
+            )
+        },
         onBackClick = {},
         uiEvent = {})
 }

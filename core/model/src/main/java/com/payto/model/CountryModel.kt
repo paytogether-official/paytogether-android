@@ -8,7 +8,7 @@ data class Country(
     val continent: Continent?,
     val currency: String,
     val koreanName: String,
-    val imageUrl: String?
+    val imageUrl: String? = null
 ) : Parcelable
 
 @Parcelize

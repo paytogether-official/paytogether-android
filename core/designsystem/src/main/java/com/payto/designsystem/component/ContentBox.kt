@@ -33,13 +33,14 @@ fun ContentBox(
     enabled: Boolean = true,
     placeholder: String = "",
     endIcon: ImageVector? = null,
-    onClick: () -> Unit
+    endDecoration: @Composable () -> Unit = {},
+    onClick: (() -> Unit) = {}
 ) {
     Box(
         modifier = modifier
             .height(48.dp)
             .clip(RoundedCornerShape(16.dp))
-            .rippleClickable(onClick = onClick)
+            .rippleClickable(enabled = enabled, onClick = onClick)
             .background(Component.Fill.normal)
             .border(
                 width = 1.dp,
@@ -74,8 +75,10 @@ fun ContentBox(
                 modifier = Modifier
                     .weight(1f),
                 text = value,
-                style = typography.contentAccent.copy(color = Color.Label.normal),
+                style = typography.contentAccent,
+                color = if (enabled) Color.Label.normal else Color.Label.disable
             )
+            endDecoration.invoke()
             endIcon?.let {
                 Image(
                     modifier = Modifier.size(24.dp),
