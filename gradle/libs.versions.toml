@@ -20,6 +20,7 @@ firebaseBom = "33.9.0"
 retrofit = "2.11.0"
 retrofitKotlinConvertor = "1.0.0"
 okHttp = "4.12.0"
+coil = "3.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,8 +46,11 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation", version.ref = "androidHilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidHilt" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofitKotlinConvertor = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinConvertor" }
-okHttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
+retrofit-kotlin-convertor = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinConvertor" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -81,6 +85,12 @@ hilt = [
 
 network = [
     "retrofit",
-    "retrofitKotlinConvertor",
-    "okHttp"
+    "retrofit-kotlin-convertor",
+    "okhttp"
+]
+
+coil = [
+    "coil-compose",
+    "coil-svg",
+    "coil-network"
 ]

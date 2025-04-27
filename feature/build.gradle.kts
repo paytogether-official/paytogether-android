@@ -64,6 +64,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.bundles.hilt)
 
+    implementation(libs.bundles.coil)
+
     implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
 

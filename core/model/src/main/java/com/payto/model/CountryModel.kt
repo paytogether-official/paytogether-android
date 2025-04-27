@@ -8,6 +8,7 @@ data class Country(
     val continent: Continent?,
     val currency: String,
     val koreanName: String,
+    val imageUrl: String?
 ) : Parcelable
 
 @Parcelize
@@ -21,7 +22,7 @@ enum class Continent(val koreanName: String) : Parcelable {
     companion object {
         private val map = Continent.entries.associateBy { it.koreanName }
 
-        fun from(koreanName: String): Continent? {
+        fun from(koreanName: String?): Continent? {
             return map[koreanName]
         }
     }

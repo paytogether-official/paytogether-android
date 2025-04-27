@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class LocaleDTO(
-    val imageUrl: String,
-    val continent: String,
+    val imageUrl: String?,
+    val continent: String?,
     val currency: String,
     val countryKoreanName: String,
     val countryEnglishName: String,
@@ -18,6 +18,7 @@ internal fun LocaleDTO.asCountryModel(): Country {
     return Country(
         continent = Continent.from(continent),
         currency = currency,
-        koreanName = countryKoreanName
+        koreanName = countryKoreanName,
+        imageUrl = imageUrl
     )
 }
