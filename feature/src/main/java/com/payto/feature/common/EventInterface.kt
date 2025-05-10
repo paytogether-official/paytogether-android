@@ -21,3 +21,4 @@ data class ShowSnackbar(
 }
 
 data class Navigate(val route: Any) : SideEffectEvent
+data object PopBackStack : SideEffectEvent

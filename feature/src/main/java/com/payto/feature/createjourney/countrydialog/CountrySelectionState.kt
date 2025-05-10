@@ -63,7 +63,6 @@ private class CountrySelectionImpl(
     override val countries: List<Country> get() = _countries.value
 
     init {
-        Log.e("흐흐", "CountrySelectionImpl init")
         _filterState.combine(allCountriesFlow) { filterState, allCountries ->
             allCountries
                 .filter { country ->
@@ -75,7 +74,6 @@ private class CountrySelectionImpl(
             .flowOn(Dispatchers.IO)
             .onEach {
                 _countries.value = it
-                Log.e("흐흐", "onEach $it")
             }
             .launchIn(coroutineScope)
     }

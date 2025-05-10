@@ -3,14 +3,17 @@ package com.payto.feature.createjourney
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.payto.common.navigate.Journey
 import com.payto.data.repository.CreateJourneyRepository
 import com.payto.feature.common.EventInterface
+import com.payto.feature.common.Navigate
+import com.payto.feature.common.PopBackStack
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.SideEffectEvent
 import com.payto.feature.common.UiEvent
-import com.payto.model.CreateJourneyModel.JourneyDate
 import com.payto.model.Country
 import com.payto.model.CreateJourneyModel
+import com.payto.model.CreateJourneyModel.JourneyDate
 import com.payto.model.ExchangeRateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -59,7 +62,7 @@ class CreateJourneyViewModel @Inject constructor(
             }
 
             ClickCreate -> {
-                checkJourneyValidation()
+                createJourney()
             }
 
             is OnJourneyDateChange -> {
@@ -129,40 +132,47 @@ class CreateJourneyViewModel @Inject constructor(
         randomNameSet.remove(name)
     }
 
-    private fun checkJourneyValidation() {
-        when {
-            journeyData.value.hasDuplicateName() -> {
-                showSnackbar(
-                    ShowSnackbar(
-                        message = "인원이 중복됩니다.",
-                        status = ShowSnackbar.Status.FAIL
-                    )
-                )
-            }
-
-            journeyData.value.hasEmptyName() -> {
-                showSnackbar(
-                    ShowSnackbar(
-                        message = "이름에 공백이 존재합니다.",
-                        status = ShowSnackbar.Status.FAIL
-                    )
-                )
-            }
-
-            journeyData.value.isFullyFilled().not() -> {
-                showSnackbar(
-                    ShowSnackbar(
-                        message = "모든 정보를 입력해주세요.",
-                        status = ShowSnackbar.Status.FAIL
-                    )
-                )
+    private fun createJourney() {
+        if (checkJourneyValidation()) {
+            viewModelScope.launch {
+                runCatching {
+                    val journey = repository.createJourney(journeyData.value)
+                    showSnackbar(message = "생성된 여정으로 이동합니다!", status = ShowSnackbar.Status.SUCCESS)
+                    _sideEffectEvent.emit(PopBackStack)
+                    _sideEffectEvent.emit(Navigate(Journey(journey.id)))
+                }
             }
         }
     }
 
-    private fun showSnackbar(snackbar: ShowSnackbar) {
+    private fun checkJourneyValidation(): Boolean {
+        when {
+            journeyData.value.hasDuplicateName() -> {
+                showSnackbar(message = "인원이 중복됩니다.", status = ShowSnackbar.Status.FAIL)
+                return false
+            }
+
+            journeyData.value.hasEmptyName() -> {
+                showSnackbar(message = "이름에 공백이 존재합니다.", status = ShowSnackbar.Status.FAIL)
+                return false
+            }
+
+            journeyData.value.isFullyFilled().not() -> {
+                showSnackbar(message = "모든 정보를 입력해주세요.", status = ShowSnackbar.Status.FAIL)
+                return false
+            }
+
+            journeyData.value.over30People() -> {
+                showSnackbar(message = "참여 인원은 최대 30명까지 가능합니다.", status = ShowSnackbar.Status.FAIL)
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun showSnackbar(message: String, status: ShowSnackbar.Status) {
         viewModelScope.launch {
-            _sideEffectEvent.emit(snackbar)
+            _sideEffectEvent.emit(ShowSnackbar(message = message, status = status))
         }
     }
 

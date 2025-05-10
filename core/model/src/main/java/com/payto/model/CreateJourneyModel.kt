@@ -27,4 +27,10 @@ data class CreateJourneyModel(
     fun hasEmptyName(): Boolean {
         return people.any { it.isBlank() }
     }
+
+    fun over30People(): Boolean {
+        return people.size > 30
+    }
 }
+
+data class JourneyModel(val id: String, val isClosed: Boolean)

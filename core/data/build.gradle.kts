@@ -34,11 +34,15 @@ android {
 dependencies {
 
     implementation(project(":core:model"))
+    implementation(project(":core:common"))
 
     implementation(libs.bundles.network)
     ksp(libs.hilt.compiler)
     implementation(libs.bundles.hilt)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.bundles.room)
+    ksp(libs.room.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

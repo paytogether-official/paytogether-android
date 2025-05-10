@@ -19,6 +19,7 @@ internal fun LocaleDTO.asCountryModel(): Country {
         continent = Continent.from(continent),
         currency = currency,
         koreanName = countryKoreanName,
-        imageUrl = imageUrl
+        imageUrl = imageUrl,
+        localeCode = localeCode
     )
 }

@@ -37,7 +37,7 @@ fun JoinJourneyRoute(
         onBackClick = onBackClick,
         uiEvent = viewModel::onEvent
     )
-    HandleSideEffect(viewModel, onNavigate)
+    HandleSideEffect(viewModel, onNavigate, onBackClick)
 }
 
 @Composable

@@ -68,7 +68,7 @@ fun CreateJourneyRoute(
     onNavigate: (Any) -> Unit,
 ) {
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
-    HandleSideEffect(viewModel, onNavigate)
+    HandleSideEffect(viewModel, onNavigate, onBackClick)
     CompositionLocalProvider(LocalCreateJourneyRepository provides viewModel.repository) {
         CreateJourneyScreen(
             modifier = Modifier
@@ -406,7 +406,7 @@ private fun CreateJourneyScreenPreview() {
         journeyData = {
             CreateJourneyModel(
                 people = listOf("정산요정"),
-                country = Country(continent = Continent.ASIA, currency = "USD", koreanName = "한국")
+                country = Country(continent = Continent.ASIA, currency = "USD", koreanName = "한국", localeCode = "KO")
             )
         },
         onBackClick = {},
