@@ -1,34 +1,27 @@
 package com.payto.feature.createjourney
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.payto.common.navigate.Journey
 import com.payto.data.repository.CreateJourneyRepository
-import com.payto.feature.common.EventInterface
 import com.payto.feature.common.Navigate
 import com.payto.feature.common.PopBackStack
 import com.payto.feature.common.ShowSnackbar
-import com.payto.feature.common.SideEffectEvent
 import com.payto.feature.common.UiEvent
+import com.payto.feature.common.arch.BaseViewModel
 import com.payto.model.Country
 import com.payto.model.CreateJourneyModel
 import com.payto.model.CreateJourneyModel.JourneyDate
 import com.payto.model.ExchangeRateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateJourneyViewModel @Inject constructor(
     val repository: CreateJourneyRepository
-) : ViewModel(), EventInterface {
-
-    private val _sideEffectEvent = MutableSharedFlow<SideEffectEvent>()
-    override val sideEffectEvent: SharedFlow<SideEffectEvent> = _sideEffectEvent
+) : BaseViewModel() {
 
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
@@ -168,12 +161,6 @@ class CreateJourneyViewModel @Inject constructor(
             }
         }
         return true
-    }
-
-    private fun showSnackbar(message: String, status: ShowSnackbar.Status) {
-        viewModelScope.launch {
-            _sideEffectEvent.emit(ShowSnackbar(message = message, status = status))
-        }
     }
 
     override fun onCleared() {
