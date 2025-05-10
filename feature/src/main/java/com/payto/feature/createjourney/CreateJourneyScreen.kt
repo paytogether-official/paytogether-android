@@ -55,6 +55,7 @@ import com.payto.feature.createjourney.countrydialog.CountrySelectionDialog
 import com.payto.feature.localcomposition.LocalCreateJourneyRepository
 import com.payto.model.Continent
 import com.payto.model.Country
+import com.payto.model.CreateJourneyModel
 import com.payto.model.ExchangeRateModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -85,7 +86,7 @@ fun CreateJourneyRoute(
 private fun CreateJourneyScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    journeyData: () -> CreateJourneyData,
+    journeyData: () -> CreateJourneyModel,
     uiEvent: (UiEvent) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -134,7 +135,7 @@ private fun CreateJourneyScreen(
 @Composable
 private fun Contents(
     modifier: Modifier,
-    journeyData: () -> CreateJourneyData,
+    journeyData: () -> CreateJourneyModel,
     uiEvent: (UiEvent) -> Unit,
 ) {
     LazyColumn(
@@ -196,7 +197,7 @@ private fun JourneyTitleBox(
 @Composable
 private fun JourneyDateBox(
     modifier: Modifier,
-    date: CreateJourneyData.JourneyDate?,
+    date: CreateJourneyModel.JourneyDate?,
     uiEvent: (UiEvent) -> Unit
 ) {
     val journeyDate by remember(date) {
@@ -403,7 +404,7 @@ private fun LazyListScope.participantList(
 private fun CreateJourneyScreenPreview() {
     CreateJourneyScreen(
         journeyData = {
-            CreateJourneyData(
+            CreateJourneyModel(
                 people = listOf("정산요정"),
                 country = Country(continent = Continent.ASIA, currency = "USD", koreanName = "한국")
             )

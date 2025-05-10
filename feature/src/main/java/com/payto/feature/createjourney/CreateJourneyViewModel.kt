@@ -8,8 +8,9 @@ import com.payto.feature.common.EventInterface
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.SideEffectEvent
 import com.payto.feature.common.UiEvent
-import com.payto.feature.createjourney.CreateJourneyData.JourneyDate
+import com.payto.model.CreateJourneyModel.JourneyDate
 import com.payto.model.Country
+import com.payto.model.CreateJourneyModel
 import com.payto.model.ExchangeRateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +29,7 @@ class CreateJourneyViewModel @Inject constructor(
 
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
-    val journeyData = MutableStateFlow(CreateJourneyData(people = listOf("")))
+    val journeyData = MutableStateFlow(CreateJourneyModel(people = listOf("")))
 
     private val exchangeRateMap = MutableStateFlow<Map<String, ExchangeRateModel>>(mapOf())
 
@@ -58,10 +59,7 @@ class CreateJourneyViewModel @Inject constructor(
             }
 
             ClickCreate -> {
-                // TODO
-                if (journeyData.value.hasDuplicateName()) {
-                    // 중복 처리
-                }
+                checkJourneyValidation()
             }
 
             is OnJourneyDateChange -> {
@@ -131,9 +129,45 @@ class CreateJourneyViewModel @Inject constructor(
         randomNameSet.remove(name)
     }
 
+    private fun checkJourneyValidation() {
+        when {
+            journeyData.value.hasDuplicateName() -> {
+                showSnackbar(
+                    ShowSnackbar(
+                        message = "인원이 중복됩니다.",
+                        status = ShowSnackbar.Status.FAIL
+                    )
+                )
+            }
+
+            journeyData.value.hasEmptyName() -> {
+                showSnackbar(
+                    ShowSnackbar(
+                        message = "이름에 공백이 존재합니다.",
+                        status = ShowSnackbar.Status.FAIL
+                    )
+                )
+            }
+
+            journeyData.value.isFullyFilled().not() -> {
+                showSnackbar(
+                    ShowSnackbar(
+                        message = "모든 정보를 입력해주세요.",
+                        status = ShowSnackbar.Status.FAIL
+                    )
+                )
+            }
+        }
+    }
+
+    private fun showSnackbar(snackbar: ShowSnackbar) {
+        viewModelScope.launch {
+            _sideEffectEvent.emit(snackbar)
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.e("흐흐", "CreateJourneyViewModel onCleared ${this.hashCode()}")
     }
 }
-

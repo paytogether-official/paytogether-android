@@ -1,11 +1,9 @@
-package com.payto.feature.createjourney
+package com.payto.model
 
 import androidx.compose.runtime.Stable
-import com.payto.model.Country
-import com.payto.model.ExchangeRateModel
 
 @Stable
-data class CreateJourneyData(
+data class CreateJourneyModel(
     val title: String? = null,
     val journeyDate: JourneyDate? = null,
     val country: Country? = null,
@@ -18,10 +16,15 @@ data class CreateJourneyData(
         return !title.isNullOrBlank() &&
                 journeyDate != null &&
                 country != null &&
+                exchangeRateModel.exchangeRate.isNotEmpty() &&
                 people.isNotEmpty()
     }
 
     fun hasDuplicateName(): Boolean {
         return people.size != people.distinct().size
+    }
+
+    fun hasEmptyName(): Boolean {
+        return people.any { it.isBlank() }
     }
 }
