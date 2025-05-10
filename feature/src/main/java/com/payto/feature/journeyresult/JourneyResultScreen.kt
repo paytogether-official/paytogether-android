@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,9 +25,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.PrimaryScrollableTabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.navigate.CategoryDetail
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
+import com.payto.designsystem.component.PaytoTabRow
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
@@ -214,7 +210,7 @@ private fun Content(
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     Column(modifier = modifier.fillMaxWidth()) {
-        ContentTab(
+        PaytoTabRow(
             tabs = tabs,
             selectedTabIndex = selectedTabIndex,
             onSelectedTab = {
@@ -237,46 +233,6 @@ private fun Content(
 
                 else -> SettlementSummary(Modifier.weight(1f), list = model.settlementSummaryModel)
             }
-        }
-    }
-}
-
-@Composable
-private fun ContentTab(
-    tabs: List<String>,
-    selectedTabIndex: Int,
-    onSelectedTab: (Int) -> Unit
-) {
-    PrimaryScrollableTabRow(
-        modifier = Modifier.padding(top = 16.dp),
-        selectedTabIndex = selectedTabIndex,
-        contentColor = Color.Static.white,
-        containerColor = Color.Static.white,
-        edgePadding = 0.dp,
-        indicator = {
-            TabRowDefaults.PrimaryIndicator(
-                Modifier.tabIndicatorOffset(selectedTabIndex, matchContentSize = false),
-                height = 2.dp,
-                color = Color.Primary.normal
-            )
-        },
-        divider = {
-            HorizontalDivider(color = Color.Line.neutral, thickness = 1.dp)
-        }
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Text(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .rippleClickable {
-                        onSelectedTab.invoke(index)
-                    }
-                    .padding(bottom = 4.dp),
-                textAlign = TextAlign.Center,
-                text = title,
-                style = typography.contentBold,
-                color = if (selectedTabIndex == index) Color.Primary.normal else Color.Label.alternative
-            )
         }
     }
 }

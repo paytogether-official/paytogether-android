@@ -125,7 +125,7 @@ private fun OngoingItem(
         Text(
             modifier = Modifier
                 .weight(1f)
-                .padding(vertical = 10.dp),
+                .padding(vertical = 12.dp),
             text = item.title,
             style = typography.captionAccent,
             color = Color.Label.neutral
@@ -137,7 +137,7 @@ private fun OngoingItem(
 @Composable
 private fun OrderContentPreview() {
     val list = List(10) {
-        JourneyInfoModel(id = "", title = "title $it", isClosed = false)
+        JourneyInfoModel(id = "", title = "title $it", currency = "JPY")
     }
     Content(
         list = list,

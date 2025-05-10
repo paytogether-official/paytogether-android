@@ -24,6 +24,7 @@ internal data class CreateJourneyDTO(
 internal data class JourneyInfoDTO(
     val journeyId: String,
     val title: String,
+    val baseCurrency: String,
     val closedAt: String?,
 ) {
     fun isOngoing() = closedAt == null
@@ -39,7 +40,8 @@ internal data class JourneyInfoDTO(
         return JourneyInfoModel(
             id = journeyId,
             title = title,
-            isClosed = closedAt != null
+            isClosed = closedAt != null,
+            currency = baseCurrency,
         )
     }
 }
