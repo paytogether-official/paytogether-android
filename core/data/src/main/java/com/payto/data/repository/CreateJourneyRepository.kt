@@ -1,6 +1,5 @@
 package com.payto.data.repository
 
-import android.util.Log
 import com.payto.common.ext.toKoreanDateString
 import com.payto.data.database.dao.JourneyDao
 import com.payto.data.network.datasource.PaytoDatasource
@@ -14,8 +13,6 @@ import com.payto.model.Country
 import com.payto.model.CreateJourneyModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 

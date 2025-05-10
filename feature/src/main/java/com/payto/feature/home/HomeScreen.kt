@@ -16,28 +16,69 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.navigate.CreateJourney
 import com.payto.common.navigate.JoinJourney
+import com.payto.common.navigate.Journey
 import com.payto.common.navigate.JourneyHistory
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
+import com.payto.designsystem.icon.iconpack.Image
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
+import com.payto.model.JourneyModel
 
 @Composable
-fun HomeRoute(onNavigate: (Any) -> Unit) {
-    HomeScreen(onNavigate = onNavigate)
+fun HomeRoute(
+    onNavigate: (Any) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+    val ongoingJourneys by viewModel.ongoingJourneys.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getOngoingJourneys()
+    }
+
+    HomeScreen(
+        onNavigate = onNavigate,
+        ongoingJourneys = ongoingJourneys,
+    )
 }
 
 @Composable
-fun HomeScreen(onNavigate: (Any) -> Unit) {
+fun HomeScreen(
+    onNavigate: (Any) -> Unit,
+    ongoingJourneys: List<JourneyModel>,
+) {
+    var isShowDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+    OngoingBottomSheetDialog(
+        modifier = Modifier.fillMaxWidth(),
+        isShow = isShowDialog,
+        ongoingJourneys = ongoingJourneys,
+        onDismissRequest = {
+            isShowDialog = false
+        },
+        onSelected = {
+            onNavigate(Journey(it.id))
+        }
+    )
+
     Column(
         modifier = Modifier
             .statusBarsPadding()
@@ -54,6 +95,18 @@ fun HomeScreen(onNavigate: (Any) -> Unit) {
         ) {
             JoinJourneyBox(modifier = Modifier.weight(1f), onNavigate = onNavigate)
             LastJourneyBox(onNavigate = onNavigate)
+        }
+        if (ongoingJourneys.isNotEmpty()) {
+            OngoingJourneyBox(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    if (ongoingJourneys.size == 1) {
+                        onNavigate(Journey(ongoingJourneys[0].id))
+                    } else {
+                        isShowDialog = true
+                    }
+                }
+            )
         }
     }
 }
@@ -158,8 +211,42 @@ private fun LastJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> U
     }
 }
 
+@Composable
+private fun OngoingJourneyBox(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .rippleClickable(
+                onClick = onClick,
+                shape = RoundedCornerShape(24.dp)
+            )
+            .fillMaxWidth()
+            .background(Color.Inverse.background)
+            .padding(vertical = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+    ) {
+        Image(
+            modifier = Modifier.size(32.dp),
+            imageVector = IconPack.Image, // TODO
+            contentDescription = "화살표",
+            colorFilter = ColorFilter.tint(Color.Inverse.label)
+        )
+        Text(
+            text = "여정으로 돌아가기",
+            color = Color.Inverse.label,
+            style = typography.highlightBold
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen {}
+    val models = List(10) {
+        JourneyModel(id = "", title = "title $it", isClosed = false)
+    }
+    HomeScreen(ongoingJourneys = models, onNavigate = {})
 }

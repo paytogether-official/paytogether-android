@@ -23,19 +23,23 @@ internal data class CreateJourneyDTO(
 @Serializable
 internal data class JourneyDTO(
     val journeyId: String,
+    val title: String,
     val closedAt: String?,
 ) {
+    fun isOngoing() = closedAt == null
+
     fun asEntity(): JourneyEntity {
         return JourneyEntity(
             id = journeyId,
-            closedAt = closedAt
+            isClosed = closedAt != null
         )
     }
 
     fun asModel(): JourneyModel {
         return JourneyModel(
             id = journeyId,
-            isClosed = closedAt != null // TODO closedAt이 null이면 여행이 진행중??
+            title = title,
+            isClosed = closedAt != null
         )
     }
 }

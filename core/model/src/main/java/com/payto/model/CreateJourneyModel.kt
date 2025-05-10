@@ -33,4 +33,8 @@ data class CreateJourneyModel(
     }
 }
 
-data class JourneyModel(val id: String, val isClosed: Boolean)
+data class JourneyModel(
+    val id: String,
+    val title: String,
+    val isClosed: Boolean
+)

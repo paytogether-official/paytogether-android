@@ -7,6 +7,7 @@ import com.payto.data.network.dto.LocaleDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 internal interface PaytoService {
 
@@ -20,4 +21,9 @@ internal interface PaytoService {
     suspend fun createJourney(
         @Body createJourneyDTO: CreateJourneyDTO
     ): JourneyDTO
+
+    @GET("/journeys")
+    suspend fun getJourneys(
+        @Query("journeyIds") journeyIds: String = "",
+    ): List<JourneyDTO>
 }

@@ -1,6 +1,7 @@
 package com.payto.data.network.datasource
 
 import com.payto.data.network.dto.CreateJourneyDTO
+import com.payto.data.network.dto.JourneyDTO
 import com.payto.data.network.service.PaytoService
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,5 +14,11 @@ internal class PaytoDatasource @Inject constructor(
 
     suspend fun getLocales() = service.getLocales()
 
-    suspend fun createJourney(createJourneyDTO: CreateJourneyDTO) = service.createJourney(createJourneyDTO)
+    suspend fun createJourney(createJourneyDTO: CreateJourneyDTO) =
+        service.createJourney(createJourneyDTO)
+
+    suspend fun getJourneys(ids: List<String>): List<JourneyDTO> {
+        val journeyIds = ids.joinToString(",")
+        return service.getJourneys(journeyIds)
+    }
 }
