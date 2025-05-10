@@ -166,7 +166,7 @@ private fun Contents(
             )
         }
 
-        this@LazyColumn.journeyParticipantBox(people = { journeyData().people }, uiEvent = uiEvent)
+        this@LazyColumn.journeyParticipantBox(members = { journeyData().members }, uiEvent = uiEvent)
     }
 }
 
@@ -356,7 +356,7 @@ private fun ExchangeRate(
 }
 
 private fun LazyListScope.journeyParticipantBox(
-    people: () -> List<String>,
+    members: () -> List<String>,
     uiEvent: (UiEvent) -> Unit
 ) {
     item {
@@ -372,7 +372,7 @@ private fun LazyListScope.journeyParticipantBox(
         }
     }
 
-    this.participantList(people = people, uiEvent = uiEvent)
+    this.participantList(members = members, uiEvent = uiEvent)
     item {
         PaytoOutlineButton(
             modifier = Modifier
@@ -385,10 +385,10 @@ private fun LazyListScope.journeyParticipantBox(
 }
 
 private fun LazyListScope.participantList(
-    people: () -> List<String>,
+    members: () -> List<String>,
     uiEvent: (UiEvent) -> Unit,
 ) {
-    itemsIndexed(people()) { index, name ->
+    itemsIndexed(members()) { index, name ->
         TextBox(
             modifier = Modifier.padding(bottom = 8.dp),
             value = name,
@@ -405,7 +405,7 @@ private fun CreateJourneyScreenPreview() {
     CreateJourneyScreen(
         journeyData = {
             CreateJourneyModel(
-                people = listOf("정산요정"),
+                members = listOf("정산요정"),
                 country = Country(continent = Continent.ASIA, currency = "USD", koreanName = "한국", localeCode = "KO")
             )
         },

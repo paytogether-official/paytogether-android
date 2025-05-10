@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.payto.data.repository.OngoingJourneyRepository
 import com.payto.feature.common.arch.BaseViewModel
-import com.payto.model.JourneyModel
+import com.payto.model.JourneyInfoModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ class HomeViewModel @Inject constructor(
     private val repository: OngoingJourneyRepository,
 ) : BaseViewModel() {
 
-    val ongoingJourneys = MutableStateFlow(emptyList<JourneyModel>())
+    val ongoingJourneys = MutableStateFlow(emptyList<JourneyInfoModel>())
 
     fun getOngoingJourneys() {
         viewModelScope.launch {

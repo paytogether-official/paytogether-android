@@ -5,7 +5,7 @@ import com.payto.data.database.dao.JourneyDao
 import com.payto.data.network.datasource.PaytoDatasource
 import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExchangeRateDTO
-import com.payto.data.network.dto.JourneyDTO
+import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.dto.LocaleDTO
 import com.payto.data.network.dto.asCountryModel
 import com.payto.data.network.dto.asExchangeRateModel
@@ -35,7 +35,7 @@ class CreateJourneyRepository @Inject internal constructor(
         return@withContext data.asModel()
     }
 
-    private suspend fun requestJourney(journey: CreateJourneyModel): JourneyDTO {
+    private suspend fun requestJourney(journey: CreateJourneyModel): JourneyInfoDTO {
         val request = CreateJourneyDTO(
             baseCurrency = journey.country?.currency ?: "",
             exchangeRate = journey.exchangeRateModel.exchangeRate,
@@ -43,7 +43,7 @@ class CreateJourneyRepository @Inject internal constructor(
             startDate = journey.journeyDate?.startTimeMill?.toKoreanDateString(),
             endDate = journey.journeyDate?.endTimeMill?.toKoreanDateString(),
             localeCode = journey.country?.localeCode ?: "",
-            members = journey.people.map { CreateJourneyDTO.Member(it) }
+            members = journey.members.map { CreateJourneyDTO.Member(it) }
         )
         return dataSource.createJourney(request)
     }

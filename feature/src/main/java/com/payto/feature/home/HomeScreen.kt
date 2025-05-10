@@ -40,7 +40,7 @@ import com.payto.designsystem.icon.iconpack.Image
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
-import com.payto.model.JourneyModel
+import com.payto.model.JourneyInfoModel
 
 @Composable
 fun HomeRoute(
@@ -62,7 +62,7 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     onNavigate: (Any) -> Unit,
-    ongoingJourneys: List<JourneyModel>,
+    ongoingJourneys: List<JourneyInfoModel>,
 ) {
     var isShowDialog by rememberSaveable {
         mutableStateOf(false)
@@ -246,7 +246,7 @@ private fun OngoingJourneyBox(
 @Composable
 private fun HomeScreenPreview() {
     val models = List(10) {
-        JourneyModel(id = "", title = "title $it", isClosed = false)
+        JourneyInfoModel(id = "", title = "title $it", isClosed = false)
     }
     HomeScreen(ongoingJourneys = models, onNavigate = {})
 }

@@ -25,7 +25,7 @@ class CreateJourneyViewModel @Inject constructor(
 
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
-    val journeyData = MutableStateFlow(CreateJourneyModel(people = listOf("")))
+    val journeyData = MutableStateFlow(CreateJourneyModel(members = listOf("")))
 
     private val exchangeRateMap = MutableStateFlow<Map<String, ExchangeRateModel>>(mapOf())
 
@@ -71,11 +71,11 @@ class CreateJourneyViewModel @Inject constructor(
 
             is OnNameChange -> {
                 val name = event.name
-                val people = journeyData.value.people
-                val newPeople = people.toMutableList().apply {
+                val members = journeyData.value.members
+                val newMember = members.toMutableList().apply {
                     this[event.index] = name
                 }
-                journeyData.value = journeyData.value.copy(people = newPeople.toList())
+                journeyData.value = journeyData.value.copy(members = newMember.toList())
             }
 
             is OnCountryChange -> {
@@ -121,7 +121,7 @@ class CreateJourneyViewModel @Inject constructor(
     private fun addPerson() {
         val old = journeyData.value
         val name = randomNameSet.firstOrNull() ?: return
-        journeyData.value = old.copy(people = old.people.plus(name))
+        journeyData.value = old.copy(members = old.members.plus(name))
         randomNameSet.remove(name)
     }
 
@@ -155,7 +155,7 @@ class CreateJourneyViewModel @Inject constructor(
                 return false
             }
 
-            journeyData.value.over30People() -> {
+            journeyData.value.over30Member() -> {
                 showSnackbar(message = "참여 인원은 최대 30명까지 가능합니다.", status = ShowSnackbar.Status.FAIL)
                 return false
             }

@@ -1,7 +1,7 @@
 package com.payto.data.network.dto
 
 import com.payto.data.database.entity.JourneyEntity
-import com.payto.model.JourneyModel
+import com.payto.model.JourneyInfoModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,7 +21,7 @@ internal data class CreateJourneyDTO(
 }
 
 @Serializable
-internal data class JourneyDTO(
+internal data class JourneyInfoDTO(
     val journeyId: String,
     val title: String,
     val closedAt: String?,
@@ -35,8 +35,8 @@ internal data class JourneyDTO(
         )
     }
 
-    fun asModel(): JourneyModel {
-        return JourneyModel(
+    fun asModel(): JourneyInfoModel {
+        return JourneyInfoModel(
             id = journeyId,
             title = title,
             isClosed = closedAt != null

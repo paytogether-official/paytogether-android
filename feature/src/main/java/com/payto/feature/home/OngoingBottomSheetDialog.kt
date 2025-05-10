@@ -29,7 +29,7 @@ import com.payto.designsystem.icon.iconpack.Close
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
-import com.payto.model.JourneyModel
+import com.payto.model.JourneyInfoModel
 import kotlinx.coroutines.launch
 
 
@@ -37,8 +37,8 @@ import kotlinx.coroutines.launch
 fun OngoingBottomSheetDialog(
     modifier: Modifier,
     isShow: Boolean,
-    ongoingJourneys: List<JourneyModel>,
-    onSelected: (JourneyModel) -> Unit,
+    ongoingJourneys: List<JourneyInfoModel>,
+    onSelected: (JourneyInfoModel) -> Unit,
     onDismissRequest: () -> Unit = {},
 ) {
 
@@ -75,8 +75,8 @@ fun OngoingBottomSheetDialog(
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    list: List<JourneyModel>,
-    onSelected: (JourneyModel) -> Unit,
+    list: List<JourneyInfoModel>,
+    onSelected: (JourneyInfoModel) -> Unit,
     onDismissRequest: () -> Unit = {},
 ) {
     Column(
@@ -109,8 +109,8 @@ private fun Content(
 
 @Composable
 private fun OngoingItem(
-    item: JourneyModel,
-    onClick: (JourneyModel) -> Unit
+    item: JourneyInfoModel,
+    onClick: (JourneyInfoModel) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -137,7 +137,7 @@ private fun OngoingItem(
 @Composable
 private fun OrderContentPreview() {
     val list = List(10) {
-        JourneyModel(id = "", title = "title $it", isClosed = false)
+        JourneyInfoModel(id = "", title = "title $it", isClosed = false)
     }
     Content(
         list = list,
