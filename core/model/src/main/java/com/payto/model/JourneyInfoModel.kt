@@ -1,23 +1,36 @@
 package com.payto.model
 
+import androidx.compose.runtime.Stable
+import com.payto.common.ext.toDateString
+import com.payto.common.ext.toLocalDate
+
+@Stable
 data class JourneyInfoModel(
     val id: String,
     val title: String,
     val currency: String,
     val isClosed: Boolean = false,
+    private val startDate: String = "", // 2025-03-21
+    private val endDate: String = "",
     val members: List<Member>,
 ) {
     data class Member(val name: String)
+
+    val startLocalDate = startDate.toLocalDate()
+    val endLocalDate = endDate.toLocalDate()
 }
 
+@Stable
 data class JourneyExpenseModel(
     val payer: String = "",
     val category: ExpenseCategory = ExpenseCategory.list.first(),
-    val expenseDate: String = "", // TODO
+    private val expenseDateMillis: Long? = null,
     val amount: Double? = null, // 총 지출 금액
     val memo: String = "",
     val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
 ) {
+    val expenseDate: String = expenseDateMillis?.toDateString() ?: ""
+
     data class MemberAmount(
         val name: String,
         val amount: Double? = null,
@@ -32,6 +45,7 @@ data class JourneyExpenseModel(
     }
 }
 
+@Stable
 data class JourneyModel(
     val infoModel: JourneyInfoModel,
     val expenseModel: JourneyExpenseModel

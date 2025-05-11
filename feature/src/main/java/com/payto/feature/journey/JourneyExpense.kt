@@ -73,6 +73,17 @@ fun ExpenseScreen(
     model: JourneyModel?,
     uiEvent: (UiEvent) -> Unit
 ) {
+    var isShowDialog by remember {
+        mutableStateOf(false)
+    }
+    ExpenseDateBottomSheetDialog(
+        isShow = isShowDialog,
+        model = model?.infoModel,
+        onDismissRequest = {
+            uiEvent.invoke(OnExpenseDateChange(it))
+            isShowDialog = false
+        }
+    )
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -80,11 +91,11 @@ fun ExpenseScreen(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             ContentBox(
-                value = "",
+                value = model?.expenseModel?.expenseDate ?: "",
                 placeholder = "언제 여행을 떠나시나요?",
                 endIcon = IconPack.Calendar
             ) {
-                // TODO
+                isShowDialog = true
             }
             CategoryList(
                 modifier = Modifier.padding(vertical = 8.dp),

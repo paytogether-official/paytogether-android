@@ -27,6 +27,8 @@ internal data class JourneyInfoDTO(
     val baseCurrency: String,
     val closedAt: String?,
     val members: List<MemberDTO>,
+    val startDate: String,
+    val endDate: String,
 ) {
     fun isOngoing() = closedAt == null
 
@@ -46,7 +48,9 @@ internal data class JourneyInfoDTO(
             currency = baseCurrency,
             members = members.map {
                 JourneyInfoModel.Member(it.name)
-            }
+            },
+            startDate = startDate,
+            endDate = endDate,
         )
     }
 }

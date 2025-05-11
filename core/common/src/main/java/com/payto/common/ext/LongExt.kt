@@ -17,3 +17,11 @@ fun Long.toKoreanDateString(format: String = "yyyy-MM-dd"): String {
         .toLocalDate()
         .format(formatter)
 }
+
+fun Long.toDateString(format: String = "yyyy-MM-dd"): String {
+    val formatter = DateTimeFormatter.ofPattern(format)
+    return Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+        .format(formatter)
+}

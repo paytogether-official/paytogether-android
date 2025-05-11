@@ -24,3 +24,7 @@ data class OnExpenseCategoryChange(
 data class OnMemoChange(
     val memo: String,
 ) : JourneyEvent
+
+data class OnExpenseDateChange(
+    val dateMillis: Long?,
+) : JourneyEvent

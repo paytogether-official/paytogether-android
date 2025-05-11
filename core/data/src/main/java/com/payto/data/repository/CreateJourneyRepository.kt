@@ -1,5 +1,6 @@
 package com.payto.data.repository
 
+import com.payto.common.ext.toDateString
 import com.payto.common.ext.toKoreanDateString
 import com.payto.data.database.dao.JourneyDao
 import com.payto.data.network.datasource.PaytoDatasource
@@ -41,8 +42,8 @@ class CreateJourneyRepository @Inject internal constructor(
             baseCurrency = journey.country?.currency ?: "",
             exchangeRate = journey.exchangeRateModel.exchangeRate,
             title = journey.title ?: "",
-            startDate = journey.journeyDate?.startTimeMill?.toKoreanDateString(),
-            endDate = journey.journeyDate?.endTimeMill?.toKoreanDateString(),
+            startDate = journey.journeyDate?.startTimeMill?.toDateString(),
+            endDate = journey.journeyDate?.endTimeMill?.toDateString(),
             localeCode = journey.country?.localeCode ?: "",
             members = journey.members.map { MemberDTO(it) }
         )
