@@ -18,13 +18,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,10 +39,10 @@ import com.payto.common.navigate.JourneyHistory
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
-import com.payto.designsystem.icon.iconpack.Image
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
+import com.payto.feature.R
 import com.payto.model.JourneyInfoModel
 
 @Composable
@@ -216,6 +219,17 @@ private fun OngoingJourneyBox(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
+    val icon by remember {
+        mutableIntStateOf(
+            listOf(
+                R.drawable.travel,
+                R.drawable.travel_bag,
+                R.drawable.travel_ticket,
+                R.drawable.flight,
+                R.drawable.worldtour
+            ).random()
+        )
+    }
     Row(
         modifier = modifier
             .rippleClickable(
@@ -230,9 +244,8 @@ private fun OngoingJourneyBox(
     ) {
         Image(
             modifier = Modifier.size(32.dp),
-            imageVector = IconPack.Image, // TODO
-            contentDescription = "화살표",
-            colorFilter = ColorFilter.tint(Color.Inverse.label)
+            painter = painterResource(icon),
+            contentDescription = "",
         )
         Text(
             text = "여정으로 돌아가기",

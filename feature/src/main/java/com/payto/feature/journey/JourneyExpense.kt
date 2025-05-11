@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -55,6 +58,7 @@ import com.payto.designsystem.icon.iconpack.Listcategory
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
+import com.payto.feature.R
 import com.payto.feature.common.UiEvent
 import com.payto.feature.journey.OnExpenseAmountChange.SplitMode
 import com.payto.model.ExpenseCategory
@@ -81,6 +85,7 @@ fun ExpenseScreen(
                 placeholder = "언제 여행을 떠나시나요?",
                 endIcon = IconPack.Calendar
             ) {
+                // TODO
             }
             CategoryList(
                 modifier = Modifier.padding(vertical = 8.dp),
@@ -132,6 +137,19 @@ private fun CategoryItem(
     isSelected: Boolean,
     onClick: (ExpenseCategory) -> Unit
 ) {
+    val iconRes by remember {
+        derivedStateOf {
+            when (model) {
+                ExpenseCategory.ETC -> if (isSelected) R.drawable.category_default_on else R.drawable.category_default
+                ExpenseCategory.FOOD -> if (isSelected) R.drawable.category_food_on else R.drawable.category_food
+                ExpenseCategory.TRANSPORT -> if (isSelected) R.drawable.category_bus_on else R.drawable.category_bus
+                ExpenseCategory.TICKET -> if (isSelected) R.drawable.category_ticket_on else R.drawable.category_ticket
+                ExpenseCategory.SHOPPING -> if (isSelected) R.drawable.category_shopping_on else R.drawable.category_shopping
+                ExpenseCategory.ACCOMMODATION -> if (isSelected) R.drawable.category_hotel_on else R.drawable.category_hotel
+                ExpenseCategory.FLIGHT -> if (isSelected) R.drawable.category_airplane_on else R.drawable.category_airplane
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .rippleClickable(shape = RoundedCornerShape(8.dp)) {
@@ -145,7 +163,7 @@ private fun CategoryItem(
         Image(
             modifier = Modifier
                 .size(24.dp),
-            imageVector = IconPack.Listcategory,
+            imageVector = ImageVector.vectorResource(iconRes),
             contentDescription = ""
         )
         Text(
