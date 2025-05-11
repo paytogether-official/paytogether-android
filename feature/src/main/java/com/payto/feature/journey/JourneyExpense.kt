@@ -54,7 +54,6 @@ import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Bubbleplus
 import com.payto.designsystem.icon.iconpack.Calendar
 import com.payto.designsystem.icon.iconpack.Circleclose
-import com.payto.designsystem.icon.iconpack.Listcategory
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
@@ -92,7 +91,10 @@ fun ExpenseScreen(
                 selectedModel = model?.expenseModel?.category ?: ExpenseCategory.list.first(),
                 uiEvent = uiEvent
             )
-            Memo()
+            Memo(
+                model = model,
+                uiEvent = uiEvent,
+            )
             SettlementTab(
                 modifier = Modifier.fillMaxWidth(),
                 model = model,
@@ -173,22 +175,38 @@ private fun CategoryItem(
 }
 
 @Composable
-private fun Memo(modifier: Modifier = Modifier) {
+private fun Memo(
+    modifier: Modifier = Modifier,
+    model: JourneyModel?,
+    uiEvent: (UiEvent) -> Unit
+) {
+    var isShowDialog by remember {
+        mutableStateOf(false)
+    }
+    MemoBottomSheetDialog(
+        isShow = isShowDialog,
+        modifier = Modifier.fillMaxWidth(),
+        onDismissRequest = {
+            isShowDialog = false
+            uiEvent.invoke(OnMemoChange(it))
+        }
+    )
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ContentBox(
             modifier = Modifier.weight(1f),
-            value = "",
+            value = model?.expenseModel?.memo ?: "",
             placeholder = "어디에 사용하셨나요?",
         ) {
+            isShowDialog = true
         }
         Column(
             modifier = Modifier
                 .size(48.dp)
                 .rippleClickable(shape = RoundedCornerShape(16.dp)) {
-                    // TODO mono
+                    isShowDialog = true
                 }
                 .background(Component.Fill.normal)
                 .padding(horizontal = 12.dp, vertical = 4.dp),
@@ -210,6 +228,7 @@ private fun Memo(modifier: Modifier = Modifier) {
         }
     }
 }
+
 
 @Composable
 private fun SettlementTab(

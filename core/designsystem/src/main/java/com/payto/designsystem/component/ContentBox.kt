@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.payto.designsystem.extension.rippleClickable
@@ -76,7 +77,9 @@ fun ContentBox(
                     .weight(1f),
                 text = value,
                 style = typography.contentAccent,
-                color = if (enabled) Color.Label.normal else Color.Label.disable
+                color = if (enabled) Color.Label.normal else Color.Label.disable,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             endDecoration.invoke()
             endIcon?.let {

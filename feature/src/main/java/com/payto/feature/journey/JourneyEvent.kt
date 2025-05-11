@@ -21,3 +21,6 @@ data class OnExpenseCategoryChange(
     val category: ExpenseCategory,
 ) : JourneyEvent
 
+data class OnMemoChange(
+    val memo: String,
+) : JourneyEvent

@@ -72,6 +72,13 @@ class JourneyExpenseViewModel @Inject constructor(
                     expenseModel = expenseModel.copy(category = event.category)
                 )
             }
+
+            is OnMemoChange -> {
+                val expenseModel = journeyData.value?.expenseModel ?: JourneyExpenseModel()
+                journeyData.value = journeyData.value?.copy(
+                    expenseModel = expenseModel.copy(memo = event.memo)
+                )
+            }
         }
     }
 }
