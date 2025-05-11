@@ -90,9 +90,7 @@ fun ExpenseScreen(
             CategoryList(
                 modifier = Modifier.padding(vertical = 8.dp),
                 selectedModel = model?.expenseModel?.category ?: ExpenseCategory.list.first(),
-                onClick = {
-
-                }
+                uiEvent = uiEvent
             )
             Memo()
             SettlementTab(
@@ -115,7 +113,7 @@ fun ExpenseScreen(
 private fun CategoryList(
     modifier: Modifier = Modifier,
     selectedModel: ExpenseCategory,
-    onClick: (ExpenseCategory) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
     LazyRow(
         modifier = modifier.fillMaxWidth(),
@@ -125,7 +123,7 @@ private fun CategoryList(
             CategoryItem(
                 model = it,
                 isSelected = selectedModel == it,
-                onClick = onClick
+                uiEvent = uiEvent
             )
         }
     }
@@ -135,9 +133,9 @@ private fun CategoryList(
 private fun CategoryItem(
     model: ExpenseCategory,
     isSelected: Boolean,
-    onClick: (ExpenseCategory) -> Unit
+    uiEvent: (UiEvent) -> Unit
 ) {
-    val iconRes by remember {
+    val iconRes by remember(isSelected) {
         derivedStateOf {
             when (model) {
                 ExpenseCategory.ETC -> if (isSelected) R.drawable.category_default_on else R.drawable.category_default
@@ -153,7 +151,7 @@ private fun CategoryItem(
     Column(
         modifier = Modifier
             .rippleClickable(shape = RoundedCornerShape(8.dp)) {
-                onClick.invoke(model)
+                uiEvent.invoke(OnExpenseCategoryChange(model))
             }
             .background(if (isSelected) Component.Fill.primary else Component.Fill.alternative)
             .padding(horizontal = 12.dp, vertical = 4.dp),

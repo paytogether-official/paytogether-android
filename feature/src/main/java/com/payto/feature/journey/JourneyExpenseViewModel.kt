@@ -65,6 +65,13 @@ class JourneyExpenseViewModel @Inject constructor(
                     )
                 )
             }
+
+            is OnExpenseCategoryChange -> {
+                val expenseModel = journeyData.value?.expenseModel ?: JourneyExpenseModel()
+                journeyData.value = journeyData.value?.copy(
+                    expenseModel = expenseModel.copy(category = event.category)
+                )
+            }
         }
     }
 }

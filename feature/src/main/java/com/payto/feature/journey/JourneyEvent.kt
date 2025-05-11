@@ -1,6 +1,7 @@
 package com.payto.feature.journey
 
 import com.payto.feature.common.UiEvent
+import com.payto.model.ExpenseCategory
 
 
 sealed interface JourneyEvent : UiEvent
@@ -15,4 +16,8 @@ data class OnExpenseAmountChange(
         ;
     }
 }
+
+data class OnExpenseCategoryChange(
+    val category: ExpenseCategory,
+) : JourneyEvent
 
