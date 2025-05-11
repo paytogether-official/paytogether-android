@@ -4,16 +4,25 @@ data class JourneyInfoModel(
     val id: String,
     val title: String,
     val currency: String,
-    val isClosed: Boolean = false
-)
+    val isClosed: Boolean = false,
+    val members: List<Member>,
+) {
+    data class Member(val name: String)
+}
 
 data class JourneyExpenseModel(
     val payer: String = "",
     val category: ExpenseCategory = ExpenseCategory.list.first(),
     val expenseDate: String = "", // TODO
-    val amount: Double? = null,
+    val amount: Double? = null, // 총 지출 금액
     val memo: String = "",
+    val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
 ) {
+    data class MemberAmount(
+        val name: String,
+        val amount: Double? = null,
+    )
+
     fun getAmountErrorText(): String {
         return when {
             amount == null -> ""
@@ -25,16 +34,17 @@ data class JourneyExpenseModel(
 
 data class JourneyModel(
     val infoModel: JourneyInfoModel,
-    val expenseModel: JourneyExpenseModel? = null
+    val expenseModel: JourneyExpenseModel
 )
 
 enum class ExpenseCategory(val displayName: String) {
     ETC("기타"),
     FOOD("식비"),
     TRANSPORT("교통"),
-    TOURISM("관광"),
+    TICKET("티켓"),
     SHOPPING("쇼핑"),
     ACCOMMODATION("숙소"),
+    FLIGHT("항공"),
     ;
 
     companion object {

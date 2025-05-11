@@ -7,6 +7,7 @@ import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExchangeRateDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.dto.LocaleDTO
+import com.payto.data.network.dto.MemberDTO
 import com.payto.data.network.dto.asCountryModel
 import com.payto.data.network.dto.asExchangeRateModel
 import com.payto.model.Country
@@ -43,7 +44,7 @@ class CreateJourneyRepository @Inject internal constructor(
             startDate = journey.journeyDate?.startTimeMill?.toKoreanDateString(),
             endDate = journey.journeyDate?.endTimeMill?.toKoreanDateString(),
             localeCode = journey.country?.localeCode ?: "",
-            members = journey.members.map { CreateJourneyDTO.Member(it) }
+            members = journey.members.map { MemberDTO(it) }
         )
         return dataSource.createJourney(request)
     }

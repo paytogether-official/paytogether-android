@@ -12,13 +12,13 @@ internal data class CreateJourneyDTO(
     val startDate: String?,
     val endDate: String?,
     val localeCode: String,
-    val members: List<Member>,
-) {
-    @Serializable
-    internal data class Member(
-        val name: String
-    )
-}
+    val members: List<MemberDTO>,
+)
+
+@Serializable
+internal data class MemberDTO(
+    val name: String
+)
 
 @Serializable
 internal data class JourneyInfoDTO(
@@ -26,13 +26,15 @@ internal data class JourneyInfoDTO(
     val title: String,
     val baseCurrency: String,
     val closedAt: String?,
+    val members: List<MemberDTO>,
 ) {
     fun isOngoing() = closedAt == null
 
     fun asEntity(): JourneyEntity {
         return JourneyEntity(
             id = journeyId,
-            isClosed = closedAt != null
+            isClosed = closedAt != null,
+            payer = members.firstOrNull()?.name ?: "",
         )
     }
 
@@ -42,6 +44,9 @@ internal data class JourneyInfoDTO(
             title = title,
             isClosed = closedAt != null,
             currency = baseCurrency,
+            members = members.map {
+                JourneyInfoModel.Member(it.name)
+            }
         )
     }
 }

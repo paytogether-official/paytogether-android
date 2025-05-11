@@ -4,6 +4,10 @@ import java.text.DecimalFormat
 
 
 fun Double.numberFormat(): String {
-    val formatter = DecimalFormat("#,###")
+    val formatter = DecimalFormat("#,###.##")
     return formatter.format(this)
+}
+
+fun Double.safeDiv(divisor: Double): Double {
+    return this / if (divisor == 0.0) 1.0 else divisor
 }

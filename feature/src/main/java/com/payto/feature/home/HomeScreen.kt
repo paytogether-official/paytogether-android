@@ -246,7 +246,7 @@ private fun OngoingJourneyBox(
 @Composable
 private fun HomeScreenPreview() {
     val models = List(10) {
-        JourneyInfoModel(id = "", title = "title $it", currency = "JPY")
+        JourneyInfoModel(id = "", title = "title $it", currency = "JPY", members = listOf())
     }
     HomeScreen(ongoingJourneys = models, onNavigate = {})
 }

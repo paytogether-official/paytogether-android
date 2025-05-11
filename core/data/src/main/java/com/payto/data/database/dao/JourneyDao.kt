@@ -16,6 +16,9 @@ internal interface JourneyDao {
     @Query("SELECT * FROM Journey")
     suspend fun getJourneys(): List<JourneyEntity>
 
+    @Query("SELECT payer FROM Journey WHERE id = :id")
+    suspend fun getJourneyPayer(id: String): String
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(journey: JourneyEntity)
 

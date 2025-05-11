@@ -7,4 +7,5 @@ import androidx.room.PrimaryKey
 internal data class JourneyEntity(
     @PrimaryKey val id: String,
     val isClosed: Boolean,
+    val payer: String,
 )

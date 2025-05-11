@@ -38,6 +38,7 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
+import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
 import kotlinx.coroutines.launch
@@ -152,7 +153,13 @@ private fun ExpenseListScreen(
 @Composable
 private fun JourneyScreenPreview() {
     val model = JourneyModel(
-        JourneyInfoModel(id = "", title = "", currency = "JPY")
+        infoModel = JourneyInfoModel(id = "", title = "", currency = "JPY", members = emptyList()),
+        expenseModel = JourneyExpenseModel(
+            amount = 100000000000.0,
+            membersAmount = List(10) {
+                JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = 0.0)
+            }
+        )
     )
     JourneyScreen(model = model, uiEvent = {})
 }

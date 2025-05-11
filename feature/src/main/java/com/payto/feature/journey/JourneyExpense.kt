@@ -8,10 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.payto.common.ext.numberFormat
+import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.ContentBox
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.component.PaytoTabRow
@@ -53,6 +56,7 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.UiEvent
+import com.payto.feature.journey.OnExpenseAmountChange.SplitMode
 import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
@@ -238,7 +242,8 @@ private fun SplitModeEqual(
     uiEvent: (UiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Amount(modifier = Modifier, model = model, uiEvent = uiEvent)
+        Amount(modifier = Modifier, model = model, uiEvent = uiEvent, mode = SplitMode.EQUAL)
+        SettlementSetting(modifier = Modifier.padding(top = 16.dp), model = model)
     }
 }
 
@@ -246,6 +251,7 @@ private fun SplitModeEqual(
 private fun Amount(
     modifier: Modifier = Modifier,
     model: JourneyModel?,
+    mode: SplitMode,
     uiEvent: (UiEvent) -> Unit,
 ) {
     val errorText by remember(model?.expenseModel?.amount) {
@@ -258,7 +264,7 @@ private fun Amount(
             amount = model?.expenseModel?.amount,
             currency = model?.infoModel?.currency ?: "",
             onValueChange = {
-                uiEvent.invoke(OnExpenseAmountChange(it.text))
+                uiEvent.invoke(OnExpenseAmountChange(it.text, mode))
             }
         )
         HorizontalDivider(
@@ -349,22 +355,86 @@ private fun AmountTextField(
 }
 
 @Composable
-private fun SplitModeCustom(modifier: Modifier = Modifier) {
-
+private fun SettlementSetting(
+    modifier: Modifier = Modifier,
+    model: JourneyModel?
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Chips(
+            modifier = Modifier
+                .align(Alignment.End)
+                .rippleClickable {
+                    // TODO
+                },
+            text = "정산설정",
+            color = Component.Fill.primary,
+            textColor = Color.Inverse.primary,
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp)
+        ) {
+            items(model?.expenseModel?.membersAmount ?: listOf()) {
+                Member(model = it, isPayer = it.name == model?.expenseModel?.payer)
+            }
+        }
+    }
 }
 
 @Composable
-private fun Members() {
-
+private fun Member(
+    modifier: Modifier = Modifier,
+    model: JourneyExpenseModel.MemberAmount,
+    isPayer: Boolean,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = Component.Fill.normal, shape = RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(text = model.name, style = typography.contentAccent, color = Color.Label.normal)
+            if (isPayer) {
+                Chips(modifier = Modifier, text = "계산")
+            }
+        }
+        if (model.amount != null) {
+            Text(
+                text = model.amount?.numberFormat() ?: "",
+                style = typography.captionAccent,
+                color = Color.Primary.normal
+            )
+        }
+    }
 }
 
+@Composable
+private fun SplitModeCustom(
+    modifier: Modifier = Modifier,
+) {
+
+}
 
 @Preview(showBackground = true)
 @Composable
 private fun JourneyExpenseScreenPreview() {
     val model = JourneyModel(
-        JourneyInfoModel(id = "", title = "", currency = "JPY"),
-        expenseModel = JourneyExpenseModel(amount = 100000000000.0)
+        infoModel = JourneyInfoModel(id = "", title = "", currency = "JPY", members = emptyList()),
+        expenseModel = JourneyExpenseModel(
+            amount = 100000000000.0,
+            membersAmount = List(10) {
+                JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = 0.0)
+            }
+        )
     )
     ExpenseScreen(model = model, uiEvent = {})
 }
