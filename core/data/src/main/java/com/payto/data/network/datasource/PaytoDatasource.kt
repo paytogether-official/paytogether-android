@@ -1,5 +1,6 @@
 package com.payto.data.network.datasource
 
+import com.payto.data.network.dto.CreateExpenseDTO
 import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.service.PaytoService
@@ -23,4 +24,7 @@ internal class PaytoDatasource @Inject constructor(
     }
 
     suspend fun getJourneys(id: String) = service.getJourney(id)
+
+    suspend fun createExpense(id: String, createExpenseDTO: CreateExpenseDTO) =
+        service.createExpense(id, createExpenseDTO)
 }

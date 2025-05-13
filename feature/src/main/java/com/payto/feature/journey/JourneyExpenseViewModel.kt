@@ -86,6 +86,25 @@ class JourneyExpenseViewModel @Inject constructor(
                     expenseModel = expenseModel.copy(expenseDateMillis = event.dateMillis)
                 )
             }
+
+            ClickAddExpense -> {
+                addExpense()
+            }
+        }
+    }
+
+    private fun addExpense() {
+        viewModelScope.launch {
+            runCatching {
+                journeyData.value?.let {
+                    repository.addJourneyExpense(it)
+                    journeyData.value = null
+                    setInitData()
+                    showSnackbar("지출이 추가되었습니다.", ShowSnackbar.Status.SUCCESS)
+                }
+            }.onFailure {
+                showSnackbar("오류가 발생했습니다.", ShowSnackbar.Status.FAIL)
+            }
         }
     }
 }

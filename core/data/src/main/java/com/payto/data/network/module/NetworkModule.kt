@@ -1,5 +1,6 @@
 package com.payto.data.network.module
 
+import android.util.Log
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.payto.data.network.service.PaytoService
 import dagger.Module
@@ -7,7 +8,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -17,7 +20,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val json = Json {
             ignoreUnknownKeys = true // 알 수 없는 필드 무시
             explicitNulls = false // null 값을 제거
@@ -26,11 +29,30 @@ object NetworkModule {
         }
         return Retrofit.Builder()
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-//            .baseUrl("https://api.paytogether.kr/")
-            .baseUrl("http://3.39.194.45/")
+            .baseUrl("https://api.paytogether.kr/")
+            .client(okHttpClient)
             .build()
     }
 
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = Interceptor { chain ->
+            val request = chain.request()
+            val response = chain.proceed(request)
+
+            try {
+                val rawResponseBody = response.peekBody(Long.MAX_VALUE)
+                Log.d("Http Logging Interceptor", rawResponseBody.string())
+            } catch (e: Exception) {
+                Log.e("Http Logging Interceptor", e.toString())
+            }
+            response
+        }
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
 
     @Singleton
     @Provides

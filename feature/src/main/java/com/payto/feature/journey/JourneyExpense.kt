@@ -76,6 +76,12 @@ fun ExpenseScreen(
     var isShowDialog by remember {
         mutableStateOf(false)
     }
+    val isFullFilled by remember(model) {
+        derivedStateOf {
+            model?.expenseModel?.isFullyFilled() == true
+        }
+    }
+
     ExpenseDateBottomSheetDialog(
         isShow = isShowDialog,
         model = model?.infoModel,
@@ -115,9 +121,10 @@ fun ExpenseScreen(
 
         PaytoButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "지출 추가"
+            text = "지출 추가",
+            enabled = isFullFilled,
         ) {
-
+            uiEvent.invoke(ClickAddExpense)
         }
     }
 }

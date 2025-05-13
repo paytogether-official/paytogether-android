@@ -2,7 +2,9 @@ package com.payto.data.repository
 
 import com.payto.data.database.dao.JourneyDao
 import com.payto.data.network.datasource.PaytoDatasource
+import com.payto.data.network.dto.asDTO
 import com.payto.model.JourneyInfoModel
+import com.payto.model.JourneyModel
 import javax.inject.Inject
 
 class JourneyRepository @Inject internal constructor(
@@ -15,5 +17,9 @@ class JourneyRepository @Inject internal constructor(
 
     suspend fun getJourneyPayer(id: String): String {
         return dao.getJourneyPayer(id)
+    }
+
+    suspend fun addJourneyExpense(model: JourneyModel) {
+        dataSource.createExpense(model.infoModel.id, model.asDTO())
     }
 }

@@ -28,3 +28,5 @@ data class OnMemoChange(
 data class OnExpenseDateChange(
     val dateMillis: Long?,
 ) : JourneyEvent
+
+data object ClickAddExpense : JourneyEvent

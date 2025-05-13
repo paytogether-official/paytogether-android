@@ -36,6 +36,12 @@ data class JourneyExpenseModel(
         val amount: Double? = null,
     )
 
+    fun isFullyFilled(): Boolean {
+        return expenseDateMillis != null &&
+                amount != null &&
+                amount != 0.0
+    }
+
     fun getAmountErrorText(): String {
         return when {
             amount == null -> ""
