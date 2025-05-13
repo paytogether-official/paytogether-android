@@ -197,6 +197,7 @@ private fun Memo(
     MemoBottomSheetDialog(
         isShow = isShowDialog,
         modifier = Modifier.fillMaxWidth(),
+        initialText = model?.expenseModel?.memo,
         onDismissRequest = {
             isShowDialog = false
             uiEvent.invoke(OnMemoChange(it))

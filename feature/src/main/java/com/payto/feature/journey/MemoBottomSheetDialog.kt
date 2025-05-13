@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 fun MemoBottomSheetDialog(
     modifier: Modifier,
     isShow: Boolean,
+    initialText: String? = null,
     onDismissRequest: (String) -> Unit = {},
 ) {
 
@@ -60,7 +61,7 @@ fun MemoBottomSheetDialog(
                 coroutineScope
                     .launch { sheetState.hide() }
                     .invokeOnCompletion {
-                        onDismissRequest("")
+                        onDismissRequest(initialText ?: "")
                     }
             },
             contentColor = Color.Static.white,
@@ -71,7 +72,14 @@ fun MemoBottomSheetDialog(
             }
         ) {
             Content(
-                onDismissRequest = onDismissRequest
+                onDismissRequest = { memo ->
+                    coroutineScope
+                        .launch { sheetState.hide() }
+                        .invokeOnCompletion {
+                            onDismissRequest(memo)
+                        }
+                },
+                initialText = initialText
             )
         }
     }
@@ -80,10 +88,11 @@ fun MemoBottomSheetDialog(
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
+    initialText: String? = null,
     onDismissRequest: (String) -> Unit = {},
 ) {
-    var memoText by remember {
-        mutableStateOf("")
+    var memoText by remember(initialText) {
+        mutableStateOf(initialText ?: "")
     }
 
     val isError by remember(memoText) {
@@ -104,7 +113,7 @@ private fun Content(
             Text(text = "메모", style = typography.contentBold, color = Color.Static.black)
             Image(
                 modifier = Modifier.rippleClickable {
-                    onDismissRequest.invoke("")
+                    onDismissRequest.invoke(initialText ?: "")
                 },
                 imageVector = IconPack.Close,
                 contentDescription = "닫기"
