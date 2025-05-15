@@ -37,7 +37,7 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(500)
+                animationSpec = tween(200)
             )
         },
         exitTransition = {
@@ -46,7 +46,7 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
         popExitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(500)
+                animationSpec = tween(200)
             )
         },
         popEnterTransition = {

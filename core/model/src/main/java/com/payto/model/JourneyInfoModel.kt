@@ -6,28 +6,38 @@ import com.payto.common.ext.toLocalDate
 
 @Stable
 data class JourneyInfoModel(
-    val id: String,
-    val title: String,
-    val currency: String,
+    val id: String = "",
+    val title: String = "",
+    val currency: String = "",
     val isClosed: Boolean = false,
     private val startDate: String = "", // 2025-03-21
     private val endDate: String = "",
-    val members: List<Member>,
+    val members: List<Member> = listOf(),
 ) {
-    data class Member(val name: String)
+    data class Member(val name: String) {
+
+    }
 
     val startLocalDate = startDate.toLocalDate()
     val endLocalDate = endDate.toLocalDate()
 }
 
+fun JourneyInfoModel.asMemberAmountList(): List<JourneyExpenseModel.MemberAmount> {
+    return members.map {
+        JourneyExpenseModel.MemberAmount(name = it.name)
+    }
+}
+
 @Stable
 data class JourneyExpenseModel(
+    val id: Int = 0,
     val payer: String = "",
     val category: ExpenseCategory = ExpenseCategory.list.first(),
     private val expenseDateMillis: Long? = null,
     val amount: Double? = null, // 총 지출 금액
     val memo: String = "",
     val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
+    val currency: String = ""
 ) {
     val expenseDate: String = expenseDateMillis?.toDateString() ?: ""
 
@@ -53,9 +63,12 @@ data class JourneyExpenseModel(
 
 @Stable
 data class JourneyModel(
-    val infoModel: JourneyInfoModel,
-    val expenseModel: JourneyExpenseModel
-)
+    val infoModel: JourneyInfoModel = JourneyInfoModel(),
+    val createExpenseModel: JourneyExpenseModel = JourneyExpenseModel(),
+    val detailInfoList: List<JourneyDetailInfo> = listOf(),
+) {
+    val detailModel = JourneyDetailModel(infoModel, detailInfoList)
+}
 
 enum class ExpenseCategory(val displayName: String) {
     ETC("기타"),
@@ -71,8 +84,8 @@ enum class ExpenseCategory(val displayName: String) {
         val list = ExpenseCategory.entries.toList()
         private val map = list.associateBy(ExpenseCategory::displayName)
 
-        fun fromName(name: String): ExpenseCategory? {
-            return map[name]
+        fun fromName(name: String): ExpenseCategory {
+            return map[name] ?: ETC
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,15 +57,25 @@ fun ExpenseDateBottomSheetDialog(
         }
     )
 
+    val hideAndOnDismissRequest : (Long?) -> Unit = {
+        coroutineScope
+            .launch { sheetState.hide() }
+            .invokeOnCompletion {
+                onDismissRequest.invoke(state.selectedDateMillis)
+            }
+    }
+
+    LaunchedEffect(state.selectedDateMillis) {
+        if (isShow) {
+            hideAndOnDismissRequest.invoke(state.selectedDateMillis)
+        }
+    }
+
     if (isShow) {
         ModalBottomSheet(
             modifier = modifier,
             onDismissRequest = {
-                coroutineScope
-                    .launch { sheetState.hide() }
-                    .invokeOnCompletion {
-                        onDismissRequest.invoke(state.selectedDateMillis)
-                    }
+                hideAndOnDismissRequest.invoke(state.selectedDateMillis)
             },
             containerColor = Color.Inverse.label,
             sheetState = sheetState,
@@ -72,7 +83,7 @@ fun ExpenseDateBottomSheetDialog(
                 BottomSheetDefaults.DragHandle(color = Component.Fill.strong)
             }
         ) {
-            Content(state = state, onDismissRequest = onDismissRequest)
+            Content(state = state, onDismissRequest = hideAndOnDismissRequest)
         }
     }
 }

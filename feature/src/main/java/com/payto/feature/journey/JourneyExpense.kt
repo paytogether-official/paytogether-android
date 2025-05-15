@@ -57,8 +57,8 @@ import com.payto.designsystem.icon.iconpack.Circleclose
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
-import com.payto.feature.R
 import com.payto.feature.common.UiEvent
+import com.payto.feature.common.ext.getDrawableId
 import com.payto.feature.journey.OnExpenseAmountChange.SplitMode
 import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyExpenseModel
@@ -70,23 +70,27 @@ import kotlinx.coroutines.launch
 @Composable
 fun ExpenseScreen(
     modifier: Modifier = Modifier,
-    model: JourneyModel?,
+    model: JourneyModel,
     uiEvent: (UiEvent) -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     var isShowDialog by remember {
         mutableStateOf(false)
     }
     val isFullFilled by remember(model) {
         derivedStateOf {
-            model?.expenseModel?.isFullyFilled() == true
+            model.createExpenseModel.isFullyFilled() == true
         }
     }
 
     ExpenseDateBottomSheetDialog(
         isShow = isShowDialog,
-        model = model?.infoModel,
+        model = model.infoModel,
         onDismissRequest = {
-            uiEvent.invoke(OnExpenseDateChange(it))
+            if (it != null) {
+                uiEvent.invoke(OnExpenseDateChange(it))
+            }
             isShowDialog = false
         }
     )
@@ -97,7 +101,7 @@ fun ExpenseScreen(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             ContentBox(
-                value = model?.expenseModel?.expenseDate ?: "",
+                value = model.createExpenseModel.expenseDate,
                 placeholder = "언제 여행을 떠나시나요?",
                 endIcon = IconPack.Calendar
             ) {
@@ -105,7 +109,7 @@ fun ExpenseScreen(
             }
             CategoryList(
                 modifier = Modifier.padding(vertical = 8.dp),
-                selectedModel = model?.expenseModel?.category ?: ExpenseCategory.list.first(),
+                selectedModel = model.createExpenseModel.category,
                 uiEvent = uiEvent
             )
             Memo(
@@ -124,6 +128,7 @@ fun ExpenseScreen(
             text = "지출 추가",
             enabled = isFullFilled,
         ) {
+            focusManager.clearFocus()
             uiEvent.invoke(ClickAddExpense)
         }
     }
@@ -157,15 +162,7 @@ private fun CategoryItem(
 ) {
     val iconRes by remember(isSelected) {
         derivedStateOf {
-            when (model) {
-                ExpenseCategory.ETC -> if (isSelected) R.drawable.category_default_on else R.drawable.category_default
-                ExpenseCategory.FOOD -> if (isSelected) R.drawable.category_food_on else R.drawable.category_food
-                ExpenseCategory.TRANSPORT -> if (isSelected) R.drawable.category_bus_on else R.drawable.category_bus
-                ExpenseCategory.TICKET -> if (isSelected) R.drawable.category_ticket_on else R.drawable.category_ticket
-                ExpenseCategory.SHOPPING -> if (isSelected) R.drawable.category_shopping_on else R.drawable.category_shopping
-                ExpenseCategory.ACCOMMODATION -> if (isSelected) R.drawable.category_hotel_on else R.drawable.category_hotel
-                ExpenseCategory.FLIGHT -> if (isSelected) R.drawable.category_airplane_on else R.drawable.category_airplane
-            }
+            model.getDrawableId(isSelected)
         }
     }
     Column(
@@ -204,7 +201,7 @@ private fun Memo(
     MemoBottomSheetDialog(
         isShow = isShowDialog,
         modifier = Modifier.fillMaxWidth(),
-        initialText = model?.expenseModel?.memo,
+        initialText = model?.createExpenseModel?.memo,
         onDismissRequest = {
             isShowDialog = false
             uiEvent.invoke(OnMemoChange(it))
@@ -216,7 +213,7 @@ private fun Memo(
     ) {
         ContentBox(
             modifier = Modifier.weight(1f),
-            value = model?.expenseModel?.memo ?: "",
+            value = model?.createExpenseModel?.memo ?: "",
             placeholder = "어디에 사용하셨나요?",
         ) {
             isShowDialog = true
@@ -308,14 +305,14 @@ private fun Amount(
     mode: SplitMode,
     uiEvent: (UiEvent) -> Unit,
 ) {
-    val errorText by remember(model?.expenseModel?.amount) {
-        mutableStateOf(model?.expenseModel?.getAmountErrorText() ?: "")
+    val errorText by remember(model?.createExpenseModel?.amount) {
+        mutableStateOf(model?.createExpenseModel?.getAmountErrorText() ?: "")
     }
 
     Column(modifier.padding(top = 16.dp)) {
         AmountTextField(
             modifier = Modifier.fillMaxWidth(),
-            amount = model?.expenseModel?.amount,
+            amount = model?.createExpenseModel?.amount,
             currency = model?.infoModel?.currency ?: "",
             onValueChange = {
                 uiEvent.invoke(OnExpenseAmountChange(it.text, mode))
@@ -431,8 +428,8 @@ private fun SettlementSetting(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(model?.expenseModel?.membersAmount ?: listOf()) {
-                Member(model = it, isPayer = it.name == model?.expenseModel?.payer)
+            items(model?.createExpenseModel?.membersAmount ?: listOf()) {
+                Member(model = it, isPayer = it.name == model?.createExpenseModel?.payer)
             }
         }
     }
@@ -483,7 +480,7 @@ private fun SplitModeCustom(
 private fun JourneyExpenseScreenPreview() {
     val model = JourneyModel(
         infoModel = JourneyInfoModel(id = "", title = "", currency = "JPY", members = emptyList()),
-        expenseModel = JourneyExpenseModel(
+        createExpenseModel = JourneyExpenseModel(
             amount = 100000000000.0,
             membersAmount = List(10) {
                 JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = 0.0)

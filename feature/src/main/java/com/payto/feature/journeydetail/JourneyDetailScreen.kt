@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.payto.common.ext.numberFormat
 import com.payto.common.ext.toPx
 import com.payto.common.navigate.JourneyItemDetail
 import com.payto.common.navigate.JourneyResult
@@ -74,7 +75,13 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.R
 import com.payto.feature.common.HistoryToolbar
+import com.payto.feature.common.UiEvent
+import com.payto.feature.common.ext.getDrawableId
 import com.payto.feature.journeyhistory.JourneyDate
+import com.payto.model.JourneyDetailInfo
+import com.payto.model.JourneyDetailModel
+import com.payto.model.JourneyExpenseModel
+import com.payto.model.JourneyInfoModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -110,9 +117,9 @@ fun JourneyDetailRoute(
             .statusBarsPadding()
             .navigationBarsPadding()
             .background(color = Color.Static.white),
-        title = viewModel.detail.journeyId,
-        id = viewModel.detail.journeyId,
         onNavigate = onNavigate,
+        uiEvent = viewModel::onEvent,
+        model = JourneyDetailModel(), // TODO
         toolbar = {
             HistoryToolbar(
                 modifier = Modifier.fillMaxWidth(),
@@ -131,31 +138,22 @@ fun JourneyDetailRoute(
 @Composable
 fun JourneyDetailScreen(
     modifier: Modifier = Modifier,
-    title: String,
-    id: String,
+    model: JourneyDetailModel,
     onNavigate: (Any) -> Unit,
+    uiEvent: (UiEvent) -> Unit,
     toolbar: @Composable () -> Unit = {}
 ) {
-    val list = remember {
-        List((1..10).random()) {
-            JourneyDetailData(
-                date = "3월 12일",
-                List((1..10).random()) {
-                    JourneyDetailInfo("항목명 $it")
-                }
-            )
-        }
-    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
     ) {
         toolbar.invoke()
-        TitleHeader(modifier = Modifier, title = title, id = id, onNavigate = onNavigate)
+        TitleHeader(modifier = Modifier, model = model.journeyInfo, onNavigate = onNavigate)
         DetailContent()
         JourneyDetailList(
             modifier = Modifier.weight(1f),
-            list = list,
+            list = model.list,
             onNavigate = onNavigate
         )
     }
@@ -165,8 +163,7 @@ fun JourneyDetailScreen(
 @Composable
 private fun TitleHeader(
     modifier: Modifier,
-    title: String,
-    id: String,
+    model: JourneyInfoModel,
     onNavigate: (Any) -> Unit,
 ) {
     var selectedOption by remember { mutableStateOf("KRW") }
@@ -188,21 +185,21 @@ private fun TitleHeader(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = title,
+                    text = model.title,
                     color = Color.Label.normal,
                     style = typography.highlightBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "여정 생산자 외 3명",
+                    text = "여정 생산자 외 ${model.members.size.minus(1)}명",
                     color = Color.Label.neutral,
                     style = typography.captionAccent
                 )
             }
             CurrencyToggle(
                 modifier = Modifier,
-                options = "KRW" to "JPY",
+                options = "KRW" to model.currency,
                 selectedOption = selectedOption,
                 onOptionSelected = { selectedOption = it }
             )
@@ -242,7 +239,7 @@ private fun TitleHeader(
                 .padding(top = 16.dp, bottom = 8.dp),
             text = "정산결과",
             onClick = {
-                onNavigate.invoke(JourneyResult(id))
+                onNavigate.invoke(JourneyResult(model.id))
             },
             status = PaytoButtonStatus.SECONDARY
         )
@@ -454,7 +451,7 @@ private fun JourneyDetailOrder(modifier: Modifier) {
 @Composable
 internal fun JourneyDetailList(
     modifier: Modifier,
-    list: List<JourneyDetailData>,
+    list: List<JourneyDetailInfo>,
     onNavigate: (Any) -> Unit,
 ) {
     LazyColumn(
@@ -478,7 +475,7 @@ internal fun JourneyDetailList(
 @Composable
 private fun JourneyItem(
     modifier: Modifier,
-    model: JourneyDetailInfo,
+    model: JourneyExpenseModel,
     onNavigate: (Any) -> Unit,
 ) {
     Row(
@@ -486,7 +483,7 @@ private fun JourneyItem(
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(16.dp))
             .rippleClickable {
-                onNavigate.invoke(JourneyItemDetail(title = model.title))
+                onNavigate.invoke(JourneyItemDetail(title = model.category.displayName))
             }
             .background(color = Component.Fill.normal)
             .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -504,16 +501,23 @@ private fun JourneyItem(
                         .background(
                             color = Component.Fill.primary,
                             shape = RoundedCornerShape(4.dp)
-                        )
-                )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        modifier = Modifier.size(15.dp),
+                        imageVector = ImageVector.vectorResource(model.category.getDrawableId()),
+                        contentDescription = "category"
+                    )
+                }
                 Text(
-                    text = model.title,
+                    text = model.category.displayName,
                     style = typography.contentAccent,
                     color = Color.Label.normal
                 )
             }
             Text(
-                text = "정산 입력자 외 몇명",
+                text = "정산 입력자 외 ${model.membersAmount.size.minus(1)}명",
                 style = typography.captionRegular,
                 color = Color.Label.neutral
             )
@@ -525,13 +529,13 @@ private fun JourneyItem(
         ) {
             Text(
                 modifier = Modifier.weight(1f, fill = false),
-                text = "343,123",
+                text = model.amount?.numberFormat() ?: "",
                 style = typography.heading3,
                 color = Color.Label.normal,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
-            Chips(modifier = Modifier, text = "JPY", color = Color.Label.neutral)
+            Chips(modifier = Modifier, text = model.currency, color = Color.Label.neutral)
         }
     }
 }
@@ -541,9 +545,9 @@ private fun JourneyItem(
 private fun JourneyDetailScreenPreview() {
     JourneyDetailScreen(
         modifier = Modifier.background(Color.Static.white),
-        title = "여정 제목",
         onNavigate = {},
-        id = "effe",
+        uiEvent = {},
+        model = JourneyDetailModel(),
         toolbar = {
             HistoryToolbar(
                 modifier = Modifier.fillMaxWidth(),

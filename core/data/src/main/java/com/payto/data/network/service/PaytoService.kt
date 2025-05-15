@@ -1,6 +1,6 @@
 package com.payto.data.network.service
 
-import com.payto.data.network.dto.CreateExpenseDTO
+import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExchangeRateDTO
 import com.payto.data.network.dto.JourneyInfoDTO
@@ -37,6 +37,11 @@ internal interface PaytoService {
     @POST("/journeys/{id}/expenses")
     suspend fun createExpense(
         @Path("id") id: String,
-        @Body createExpenseDTO: CreateExpenseDTO
+        @Body createExpenseDTO: ExpenseDTO
     )
+
+    @GET("/journeys/{id}/expenses")
+    suspend fun getExpenses(
+        @Path("id") id: String,
+    ): List<ExpenseDTO>
 }

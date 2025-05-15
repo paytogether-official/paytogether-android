@@ -2,14 +2,16 @@ package com.payto.feature.journeydetail
 
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.navigation.toRoute
 import com.payto.common.navigate.JourneyDetail
+import com.payto.feature.common.arch.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class JourneyDetailViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel() {
+class JourneyDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle
+) : BaseViewModel() {
 
     val detail = savedStateHandle.toRoute<JourneyDetail>()
 

@@ -31,9 +31,10 @@ import com.payto.designsystem.icon.iconpack.Caretdown
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
-import com.payto.feature.journeydetail.JourneyDetailData
-import com.payto.feature.journeydetail.JourneyDetailInfo
+import com.payto.model.JourneyDetailModel
+import com.payto.model.JourneyDetailInfo
 import com.payto.feature.journeydetail.JourneyDetailList
+import com.payto.model.JourneyExpenseModel
 
 
 @Composable
@@ -54,10 +55,10 @@ private fun CategoryDetailScreen(
 ) {
     val list = remember {
         List((1..10).random()) {
-            JourneyDetailData(
+            JourneyDetailInfo(
                 date = "3월 12일",
                 List((1..10).random()) {
-                    JourneyDetailInfo("항목명 $it")
+                    JourneyExpenseModel()
                 }
             )
         }

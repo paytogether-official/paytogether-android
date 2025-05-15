@@ -11,9 +11,14 @@ import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel
+import com.payto.model.asMemberAmountList
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,19 +38,29 @@ class JourneyExpenseViewModel @Inject constructor(
     private fun setInitData() {
         viewModelScope.launch {
             runCatching {
-                val journeyInfo = repository.getJourneyInfoData(journey.journeyId)
-                val payer = repository.getJourneyPayer(journey.journeyId)
-                val expenseModel = JourneyExpenseModel(
-                    payer = payer,
-                    membersAmount = journeyInfo.members.map {
-                        JourneyExpenseModel.MemberAmount(name = it.name)
-                    }
-                )
-                journeyData.value = JourneyModel(journeyInfo, expenseModel)
+                val data = fetchInitData()
+                delay(100)
+                journeyData.value = data
             }.onFailure {
                 showSnackbar("오류가 발생했습니다.", ShowSnackbar.Status.FAIL)
             }
         }
+    }
+
+    private suspend fun fetchInitData() = withContext(Dispatchers.IO) {
+        val journeyInfoDeferred = async { repository.getJourneyInfoData(journey.journeyId) }
+        val expenseListDeferred = async { repository.getExpenses(journey.journeyId) }
+        val payerDeferred = async { repository.getJourneyPayer(journey.journeyId) }
+
+        val journeyInfo = journeyInfoDeferred.await()
+        val detailInfo = expenseListDeferred.await()
+        val payer = payerDeferred.await()
+
+        val expenseModel = JourneyExpenseModel(
+            payer = payer,
+            membersAmount = journeyInfo.asMemberAmountList()
+        )
+        JourneyModel(journeyInfo, expenseModel, detailInfo)
     }
 
     override fun onEvent(event: UiEvent) {
@@ -53,11 +68,11 @@ class JourneyExpenseViewModel @Inject constructor(
 
         when (event) {
             is OnExpenseAmountChange -> {
-                val expenseModel = journeyData.value?.expenseModel ?: JourneyExpenseModel()
+                val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
                 val totalAmount = event.amount.filter { it.isDigit() }.toDoubleOrNull()
 
                 journeyData.value = journeyData.value?.copy(
-                    expenseModel = expenseModel.copy(
+                    createExpenseModel = expenseModel.copy(
                         amount = totalAmount,
                         membersAmount = expenseModel.membersAmount.map {
                             it.copy(amount = totalAmount?.safeDiv(expenseModel.membersAmount.size.toDouble()))
@@ -67,23 +82,23 @@ class JourneyExpenseViewModel @Inject constructor(
             }
 
             is OnExpenseCategoryChange -> {
-                val expenseModel = journeyData.value?.expenseModel ?: JourneyExpenseModel()
+                val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
                 journeyData.value = journeyData.value?.copy(
-                    expenseModel = expenseModel.copy(category = event.category)
+                    createExpenseModel = expenseModel.copy(category = event.category)
                 )
             }
 
             is OnMemoChange -> {
-                val expenseModel = journeyData.value?.expenseModel ?: JourneyExpenseModel()
+                val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
                 journeyData.value = journeyData.value?.copy(
-                    expenseModel = expenseModel.copy(memo = event.memo)
+                    createExpenseModel = expenseModel.copy(memo = event.memo)
                 )
             }
 
             is OnExpenseDateChange -> {
-                val expenseModel = journeyData.value?.expenseModel ?: JourneyExpenseModel()
+                val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
                 journeyData.value = journeyData.value?.copy(
-                    expenseModel = expenseModel.copy(expenseDateMillis = event.dateMillis)
+                    createExpenseModel = expenseModel.copy(expenseDateMillis = event.dateMillis)
                 )
             }
 
@@ -98,7 +113,6 @@ class JourneyExpenseViewModel @Inject constructor(
             runCatching {
                 journeyData.value?.let {
                     repository.addJourneyExpense(it)
-                    journeyData.value = null
                     setInitData()
                     showSnackbar("지출이 추가되었습니다.", ShowSnackbar.Status.SUCCESS)
                 }

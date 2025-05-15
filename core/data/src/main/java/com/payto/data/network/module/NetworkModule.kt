@@ -41,6 +41,7 @@ object NetworkModule {
             val request = chain.request()
             val response = chain.proceed(request)
 
+            Log.d("Http Logging Interceptor", "URL: ${request.url}")
             try {
                 val rawResponseBody = response.peekBody(Long.MAX_VALUE)
                 Log.d("Http Logging Interceptor", rawResponseBody.string())

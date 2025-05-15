@@ -1,11 +1,16 @@
 package com.payto.data.network.dto
 
-import com.payto.data.network.dto.CreateExpenseDTO.MemberExpenseDTO
+import com.payto.common.ext.toLocalDate
+import com.payto.data.network.dto.ExpenseDTO.MemberExpenseDTO
+import com.payto.model.ExpenseCategory
+import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CreateExpenseDTO(
+internal data class ExpenseDTO(
+    val journeyExpenseId: Int = 0,
+    val journeyId: String = "",
     val payerName: String,
     val category: String,
     val expenseDate: String,
@@ -13,7 +18,7 @@ internal data class CreateExpenseDTO(
     val amount: Double,
     val remainingAmount: Double,
     val memo: String,
-    val members: List<MemberExpenseDTO>,
+    val members: List<MemberExpenseDTO> = listOf(),
 ) {
     @Serializable
     internal data class MemberExpenseDTO(
@@ -22,18 +27,34 @@ internal data class CreateExpenseDTO(
     )
 }
 
-internal fun JourneyModel.asDTO(): CreateExpenseDTO {
-    return CreateExpenseDTO(
-        payerName = this.expenseModel.payer,
-        category = this.expenseModel.category.displayName,
-        expenseDate = this.expenseModel.expenseDate,
+internal fun JourneyModel.asDTO(): ExpenseDTO {
+    return ExpenseDTO(
+        journeyId = this.infoModel.id,
+        payerName = this.createExpenseModel.payer,
+        category = this.createExpenseModel.category.displayName,
+        expenseDate = this.createExpenseModel.expenseDate,
         currency = this.infoModel.currency,
-        amount = this.expenseModel.amount ?: 0.0,
-        remainingAmount = (this.expenseModel.amount ?: 0.0)
-                - this.expenseModel.membersAmount.sumOf { it.amount ?: 0.0 },
-        memo = this.expenseModel.memo,
-        members = this.expenseModel.membersAmount.map {
+        amount = this.createExpenseModel.amount ?: 0.0,
+        remainingAmount = (this.createExpenseModel.amount ?: 0.0)
+                - this.createExpenseModel.membersAmount.sumOf { it.amount ?: 0.0 },
+        memo = this.createExpenseModel.memo,
+        members = this.createExpenseModel.membersAmount.map {
             MemberExpenseDTO(it.name, it.amount ?: 0.0)
         }
+    )
+}
+
+internal fun ExpenseDTO.asExpenseModel(): JourneyExpenseModel {
+    return JourneyExpenseModel(
+        id = this.journeyExpenseId,
+        payer = this.payerName,
+        category = ExpenseCategory.fromName(this.category),
+        expenseDateMillis = this.expenseDate.toLocalDate()?.toEpochDay(),
+        amount = this.amount,
+        memo = this.memo,
+        membersAmount = this.members.map {
+            JourneyExpenseModel.MemberAmount(it.name, it.amount)
+        },
+        currency = this.currency
     )
 }

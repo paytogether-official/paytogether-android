@@ -2,6 +2,7 @@
 
 package com.payto.feature.journey
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,8 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,7 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
+import com.payto.feature.journeydetail.JourneyDetailScreen
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
@@ -54,6 +56,7 @@ fun JourneyRoute(
     HandleSideEffect(viewModel, onNavigate, onBackClick)
     JourneyScreen(
         model = journeyModel,
+        onNavigate = onNavigate,
         uiEvent = viewModel::onEvent
     )
 }
@@ -61,12 +64,9 @@ fun JourneyRoute(
 @Composable
 private fun JourneyScreen(
     model: JourneyModel?,
+    onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit
 ) {
-    val tabs = listOf("지출 추가", "지출 내역 보기")
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val pagerState = rememberPagerState { tabs.size }
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -76,6 +76,54 @@ private fun JourneyScreen(
             .background(color = Color.Static.white)
     ) {
         Toolbar(title = model?.infoModel?.title ?: "")
+        AnimatedVisibility(model != null, modifier = Modifier.weight(1f)) {
+            if (model != null) {
+                Content(
+                    modifier = Modifier.weight(1f),
+                    model = model,
+                    onNavigate = onNavigate,
+                    uiEvent = uiEvent
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Toolbar(
+    modifier: Modifier = Modifier,
+    title: String = ""
+) {
+    Box(modifier = modifier.fillMaxWidth()) {
+        Image(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(12.dp)
+                .size(24.dp),
+            imageVector = IconPack.Listcategory,
+            contentDescription = ""
+        )
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = title,
+            style = typography.highlightBold
+        )
+    }
+}
+
+@Composable
+private fun Content(
+    modifier: Modifier = Modifier,
+    model: JourneyModel,
+    onNavigate: (Any) -> Unit,
+    uiEvent: (UiEvent) -> Unit
+) {
+    val tabs = listOf("지출 추가", "지출 내역 보기")
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+    val pagerState = rememberPagerState { tabs.size }
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -113,53 +161,28 @@ private fun JourneyScreen(
                     uiEvent = uiEvent,
                 )
 
-                else -> ExpenseListScreen()
+                else -> JourneyDetailScreen(
+                    modifier = Modifier.weight(1f),
+                    uiEvent = uiEvent,
+                    model = model.detailModel,
+                    onNavigate = onNavigate
+                )
             }
         }
     }
 }
-
-@Composable
-private fun Toolbar(
-    modifier: Modifier = Modifier,
-    title: String = ""
-) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        Image(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(12.dp)
-                .size(24.dp),
-            imageVector = IconPack.Listcategory,
-            contentDescription = ""
-        )
-        Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = title,
-            style = typography.highlightBold
-        )
-    }
-}
-
-
-@Composable
-private fun ExpenseListScreen(
-) {
-
-}
-
 
 @Preview(showBackground = true)
 @Composable
 private fun JourneyScreenPreview() {
     val model = JourneyModel(
         infoModel = JourneyInfoModel(id = "", title = "", currency = "JPY", members = emptyList()),
-        expenseModel = JourneyExpenseModel(
+        createExpenseModel = JourneyExpenseModel(
             amount = 100000000000.0,
             membersAmount = List(10) {
                 JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = 0.0)
             }
         )
     )
-    JourneyScreen(model = model, uiEvent = {})
+    JourneyScreen(model = model, onNavigate = {}, uiEvent = {})
 }
