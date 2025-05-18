@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -467,6 +468,11 @@ internal fun JourneyDetailList(
         contentPadding = PaddingValues(bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        if (list.isEmpty()) {
+            item {
+                EmptyBox(modifier = Modifier.fillParentMaxHeight())
+            }
+        }
         list.forEach {
             item {
                 JourneyDate(modifier = Modifier, date = it.date)
@@ -474,6 +480,26 @@ internal fun JourneyDetailList(
             items(it.list) { model ->
                 JourneyItem(modifier = Modifier, model = model, onNavigate = onNavigate)
             }
+        }
+    }
+}
+
+@Composable
+private fun EmptyBox(modifier: Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(painter = painterResource(R.drawable.empty_box), contentDescription = "empty box")
+            Text(
+                text = "입력된 항목이 없습니다",
+                style = typography.contentAccent,
+                color = Color.Label.disable
+            )
         }
     }
 }
@@ -489,7 +515,12 @@ private fun JourneyItem(
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(16.dp))
             .rippleClickable {
-                onNavigate.invoke(JourneyExpenseItemDetail(journeyId = model.journeyId, expenseId = model.id))
+                onNavigate.invoke(
+                    JourneyExpenseItemDetail(
+                        journeyId = model.journeyId,
+                        expenseId = model.id
+                    )
+                )
             }
             .background(color = Component.Fill.normal)
             .padding(vertical = 8.dp, horizontal = 16.dp),
