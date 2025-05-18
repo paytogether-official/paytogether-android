@@ -55,7 +55,7 @@ import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.payto.common.ext.numberFormat
 import com.payto.common.ext.toPx
-import com.payto.common.navigate.JourneyItemDetail
+import com.payto.common.navigate.JourneyExpenseItemDetail
 import com.payto.common.navigate.JourneyResult
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
@@ -489,7 +489,7 @@ private fun JourneyItem(
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(16.dp))
             .rippleClickable {
-                onNavigate.invoke(JourneyItemDetail(title = model.category.displayName))
+                onNavigate.invoke(JourneyExpenseItemDetail(journeyId = model.journeyId, expenseId = model.id))
             }
             .background(color = Component.Fill.normal)
             .padding(vertical = 8.dp, horizontal = 16.dp),

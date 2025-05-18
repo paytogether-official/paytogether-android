@@ -1,8 +1,8 @@
 package com.payto.data.network.service
 
-import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExchangeRateDTO
+import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.dto.LocaleDTO
 import retrofit2.http.Body
@@ -44,4 +44,10 @@ internal interface PaytoService {
     suspend fun getExpenses(
         @Path("id") id: String,
     ): List<ExpenseDTO>
+
+    @GET("/journeys/{id}/expenses/{journeyExpenseId}")
+    suspend fun getExpense(
+        @Path("id") id: String,
+        @Path("journeyExpenseId") journeyExpenseId: Int,
+    ): ExpenseDTO
 }

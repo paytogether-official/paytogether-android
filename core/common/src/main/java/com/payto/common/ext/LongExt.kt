@@ -2,6 +2,7 @@ package com.payto.common.ext
 
 import java.text.DecimalFormat
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -20,8 +21,13 @@ fun Long.toKoreanDateString(format: String = "yyyy-MM-dd"): String {
 
 fun Long.toDateString(format: String = "yyyy-MM-dd"): String {
     val formatter = DateTimeFormatter.ofPattern(format)
+    return this.toLocalDate()
+        .format(formatter)
+}
+
+fun Long.toLocalDate(): LocalDate {
     return Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
-        .format(formatter)
+
 }

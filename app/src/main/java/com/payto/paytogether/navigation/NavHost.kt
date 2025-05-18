@@ -16,14 +16,14 @@ import com.payto.common.navigate.JoinJourney
 import com.payto.common.navigate.Journey
 import com.payto.common.navigate.JourneyDetail
 import com.payto.common.navigate.JourneyHistory
-import com.payto.common.navigate.JourneyItemDetail
+import com.payto.common.navigate.JourneyExpenseItemDetail
 import com.payto.common.navigate.JourneyResult
 import com.payto.feature.createjourney.CreateJourneyRoute
 import com.payto.feature.home.HomeRoute
 import com.payto.feature.joinjourney.JoinJourneyRoute
 import com.payto.feature.journey.JourneyRoute
 import com.payto.feature.journeydetail.JourneyDetailRoute
-import com.payto.feature.journeydetail.item.JourneyItemDetailRoute
+import com.payto.feature.journeydetail.item.JourneyExpenseItemDetailRoute
 import com.payto.feature.journeyhistory.JourneyHistoryRoute
 import com.payto.feature.journeyresult.JourneyResultRoute
 import com.payto.feature.journeyresult.category.CategoryDetailRoute
@@ -78,8 +78,9 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
                 onBackClick = { navController.popBackStack() }
             )
         }
-        composable<JourneyItemDetail> {
-            JourneyItemDetailRoute(
+        composable<JourneyExpenseItemDetail> {
+            JourneyExpenseItemDetailRoute(
+                onNavigate = { navController.navigate(it) },
                 onBackClick = { navController.popBackStack() }
             )
         }

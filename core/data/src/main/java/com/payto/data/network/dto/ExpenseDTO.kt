@@ -32,7 +32,7 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         journeyId = this.infoModel.id,
         payerName = this.createExpenseModel.payer,
         category = this.createExpenseModel.category.displayName,
-        expenseDate = this.createExpenseModel.expenseDate,
+        expenseDate = this.createExpenseModel.expenseDate.toString(),
         currency = this.infoModel.currency,
         amount = this.createExpenseModel.amount ?: 0.0,
         remainingAmount = (this.createExpenseModel.amount ?: 0.0)
@@ -47,9 +47,10 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
 internal fun ExpenseDTO.asExpenseModel(): JourneyExpenseModel {
     return JourneyExpenseModel(
         id = this.journeyExpenseId,
+        journeyId = this.journeyId,
         payer = this.payerName,
         category = ExpenseCategory.fromName(this.category),
-        expenseDateMillis = this.expenseDate.toLocalDate()?.toEpochDay(),
+        expenseDate = this.expenseDate.toLocalDate(),
         amount = this.amount,
         memo = this.memo,
         membersAmount = this.members.map {

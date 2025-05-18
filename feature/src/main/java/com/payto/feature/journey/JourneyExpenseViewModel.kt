@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.common.ext.safeDiv
+import com.payto.common.ext.toLocalDate
 import com.payto.common.navigate.Journey
 import com.payto.data.repository.JourneyRepository
 import com.payto.feature.common.ShowSnackbar
@@ -95,7 +96,7 @@ class JourneyExpenseViewModel @Inject constructor(
             is OnExpenseDateChange -> {
                 val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
                 journeyData.value = journeyData.value?.copy(
-                    createExpenseModel = expenseModel.copy(expenseDateMillis = event.dateMillis)
+                    createExpenseModel = expenseModel.copy(expenseDate = event.dateMillis?.toLocalDate())
                 )
             }
 

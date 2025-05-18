@@ -3,6 +3,7 @@ package com.payto.model
 import androidx.compose.runtime.Stable
 import com.payto.common.ext.toDateString
 import com.payto.common.ext.toLocalDate
+import java.time.LocalDate
 
 @Stable
 data class JourneyInfoModel(
@@ -14,9 +15,7 @@ data class JourneyInfoModel(
     private val endDate: String = "",
     val members: List<Member> = listOf(),
 ) {
-    data class Member(val name: String) {
-
-    }
+    data class Member(val name: String)
 
     val startLocalDate = startDate.toLocalDate()
     val endLocalDate = endDate.toLocalDate()
@@ -30,16 +29,16 @@ fun JourneyInfoModel.asMemberAmountList(): List<JourneyExpenseModel.MemberAmount
 
 @Stable
 data class JourneyExpenseModel(
+    val journeyId: String = "",
     val id: Int = 0,
     val payer: String = "",
     val category: ExpenseCategory = ExpenseCategory.list.first(),
-    private val expenseDateMillis: Long? = null,
     val amount: Double? = null, // 총 지출 금액
     val memo: String = "",
     val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
-    val currency: String = ""
+    val currency: String = "",
+    val expenseDate: LocalDate? = null,
 ) {
-    val expenseDate: String = expenseDateMillis?.toDateString() ?: ""
 
     data class MemberAmount(
         val name: String,
@@ -47,7 +46,7 @@ data class JourneyExpenseModel(
     )
 
     fun isFullyFilled(): Boolean {
-        return expenseDateMillis != null &&
+        return expenseDate != null &&
                 amount != null &&
                 amount != 0.0
     }

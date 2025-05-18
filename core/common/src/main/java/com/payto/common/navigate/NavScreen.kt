@@ -18,7 +18,7 @@ data class JourneyDetail(val journeyId: String)
 data class Journey(val journeyId: String)
 
 @Serializable
-data class JourneyItemDetail(val title: String) //todo 데이터 정의 논의
+data class JourneyExpenseItemDetail(val journeyId: String, val expenseId: Int)
 
 @Serializable
 data object JoinJourney

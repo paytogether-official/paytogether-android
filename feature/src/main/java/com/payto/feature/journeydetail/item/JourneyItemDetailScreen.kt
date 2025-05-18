@@ -36,23 +36,27 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
+import com.payto.feature.common.HandleSideEffect
+import com.payto.model.JourneyExpenseModel
 
 @Composable
-fun JourneyItemDetailRoute(
+fun JourneyExpenseItemDetailRoute(
     onBackClick: () -> Unit,
-    viewModel: JourneyItemViewModel = hiltViewModel()
+    onNavigate: (Any) -> Unit,
+    viewModel: JourneyExpenseItemViewModel = hiltViewModel()
 ) {
     val model by viewModel.item.collectAsStateWithLifecycle()
-    JourneyItemDetailScreen(
+    HandleSideEffect(viewModel, onNavigate = onNavigate, popBackStack = onBackClick)
+    JourneyExpenseItemDetailScreen(
         onBackClick = onBackClick,
         model = model
     )
 }
 
 @Composable
-private fun JourneyItemDetailScreen(
+private fun JourneyExpenseItemDetailScreen(
     onBackClick: () -> Unit = {},
-    model: JourneyItemData
+    model: JourneyExpenseModel
 ) {
     Column(
         modifier = Modifier
@@ -77,7 +81,7 @@ private fun JourneyItemDetailScreen(
 }
 
 @Composable
-private fun Content(modifier: Modifier = Modifier, model: JourneyItemData) {
+private fun Content(modifier: Modifier = Modifier, model: JourneyExpenseModel) {
     LazyColumn(
         modifier
             .fillMaxSize()
@@ -89,8 +93,8 @@ private fun Content(modifier: Modifier = Modifier, model: JourneyItemData) {
         item {
             TotalAmountItem(model = model)
         }
-        items(model.list) {
-            ParticipantInfoItem(model = it)
+        items(model.membersAmount) {
+            MemberInfoItem(model = it, isPayer = it.name == model.payer)
         }
         item {
             MemoItem(memo = model.memo)
@@ -101,7 +105,7 @@ private fun Content(modifier: Modifier = Modifier, model: JourneyItemData) {
 @Composable
 private fun TitleItem(
     modifier: Modifier = Modifier,
-    model: JourneyItemData
+    model: JourneyExpenseModel
 ) {
     var selectedOption by remember { mutableStateOf("KRW") }
 
@@ -114,16 +118,20 @@ private fun TitleItem(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            Text(text = model.title, style = typography.featureBold, color = Color.Label.normal)
             Text(
-                text = "입력한 날짜",
+                text = model.category.displayName,
+                style = typography.featureBold,
+                color = Color.Label.normal
+            )
+            Text(
+                text = model.expenseDate?.toString() ?: "",
                 style = typography.captionRegular,
                 color = Color.Label.alternative
             )
         }
         CurrencyToggle(
             modifier = Modifier,
-            options = "KRW" to "JPY",
+            options = "KRW" to model.currency,
             selectedOption = selectedOption,
             onOptionSelected = { selectedOption = it }
         )
@@ -133,7 +141,7 @@ private fun TitleItem(
 @Composable
 private fun TotalAmountItem(
     modifier: Modifier = Modifier,
-    model: JourneyItemData // TODO data
+    model: JourneyExpenseModel
 ) {
     Row(
         modifier = modifier
@@ -142,10 +150,14 @@ private fun TotalAmountItem(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text(text = "321,212", style = typography.heading2, color = Color.Primary.normal)
+        Text(
+            text = model.amount?.numberFormat() ?: "",
+            style = typography.heading2,
+            color = Color.Primary.normal
+        )
         Text(
             modifier = Modifier.padding(bottom = 2.dp),
-            text = "KRW",
+            text = model.currency,
             style = typography.contentBold,
             color = Color.Label.neutral
         )
@@ -153,9 +165,10 @@ private fun TotalAmountItem(
 }
 
 @Composable
-private fun ParticipantInfoItem(
+private fun MemberInfoItem(
     modifier: Modifier = Modifier,
-    model: ParticipantInfo // TODO data
+    isPayer: Boolean,
+    model: JourneyExpenseModel.MemberAmount
 ) {
     Row(
         modifier = modifier
@@ -171,10 +184,12 @@ private fun ParticipantInfoItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(text = model.name, style = typography.contentAccent, color = Color.Label.normal)
-            Chips(modifier = Modifier, text = "계산")
+            if (isPayer) {
+                Chips(modifier = Modifier, text = "계산")
+            }
         }
         Text(
-            text = model.amount.numberFormat(),
+            text = model.amount?.numberFormat() ?: "",
             style = typography.captionAccent,
             color = Color.Primary.normal
         )
@@ -197,7 +212,7 @@ private fun MemoItem(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = memo ?: "기록된 메모가 없습니다.",
+            text = memo.takeIf { it.isNullOrEmpty().not() } ?: "기록된 메모가 없습니다.",
             textAlign = TextAlign.Center,
             style = typography.contentAccent,
             color = Color.Label.disable,
@@ -207,15 +222,14 @@ private fun MemoItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun JourneyItemDetailScreenPreview() {
-    val model = JourneyItemData(
-        title = "타이틀",
-        list = listOf(
-            ParticipantInfo(name = "가망이", amount = 10000),
-            ParticipantInfo(name = "니망이", amount = 10000),
-            ParticipantInfo(name = "다망이", amount = 10000),
-            ParticipantInfo(name = "라망이", amount = 10000)
+private fun JourneyExpenseItemDetailScreenPreview() {
+    val model = JourneyExpenseModel(
+        membersAmount = listOf(
+            JourneyExpenseModel.MemberAmount(name = "가망이", amount = 10000.0),
+            JourneyExpenseModel.MemberAmount(name = "니망이", amount = 10000.0),
+            JourneyExpenseModel.MemberAmount(name = "다망이", amount = 10000.0),
+            JourneyExpenseModel.MemberAmount(name = "라망이", amount = 10000.0)
         )
     )
-    JourneyItemDetailScreen(model = model)
+    JourneyExpenseItemDetailScreen(model = model)
 }

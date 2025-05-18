@@ -111,7 +111,7 @@ fun ExpenseScreen(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             ContentBox(
-                value = model.createExpenseModel.expenseDate,
+                value = model.createExpenseModel.expenseDate?.toString() ?: "",
                 placeholder = "언제 여행을 떠나시나요?",
                 endIcon = IconPack.Calendar
             ) {

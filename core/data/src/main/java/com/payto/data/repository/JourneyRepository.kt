@@ -6,6 +6,7 @@ import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.asDTO
 import com.payto.data.network.dto.asExpenseModel
 import com.payto.model.JourneyDetailInfo
+import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
 import javax.inject.Inject
@@ -32,5 +33,9 @@ class JourneyRepository @Inject internal constructor(
             .map { (date, expenses) ->
                 JourneyDetailInfo(date, expenses.map(ExpenseDTO::asExpenseModel))
             }
+    }
+
+    suspend fun getExpenseItemInfo(id: String, expenseId: Int): JourneyExpenseModel {
+        return dataSource.getExpense(id, expenseId).asExpenseModel()
     }
 }

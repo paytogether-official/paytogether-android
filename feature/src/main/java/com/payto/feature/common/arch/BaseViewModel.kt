@@ -17,6 +17,10 @@ open class BaseViewModel : ViewModel(), EventInterface {
     override fun onEvent(event: UiEvent) {
     }
 
+    protected fun showErrorMessage() {
+        showSnackbar("오류가 발생하였습니다", ShowSnackbar.Status.FAIL)
+    }
+
     protected fun showSnackbar(message: String, status: ShowSnackbar.Status) {
         viewModelScope.launch {
             _sideEffectEvent.emit(ShowSnackbar(message = message, status = status))
