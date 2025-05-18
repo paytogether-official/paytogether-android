@@ -21,6 +21,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -123,6 +125,19 @@ private fun Content(
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
 
+    var isShowSettingDialog by remember {
+        mutableStateOf(false)
+    }
+
+    JourneySettingBottomSheetDialog(
+        modifier = Modifier.fillMaxWidth(),
+        isShow = isShowSettingDialog,
+        onDismissRequest = {
+            isShowSettingDialog = false
+            // todo setting
+        }
+    )
+
     Column(modifier = modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -142,7 +157,7 @@ private fun Content(
             Image(
                 modifier = Modifier
                     .rippleClickable {
-                        // TODO
+                        isShowSettingDialog = true
                     }
                     .padding(12.dp)
                     .size(24.dp),

@@ -232,18 +232,24 @@ private fun TitleHeader(
             color = Color.Label.alternative,
             style = typography.captionRegular
         )
-        PaytoButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 8.dp),
-            text = "정산결과",
-            onClick = {
-                onNavigate.invoke(JourneyResult(model.id))
-            },
-            status = PaytoButtonStatus.SECONDARY
+        if (model.isClosed) {
+            PaytoButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
+                text = "정산결과",
+                onClick = {
+                    onNavigate.invoke(JourneyResult(model.id))
+                },
+                status = PaytoButtonStatus.SECONDARY
+            )
+        }
+        HorizontalDivider(
+            color = Color.Line.neutral,
+            thickness = 4.dp,
+            modifier = Modifier.padding(vertical = 16.dp)
         )
-        HorizontalDivider(color = Color.Line.neutral, thickness = 4.dp)
     }
 }
 
