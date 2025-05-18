@@ -8,11 +8,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -25,6 +28,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -34,7 +38,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
@@ -42,12 +49,15 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.payto.common.ext.numberFormat
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.ContentBox
 import com.payto.designsystem.component.PaytoButton
+import com.payto.designsystem.component.PaytoButtonStatus
 import com.payto.designsystem.component.PaytoTabRow
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
@@ -257,15 +267,37 @@ private fun SettlementTab(
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
 
+    var showModeChangeDialog by remember {
+        mutableStateOf(false)
+    }
+    ModeChangeDialog(
+        isShowDialog = showModeChangeDialog,
+        onDismissRequest = {
+            showModeChangeDialog = false
+            if (it) {
+                uiEvent.invoke(OnExpenseModeChange(SplitMode.EQUAL))
+                selectedTabIndex = 0
+            }
+        }
+    )
+
+    LaunchedEffect(selectedTabIndex) {
+        coroutineScope.launch {
+            pagerState.animateScrollToPage(selectedTabIndex)
+        }
+    }
+
     Column(modifier = modifier.fillMaxWidth()) {
         PaytoTabRow(
             modifier = Modifier.fillMaxWidth(),
             tabs = tabs,
             selectedTabIndex = selectedTabIndex,
             onSelectedTab = {
-                selectedTabIndex = it
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(it)
+                if (it == 1) {
+                    uiEvent.invoke(OnExpenseModeChange(SplitMode.CUSTOM))
+                    selectedTabIndex = it
+                } else {
+                    showModeChangeDialog = true
                 }
             }
         )
@@ -274,27 +306,86 @@ private fun SettlementTab(
             userScrollEnabled = false,
         ) {
             when (it) {
-                0 -> SplitModeEqual(
+                0 -> SplitMode(
                     modifier = Modifier.weight(1f),
                     model = model,
+                    mode = SplitMode.EQUAL,
                     uiEvent = uiEvent,
                 )
 
-                else -> SplitModeCustom(modifier = Modifier.weight(1f))
+                else -> SplitMode(
+                    modifier = Modifier.weight(1f),
+                    model = model,
+                    mode = SplitMode.CUSTOM,
+                    uiEvent = uiEvent,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun SplitModeEqual(
+private fun ModeChangeDialog(
+    isShowDialog: Boolean,
+    onDismissRequest: (Boolean) -> Unit
+) {
+    if (isShowDialog) {
+        Dialog(onDismissRequest = { onDismissRequest(false) }) {
+            Column(
+                modifier = Modifier
+                    .background(Color.Static.white, shape = RoundedCornerShape(24.dp))
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                // 제목과 안내 텍스트
+                Text(
+                    text = "총 금액을 기준으로 1/N하여 나눕니다.\n변경하시겠습니까?",
+                    style = typography.highlightAccent,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 24.dp)
+                )
+
+                // 버튼 행
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PaytoButton(
+                        onClick = { onDismissRequest(false) },
+                        modifier = Modifier.weight(1f),
+                        status = PaytoButtonStatus.NORMAL,
+                        text = "취소"
+                    )
+
+                    // 변경하기 버튼
+                    PaytoButton(
+                        onClick = { onDismissRequest(true) },
+                        modifier = Modifier.weight(1f),
+                        text = "변경하기"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SplitMode(
     modifier: Modifier = Modifier,
     model: JourneyModel?,
+    mode: SplitMode,
     uiEvent: (UiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Amount(modifier = Modifier, model = model, uiEvent = uiEvent, mode = SplitMode.EQUAL)
-        SettlementSetting(modifier = Modifier.padding(top = 16.dp), model = model)
+        Amount(modifier = Modifier, model = model, uiEvent = uiEvent, mode = mode)
+        SettlementSetting(
+            modifier = Modifier.padding(top = 16.dp),
+            model = model,
+            mode = mode,
+            uiEvent = uiEvent,
+        )
     }
 }
 
@@ -316,13 +407,17 @@ private fun Amount(
             currency = model?.infoModel?.currency ?: "",
             onValueChange = {
                 uiEvent.invoke(OnExpenseAmountChange(it.text, mode))
-            }
+            },
+            mode = mode,
+            enabled = mode == SplitMode.EQUAL
         )
-        HorizontalDivider(
-            thickness = 2.dp,
-            color = if (errorText.isEmpty()) Color.Primary.normal else Color.Status.error,
-            modifier = Modifier.padding(top = 4.dp)
-        )
+        if (mode == SplitMode.EQUAL) {
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = if (errorText.isEmpty()) Color.Primary.normal else Color.Status.error,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -340,6 +435,7 @@ private fun AmountTextField(
     amount: Double?,
     currency: String,
     enabled: Boolean = true,
+    mode: SplitMode,
     onValueChange: (TextFieldValue) -> Unit,
 ) {
     var isFocused: Boolean by remember {
@@ -358,8 +454,8 @@ private fun AmountTextField(
             Text(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = "금액($currency)",
-                color = Color.Label.disable,
+                text = if (mode == SplitMode.EQUAL) "금액입력($currency)" else "0$currency",
+                color = if (mode == SplitMode.EQUAL) Color.Label.disable else Color.Label.neutral,
                 style = typography.heading1,
             )
         }
@@ -391,16 +487,18 @@ private fun AmountTextField(
                 onValueChange = onValueChange,
                 textStyle = typography.heading1.copy(color = Color.Label.neutral),
             )
-            Image(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .size(24.dp)
-                    .rippleClickable {
-                        onValueChange.invoke(TextFieldValue(""))
-                    },
-                imageVector = IconPack.Circleclose,
-                contentDescription = ""
-            )
+            if (enabled) {
+                Image(
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(24.dp)
+                        .rippleClickable {
+                            onValueChange.invoke(TextFieldValue(""))
+                        },
+                    imageVector = IconPack.Circleclose,
+                    contentDescription = ""
+                )
+            }
         }
     }
 }
@@ -408,7 +506,9 @@ private fun AmountTextField(
 @Composable
 private fun SettlementSetting(
     modifier: Modifier = Modifier,
-    model: JourneyModel?
+    model: JourneyModel?,
+    mode: SplitMode,
+    uiEvent: (UiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Chips(
@@ -429,7 +529,13 @@ private fun SettlementSetting(
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             items(model?.createExpenseModel?.membersAmount ?: listOf()) {
-                Member(model = it, isPayer = it.name == model?.createExpenseModel?.payer)
+                Member(
+                    modifier = Modifier.fillMaxWidth(),
+                    model = it,
+                    isPayer = it.name == model?.createExpenseModel?.payer,
+                    mode = mode,
+                    uiEvent = uiEvent
+                )
             }
         }
     }
@@ -440,6 +546,8 @@ private fun Member(
     modifier: Modifier = Modifier,
     model: JourneyExpenseModel.MemberAmount,
     isPayer: Boolean,
+    mode: SplitMode,
+    uiEvent: (UiEvent) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -458,21 +566,76 @@ private fun Member(
                 Chips(modifier = Modifier, text = "계산")
             }
         }
-        if (model.amount != null) {
-            Text(
-                text = model.amount?.numberFormat() ?: "",
-                style = typography.captionAccent,
-                color = Color.Primary.normal
-            )
-        }
+        MemberAmountTextField(
+            modifier = Modifier,
+            model = model,
+            mode = mode,
+            uiEvent = uiEvent
+        )
     }
 }
 
 @Composable
-private fun SplitModeCustom(
+private fun MemberAmountTextField(
     modifier: Modifier = Modifier,
+    model: JourneyExpenseModel.MemberAmount,
+    mode: SplitMode,
+    uiEvent: (UiEvent) -> Unit,
 ) {
+    var isFocused: Boolean by remember {
+        mutableStateOf(false)
+    }
+    val text by remember(model, mode) {
+        derivedStateOf {
+            when {
+                mode == SplitMode.EQUAL && model.amount == null -> ""
+                model.amount == null -> "금액입력"
+                else -> "${model.amount?.numberFormat()}"
+            }
+        }
+    }
 
+    val focusManager = LocalFocusManager.current
+    Column(modifier = modifier) {
+        BasicTextField(
+            modifier = Modifier
+                .width(IntrinsicSize.Min)
+                .widthIn(min = 1.dp)
+                .drawBehind {
+                    if (isFocused) {
+                        drawRect(
+                            color = Color.Primary.normal,
+                            topLeft = Offset(0f, size.height),
+                            size = Size(width = size.width, height = 2.dp.toPx())
+                        )
+                    }
+                }
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                },
+            enabled = mode == SplitMode.CUSTOM,
+            singleLine = true,
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
+            value = TextFieldValue(
+                text = text,
+                selection = TextRange(text.length)
+            ),
+            onValueChange = {
+                uiEvent.invoke(OnExpenseAmountChange(it.text, mode, model.name))
+            },
+            textStyle = typography.contentAccent.copy(
+                textAlign = TextAlign.End,
+                color = if (model.amount == null) Color.Label.disable else Color.Label.alternative
+            ),
+        )
+    }
 }
 
 @Preview(showBackground = true)

@@ -12,6 +12,7 @@ import com.payto.feature.common.arch.BaseViewModel
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel
 import com.payto.model.asMemberAmountList
+import com.payto.model.updateMemberAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -68,17 +69,13 @@ class JourneyExpenseViewModel @Inject constructor(
 
         when (event) {
             is OnExpenseAmountChange -> {
-                val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
-                val totalAmount = event.amount.filter { it.isDigit() }.toDoubleOrNull()
-
-                journeyData.value = journeyData.value?.copy(
-                    createExpenseModel = expenseModel.copy(
-                        amount = totalAmount,
-                        membersAmount = expenseModel.membersAmount.map {
-                            it.copy(amount = totalAmount?.safeDiv(expenseModel.membersAmount.size.toDouble()))
-                        }
+                when (event.splitMode) {
+                    OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(event.amount)
+                    OnExpenseAmountChange.SplitMode.CUSTOM -> customAmount(
+                        event.amount,
+                        event.memberName
                     )
-                )
+                }
             }
 
             is OnExpenseCategoryChange -> {
@@ -105,6 +102,13 @@ class JourneyExpenseViewModel @Inject constructor(
             ClickAddExpense -> {
                 addExpense()
             }
+
+            is OnExpenseModeChange -> {
+                when (event.splitMode) {
+                    OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(journeyData.value?.createExpenseModel?.amount.toString())
+                    OnExpenseAmountChange.SplitMode.CUSTOM -> equalAmount("")
+                }
+            }
         }
     }
 
@@ -120,5 +124,27 @@ class JourneyExpenseViewModel @Inject constructor(
                 showSnackbar("오류가 발생했습니다.", ShowSnackbar.Status.FAIL)
             }
         }
+    }
+
+    private fun customAmount(amount: String, memberName: String) {
+        val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
+        val amount = amount.filter { it.isDigit() }.toDoubleOrNull()
+        journeyData.value = journeyData.value?.copy(
+            createExpenseModel = expenseModel.updateMemberAmount(memberName, amount)
+        )
+    }
+
+    private fun equalAmount(amount: String) {
+        val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
+        val totalAmount = amount.filter { it.isDigit() }.toDoubleOrNull()
+
+        journeyData.value = journeyData.value?.copy(
+            createExpenseModel = expenseModel.copy(
+                amount = totalAmount,
+                membersAmount = expenseModel.membersAmount.map {
+                    it.copy(amount = totalAmount?.safeDiv(expenseModel.membersAmount.size.toDouble()))
+                }
+            )
+        )
     }
 }

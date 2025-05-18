@@ -61,6 +61,13 @@ data class JourneyExpenseModel(
     }
 }
 
+fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: Double?): JourneyExpenseModel {
+    val updatedMembers = membersAmount.map {
+        if (it.name == name) it.copy(amount = newAmount) else it
+    }
+    return this.copy(membersAmount = updatedMembers, amount = updatedMembers.sumOf { it.amount ?: 0.0 })
+}
+
 @Stable
 data class JourneyModel(
     val infoModel: JourneyInfoModel = JourneyInfoModel(),

@@ -9,6 +9,7 @@ sealed interface JourneyEvent : UiEvent
 data class OnExpenseAmountChange(
     val amount: String,
     val splitMode: SplitMode,
+    val memberName: String = "",
 ) : JourneyEvent {
     enum class SplitMode {
         EQUAL,
@@ -16,6 +17,10 @@ data class OnExpenseAmountChange(
         ;
     }
 }
+
+data class OnExpenseModeChange(
+    val splitMode: OnExpenseAmountChange.SplitMode,
+) : JourneyEvent
 
 data class OnExpenseCategoryChange(
     val category: ExpenseCategory,
