@@ -137,7 +137,7 @@ private fun OngoingItem(
 @Composable
 private fun OrderContentPreview() {
     val list = List(10) {
-        JourneyInfoModel(id = "", title = "title $it", currency = "JPY", members = listOf())
+        JourneyInfoModel(id = "", title = "title $it", baseCurrency = "JPY", members = listOf())
     }
     Content(
         list = list,

@@ -51,7 +51,12 @@ class JourneyExpenseViewModel @Inject constructor(
     }
 
     private suspend fun fetchInitData() = withContext(Dispatchers.IO) {
-        val journeyInfoDeferred = async { repository.getJourneyInfoData(journey.journeyId) }
+        val journeyInfoDeferred = async {
+            repository.getJourneyInfoData(
+                journey.journeyId,
+                journeyData.value?.params?.quoteCurrency ?: "KRW"
+            )
+        }
         val expenseListDeferred = async {
             repository.getExpenses(
                 id = journey.journeyId,

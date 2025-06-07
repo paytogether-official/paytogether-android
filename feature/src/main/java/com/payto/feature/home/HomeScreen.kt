@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -259,7 +258,7 @@ private fun OngoingJourneyBox(
 @Composable
 private fun HomeScreenPreview() {
     val models = List(10) {
-        JourneyInfoModel(id = "", title = "title $it", currency = "JPY", members = listOf())
+        JourneyInfoModel(id = "", title = "title $it", baseCurrency = "JPY", members = listOf())
     }
     HomeScreen(ongoingJourneys = models, onNavigate = {})
 }

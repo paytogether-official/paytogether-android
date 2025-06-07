@@ -32,6 +32,7 @@ internal interface PaytoService {
     @GET("/journeys/{id}")
     suspend fun getJourney(
         @Path("id") id: String,
+        @Query("quoteCurrency") quoteCurrency: String,
     ): JourneyInfoDTO
 
     @POST("/journeys/{id}/expenses")

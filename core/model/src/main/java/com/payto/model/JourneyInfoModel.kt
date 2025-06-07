@@ -8,16 +8,30 @@ import java.time.LocalDate
 data class JourneyInfoModel(
     val id: String = "",
     val title: String = "",
-    val currency: String = "",
+    val baseCurrency: String = "",
     val isClosed: Boolean = false,
     private val startDate: String = "", // 2025-03-21
     private val endDate: String = "",
     val members: List<Member> = listOf(),
+    val totalExpenseAmount: Double = 0.0,
 ) {
     data class Member(val name: String)
 
     val startLocalDate = startDate.toLocalDate()
     val endLocalDate = endDate.toLocalDate()
+
+    val dateRange by lazy {
+        startLocalDate ?: return@lazy ""
+        endLocalDate ?: return@lazy ""
+        val startYearShort = startLocalDate.year % 100
+        val endYearShort = endLocalDate.year % 100
+
+        return@lazy if (startLocalDate.year == endLocalDate.year) {
+            "${startYearShort}년 ${startLocalDate.monthValue}월 ${startLocalDate.dayOfMonth}일 - ${endLocalDate.monthValue}월 ${endLocalDate.dayOfMonth}일"
+        } else {
+            "${startYearShort}년 ${startLocalDate.monthValue}월 ${startLocalDate.dayOfMonth}일 - ${endYearShort}년 ${endLocalDate.monthValue}월 ${endLocalDate.dayOfMonth}일"
+        }
+    }
 }
 
 fun JourneyInfoModel.asMemberAmountList(): List<JourneyExpenseModel.MemberAmount> {

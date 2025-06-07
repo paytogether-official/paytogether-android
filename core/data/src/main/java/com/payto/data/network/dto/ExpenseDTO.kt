@@ -36,8 +36,8 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         payerName = this.createExpenseModel.payer,
         category = this.createExpenseModel.category.displayName,
         expenseDate = this.createExpenseModel.expenseDate.toString(),
-        baseCurrency = this.infoModel.currency,
-        currency = this.infoModel.currency,
+        baseCurrency = this.infoModel.baseCurrency,
+        currency = this.infoModel.baseCurrency,
         amount = this.createExpenseModel.amount ?: 0.0,
         remainingAmount = (this.createExpenseModel.amount ?: 0.0)
                 - this.createExpenseModel.membersAmount.sumOf { it.amount ?: 0.0 },

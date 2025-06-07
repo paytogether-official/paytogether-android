@@ -405,7 +405,7 @@ private fun Amount(
         AmountTextField(
             modifier = Modifier.fillMaxWidth(),
             amount = model?.createExpenseModel?.amount,
-            currency = model?.infoModel?.currency ?: "",
+            currency = model?.infoModel?.baseCurrency ?: "",
             onValueChange = {
                 uiEvent.invoke(OnExpenseAmountChange(it.text, mode))
             },
@@ -643,7 +643,7 @@ private fun MemberAmountTextField(
 @Composable
 private fun JourneyExpenseScreenPreview() {
     val model = JourneyModel(
-        infoModel = JourneyInfoModel(id = "", title = "", currency = "JPY", members = emptyList()),
+        infoModel = JourneyInfoModel(id = "", title = "", baseCurrency = "JPY", members = emptyList()),
         createExpenseModel = JourneyExpenseModel(
             amount = 100000000000.0,
             membersAmount = List(10) {

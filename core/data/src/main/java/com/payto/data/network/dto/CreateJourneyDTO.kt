@@ -25,6 +25,8 @@ internal data class JourneyInfoDTO(
     val journeyId: String,
     val title: String,
     val baseCurrency: String,
+    val quoteCurrency: String,
+    val totalExpenseAmount: Double,
     val closedAt: String?,
     val members: List<MemberDTO>,
     val startDate: String,
@@ -45,12 +47,13 @@ internal data class JourneyInfoDTO(
             id = journeyId,
             title = title,
             isClosed = closedAt != null,
-            currency = baseCurrency,
+            baseCurrency = this@JourneyInfoDTO.baseCurrency,
             members = members.map {
                 JourneyInfoModel.Member(it.name)
             },
             startDate = startDate,
             endDate = endDate,
+            totalExpenseAmount = totalExpenseAmount,
         )
     }
 }

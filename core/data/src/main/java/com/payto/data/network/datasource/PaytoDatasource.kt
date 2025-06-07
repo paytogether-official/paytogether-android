@@ -23,7 +23,8 @@ internal class PaytoDatasource @Inject constructor(
         return service.getJourneys(journeyIds)
     }
 
-    suspend fun getJourneys(id: String) = service.getJourney(id)
+    suspend fun getJourney(id: String, quoteCurrency: String) =
+        service.getJourney(id, quoteCurrency)
 
     suspend fun createExpense(createExpenseDTO: ExpenseDTO) =
         service.createExpense(createExpenseDTO.journeyId, createExpenseDTO)

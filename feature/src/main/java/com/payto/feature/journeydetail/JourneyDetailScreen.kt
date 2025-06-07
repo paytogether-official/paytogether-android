@@ -210,7 +210,7 @@ private fun TitleHeader(
             }
             CurrencyToggle(
                 modifier = Modifier,
-                options = "KRW" to model.currency,
+                options = "KRW" to model.baseCurrency,
                 selectedOption = currency,
                 onOptionSelected = {
                     uiEvent.invoke(OnChangeCurrency(it))
@@ -227,7 +227,7 @@ private fun TitleHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            Text(text = "총 123,432", style = typography.heading2, color = Color.Label.normal)
+            Text(text = "총 ${model.totalExpenseAmount.numberFormat()}", style = typography.heading2, color = Color.Label.normal)
             Image(
                 modifier = Modifier.size(24.dp),
                 imageVector = if (isExpanded) IconPack.Chevronup else IconPack.Chevrondown,
@@ -241,7 +241,7 @@ private fun TitleHeader(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = 2.dp),
-            text = "24년 4월 13일 - 4월 17일",
+            text = model.dateRange,
             color = Color.Label.alternative,
             style = typography.captionRegular
         )

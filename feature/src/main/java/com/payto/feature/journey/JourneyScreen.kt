@@ -191,7 +191,7 @@ private fun Content(
 @Composable
 private fun JourneyScreenPreview() {
     val model = JourneyModel(
-        infoModel = JourneyInfoModel(id = "", title = "", currency = "JPY", members = emptyList()),
+        infoModel = JourneyInfoModel(id = "", title = "", baseCurrency = "JPY", members = emptyList()),
         createExpenseModel = JourneyExpenseModel(
             amount = 100000000000.0,
             membersAmount = List(10) {

@@ -16,8 +16,8 @@ class JourneyRepository @Inject internal constructor(
     private val dataSource: PaytoDatasource,
     private val dao: JourneyDao,
 ) {
-    suspend fun getJourneyInfoData(id: String): JourneyInfoModel {
-        return dataSource.getJourneys(id).asModel()
+    suspend fun getJourneyInfoData(id: String, quoteCurrency: String): JourneyInfoModel {
+        return dataSource.getJourney(id, quoteCurrency = quoteCurrency).asModel()
     }
 
     suspend fun getJourneyPayer(id: String): String {
