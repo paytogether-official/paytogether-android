@@ -1,26 +1,82 @@
 package com.payto.feature.journeydetail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.common.navigate.JourneyDetail
+import com.payto.data.repository.JourneyRepository
+import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
+import com.payto.feature.journey.OnChangeCurrency
+import com.payto.feature.journey.OnChangeOrder
+import com.payto.model.JourneyDetailModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class JourneyDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val repository: JourneyRepository,
 ) : BaseViewModel() {
 
-    val detail = savedStateHandle.toRoute<JourneyDetail>()
+    private val route = savedStateHandle.toRoute<JourneyDetail>()
+
+    val model = MutableStateFlow(JourneyDetailModel())
 
     init {
-        Log.e("흐흐", "JourneyDetailViewModel init ${this.hashCode()}, detail $detail")
+        fetchInitData()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.e("흐흐", "JourneyDetailViewModel onCleared ${this.hashCode()}")
+    override fun onEvent(event: UiEvent) {
+        when (event) {
+            is OnChangeOrder -> {
+                model.value = model.value.updateOrder(event.order)
+                fetchInitData()
+            }
+
+            is OnChangeCurrency -> {
+                model.value = model.value.updateCurrency(event.currency)
+                fetchInitData()
+            }
+        }
+    }
+
+    private fun fetchInitData() {
+        viewModelScope.launch {
+            runCatching {
+                fetchData()
+            }.onFailure {
+                showErrorMessage()
+            }
+        }
+    }
+
+    private suspend fun fetchData() = withContext(Dispatchers.IO) {
+        val journeyInfoDeferred = async {
+            repository.getJourneyInfoData(
+                route.journeyId,
+                model.value.params.quoteCurrency
+            )
+        }
+        val expenseListDeferred = async {
+            repository.getExpenses(
+                id = route.journeyId,
+                params = model.value.params
+            )
+        }
+
+        val journeyInfo = journeyInfoDeferred.await()
+        val detailInfoList = expenseListDeferred.await()
+
+        model.value = JourneyDetailModel(
+            journeyInfo = journeyInfo,
+            list = detailInfoList,
+            params = model.value.params
+        )
     }
 }

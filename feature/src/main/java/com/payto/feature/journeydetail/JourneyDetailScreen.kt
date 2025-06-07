@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.numberFormat
 import com.payto.common.ext.toPx
 import com.payto.common.navigate.JourneyExpenseItemDetail
@@ -94,6 +95,7 @@ fun JourneyDetailRoute(
     onNavigate: (Any) -> Unit,
     onBackClick: () -> Unit
 ) {
+    val model by viewModel.model.collectAsStateWithLifecycle()
     var isShowDeleteDialog by remember {
         mutableStateOf(false)
     }
@@ -123,7 +125,7 @@ fun JourneyDetailRoute(
             .background(color = Color.Static.white),
         onNavigate = onNavigate,
         uiEvent = viewModel::onEvent,
-        model = JourneyDetailModel(), // TODO
+        model = model,
         toolbar = {
             HistoryToolbar(
                 modifier = Modifier.fillMaxWidth(),
@@ -227,7 +229,11 @@ private fun TitleHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            Text(text = "총 ${model.totalExpenseAmount.numberFormat()}", style = typography.heading2, color = Color.Label.normal)
+            Text(
+                text = "총 ${model.totalExpenseAmount.numberFormat()}",
+                style = typography.heading2,
+                color = Color.Label.normal
+            )
             Image(
                 modifier = Modifier.size(24.dp),
                 imageVector = if (isExpanded) IconPack.Chevronup else IconPack.Chevrondown,

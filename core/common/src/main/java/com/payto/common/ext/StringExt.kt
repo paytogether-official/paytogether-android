@@ -6,6 +6,10 @@ import java.time.LocalDate
 /**
  * 2025-03-21 형식
  * */
-fun String.toLocalDate(): LocalDate? = this.split("-").let { (year, month, day) ->
-    LocalDate.of(year.toInt(), month.toInt(), day.toInt())
+fun String.toLocalDate(): LocalDate? = try {
+    this.split("-").let { (year, month, day) ->
+        LocalDate.of(year.toInt(), month.toInt(), day.toInt())
+    }
+} catch (e: Exception) {
+    null
 }

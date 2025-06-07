@@ -130,7 +130,7 @@ private fun JourneyHistoryCard(
             .clip(RoundedCornerShape(16.dp))
             .background(Component.Fill.normal)
             .rippleClickable {
-                onNavigate.invoke(JourneyDetail(model.title))
+                onNavigate.invoke(JourneyDetail(model.id))
             }
             .padding(16.dp)
     ) {
