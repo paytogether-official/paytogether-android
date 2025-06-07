@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.ext.numberFormat
 import com.payto.common.navigate.JourneyDetail
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.extension.rippleClickable
@@ -32,6 +33,8 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
+import com.payto.model.JourneyHistoryModel
+import com.payto.model.JourneyInfoModel
 
 @Composable
 fun JourneyHistoryRoute(
@@ -45,7 +48,7 @@ fun JourneyHistoryRoute(
 
 @Composable
 private fun JourneyHistoryScreen(
-    list: List<JourneyHistoryData>,
+    list: List<JourneyHistoryModel>,
     onNavigate: (JourneyDetail) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -72,7 +75,7 @@ private fun JourneyHistoryScreen(
 @Composable
 private fun JourneyHistoryList(
     modifier: Modifier,
-    list: List<JourneyHistoryData>,
+    list: List<JourneyHistoryModel>,
     onNavigate: (JourneyDetail) -> Unit,
 ) {
     LazyColumn(
@@ -102,7 +105,10 @@ private fun JourneyHistoryList(
 }
 
 @Composable
-fun JourneyDate(modifier: Modifier, date: String = "") {
+fun JourneyDate(
+    modifier: Modifier,
+    date: String = ""
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -116,7 +122,7 @@ fun JourneyDate(modifier: Modifier, date: String = "") {
 private fun JourneyHistoryCard(
     modifier: Modifier,
     onNavigate: (JourneyDetail) -> Unit = {},
-    model: JourneyHistoryInfo
+    model: JourneyInfoModel
 ) {
     Column(
         modifier = modifier
@@ -140,7 +146,7 @@ private fun JourneyHistoryCard(
                 color = Color.Label.normal
             )
             Text(
-                text = "4월 3일(금) - 4월 8일(월)",
+                text = model.dateRange,
                 color = Color.Label.alternative,
                 style = typography.captionRegular
             )
@@ -149,7 +155,7 @@ private fun JourneyHistoryCard(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
-            text = "여정 생산자 외 3명",
+            text = "여정 생산자 외 ${model.members.size - 1}명",
             color = Color.Label.neutral,
             style = typography.captionAccent
         )
@@ -171,7 +177,7 @@ private fun JourneyHistoryCard(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .weight(1f, fill = false),
-                    text = "123,432,123",
+                    text = model.totalExpenseAmount.numberFormat(),
                     color = Color.Primary.normal,
                     style = typography.heading2,
                     overflow = TextOverflow.Ellipsis,
@@ -185,7 +191,7 @@ private fun JourneyHistoryCard(
 
             Text(
                 modifier = Modifier.align(Alignment.Bottom),
-                text = "총 42 항목",
+                text = "총 ${model.totalExpenseCount} 항목",
                 color = Color.Label.neutral,
                 style = typography.captionAccent
             )
@@ -197,22 +203,22 @@ private fun JourneyHistoryCard(
 @Composable
 private fun JourneyHistoryScreenPreview() {
     val list = listOf(
-        JourneyHistoryData(
+        JourneyHistoryModel(
             date = "24년 2월",
             list = List((1..5).random()) {
-                JourneyHistoryInfo("여정 제목 $it")
+                JourneyInfoModel("여정 제목 $it")
             }
         ),
-        JourneyHistoryData(
+        JourneyHistoryModel(
             date = "24년 1월",
             list = List((1..5).random()) {
-                JourneyHistoryInfo("여정 제목 $it")
+                JourneyInfoModel("여정 제목 $it")
             }
         ),
-        JourneyHistoryData(
+        JourneyHistoryModel(
             date = "23년 12월",
             list = List((1..5).random()) {
-                JourneyHistoryInfo("여정 제목 $it")
+                JourneyInfoModel("여정 제목 $it")
             }
         )
     )

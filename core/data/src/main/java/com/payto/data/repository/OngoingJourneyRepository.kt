@@ -16,7 +16,9 @@ class OngoingJourneyRepository @Inject internal constructor(
         val ids = dao.getOngoingJourneys().map { it.id }
         if (ids.isEmpty()) return emptyList()
 
-        return dataSource.getJourneys(ids)
+        val list = dataSource.getJourneys(ids)
+        dao.insertAll(list.map(JourneyInfoDTO::asEntity))
+        return list
             .filter { it.isOngoing() }
             .map(JourneyInfoDTO::asModel)
     }

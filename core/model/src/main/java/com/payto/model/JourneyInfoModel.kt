@@ -14,6 +14,7 @@ data class JourneyInfoModel(
     private val endDate: String = "",
     val members: List<Member> = listOf(),
     val totalExpenseAmount: Double = 0.0,
+    val totalExpenseCount : Int = 0
 ) {
     data class Member(val name: String)
 

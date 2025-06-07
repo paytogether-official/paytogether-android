@@ -22,6 +22,9 @@ internal interface JourneyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(journey: JourneyEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(list: List<JourneyEntity>)
+
     @Delete
     suspend fun delete(journey: JourneyEntity)
 }

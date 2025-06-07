@@ -26,19 +26,21 @@ internal data class JourneyInfoDTO(
     val title: String,
     val baseCurrency: String,
     val quoteCurrency: String,
-    val totalExpenseAmount: Double,
+    val totalExpenseAmount: Double?,
+    val totalExpenseCount: Int?,
     val closedAt: String?,
-    val members: List<MemberDTO>,
+    val members: List<MemberDTO>?,
     val startDate: String,
     val endDate: String,
 ) {
     fun isOngoing() = closedAt == null
+    fun isClosed() = closedAt != null
 
     fun asEntity(): JourneyEntity {
         return JourneyEntity(
             id = journeyId,
             isClosed = closedAt != null,
-            payer = members.firstOrNull()?.name ?: "",
+            payer = members?.firstOrNull()?.name ?: "",
         )
     }
 
@@ -48,12 +50,13 @@ internal data class JourneyInfoDTO(
             title = title,
             isClosed = closedAt != null,
             baseCurrency = this@JourneyInfoDTO.baseCurrency,
-            members = members.map {
+            members = members?.map {
                 JourneyInfoModel.Member(it.name)
-            },
+            } ?: listOf(),
             startDate = startDate,
             endDate = endDate,
-            totalExpenseAmount = totalExpenseAmount,
+            totalExpenseAmount = totalExpenseAmount ?: 0.0,
+            totalExpenseCount = totalExpenseCount ?: 0
         )
     }
 }

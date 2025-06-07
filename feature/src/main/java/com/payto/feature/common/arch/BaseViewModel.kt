@@ -1,5 +1,6 @@
 package com.payto.feature.common.arch
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.payto.feature.common.EventInterface
@@ -13,6 +14,12 @@ import kotlinx.coroutines.launch
 open class BaseViewModel : ViewModel(), EventInterface {
     protected val _sideEffectEvent = MutableSharedFlow<SideEffectEvent>()
     override val sideEffectEvent: SharedFlow<SideEffectEvent> = _sideEffectEvent
+
+
+    init {
+        Log.e("흐흐", "${this.javaClass.simpleName}  init ${this.hashCode()}")
+
+    }
 
     override fun onEvent(event: UiEvent) {
     }
@@ -31,5 +38,10 @@ open class BaseViewModel : ViewModel(), EventInterface {
         viewModelScope.launch {
             _sideEffectEvent.emit(event)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.e("흐흐", "${this.javaClass.simpleName} onCleared ${this.hashCode()}")
     }
 }
