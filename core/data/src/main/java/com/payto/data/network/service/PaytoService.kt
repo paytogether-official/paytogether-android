@@ -52,5 +52,6 @@ internal interface PaytoService {
     suspend fun getExpense(
         @Path("id") id: String,
         @Path("journeyExpenseId") journeyExpenseId: Int,
+        @Query("quoteCurrency") quoteCurrency: String,
     ): ExpenseDTO
 }

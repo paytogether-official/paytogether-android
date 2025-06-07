@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.common.navigate.JourneyExpenseItemDetail
 import com.payto.data.repository.JourneyRepository
+import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
 import com.payto.model.JourneyExpenseModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,13 +25,26 @@ class JourneyExpenseItemViewModel @Inject constructor(
     )
 
     init {
-        fetchExpense()
+        fetchExpense(data.quoteCurrency)
     }
 
-    private fun fetchExpense() {
+    override fun onEvent(event: UiEvent) {
+        event as? ExpenseItemEvent ?: return
+        when(event) {
+            is OnChangeCurrency -> {
+                fetchExpense(event.currency)
+            }
+        }
+    }
+
+    private fun fetchExpense(qutCurrency: String) {
         viewModelScope.launch {
             runCatching {
-                item.value = repository.getExpenseItemInfo(data.journeyId, data.expenseId)
+                item.value = repository.getExpenseItemInfo(
+                    data.journeyId,
+                    data.expenseId,
+                    qutCurrency
+                )
             }.onFailure {
                 showErrorMessage()
             }

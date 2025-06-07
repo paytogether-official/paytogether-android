@@ -17,9 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +34,7 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.HandleSideEffect
+import com.payto.feature.common.UiEvent
 import com.payto.model.JourneyExpenseModel
 
 @Composable
@@ -49,14 +47,16 @@ fun JourneyExpenseItemDetailRoute(
     HandleSideEffect(viewModel, onNavigate = onNavigate, popBackStack = onBackClick)
     JourneyExpenseItemDetailScreen(
         onBackClick = onBackClick,
-        model = model
+        model = model,
+        uiEvent = viewModel::onEvent
     )
 }
 
 @Composable
 private fun JourneyExpenseItemDetailScreen(
     onBackClick: () -> Unit = {},
-    model: JourneyExpenseModel
+    model: JourneyExpenseModel,
+    uiEvent: (UiEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -75,20 +75,25 @@ private fun JourneyExpenseItemDetailScreen(
         Content(
             modifier = Modifier
                 .weight(1f),
-            model = model
+            model = model,
+            uiEvent = uiEvent
         )
     }
 }
 
 @Composable
-private fun Content(modifier: Modifier = Modifier, model: JourneyExpenseModel) {
+private fun Content(
+    modifier: Modifier = Modifier,
+    model: JourneyExpenseModel,
+    uiEvent: (UiEvent) -> Unit,
+) {
     LazyColumn(
         modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
         item {
-            TitleItem(model = model)
+            TitleItem(model = model, uiEvent = uiEvent)
         }
         item {
             TotalAmountItem(model = model)
@@ -105,10 +110,9 @@ private fun Content(modifier: Modifier = Modifier, model: JourneyExpenseModel) {
 @Composable
 private fun TitleItem(
     modifier: Modifier = Modifier,
-    model: JourneyExpenseModel
+    model: JourneyExpenseModel,
+    uiEvent: (UiEvent) -> Unit,
 ) {
-    var selectedOption by remember { mutableStateOf("KRW") }
-
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -119,7 +123,7 @@ private fun TitleItem(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
-                text = model.category.displayName,
+                text = model.categoryDescription ?: model.category.displayName,
                 style = typography.featureBold,
                 color = Color.Label.normal
             )
@@ -131,9 +135,11 @@ private fun TitleItem(
         }
         CurrencyToggle(
             modifier = Modifier,
-            options = "KRW" to model.currency,
-            selectedOption = selectedOption,
-            onOptionSelected = { selectedOption = it }
+            options = "KRW" to model.baseCurrency,
+            selectedOption = model.quoteCurrency,
+            onOptionSelected = {
+                uiEvent.invoke(OnChangeCurrency(it))
+            }
         )
     }
 }
@@ -157,7 +163,7 @@ private fun TotalAmountItem(
         )
         Text(
             modifier = Modifier.padding(bottom = 2.dp),
-            text = model.currency,
+            text = model.quoteCurrency,
             style = typography.contentBold,
             color = Color.Label.neutral
         )
@@ -231,5 +237,5 @@ private fun JourneyExpenseItemDetailScreenPreview() {
             JourneyExpenseModel.MemberAmount(name = "라망이", amount = 10000.0)
         )
     )
-    JourneyExpenseItemDetailScreen(model = model)
+    JourneyExpenseItemDetailScreen(model = model, uiEvent = {})
 }

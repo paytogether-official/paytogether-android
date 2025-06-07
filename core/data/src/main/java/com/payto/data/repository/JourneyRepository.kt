@@ -43,7 +43,11 @@ class JourneyRepository @Inject internal constructor(
             }
     }
 
-    suspend fun getExpenseItemInfo(id: String, expenseId: Int): JourneyExpenseModel {
-        return dataSource.getExpense(id, expenseId).asExpenseModel()
+    suspend fun getExpenseItemInfo(
+        id: String,
+        expenseId: Int,
+        quoteCurrency: String
+    ): JourneyExpenseModel {
+        return dataSource.getExpense(id, expenseId, quoteCurrency).asExpenseModel()
     }
 }

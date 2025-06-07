@@ -539,7 +539,8 @@ private fun JourneyItem(
                 onNavigate.invoke(
                     JourneyExpenseItemDetail(
                         journeyId = model.journeyId,
-                        expenseId = model.id
+                        expenseId = model.id,
+                        quoteCurrency = model.quoteCurrency
                     )
                 )
             }
@@ -595,7 +596,7 @@ private fun JourneyItem(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
-            Chips(modifier = Modifier, text = model.currency, color = Color.Label.neutral)
+            Chips(modifier = Modifier, text = model.quoteCurrency, color = Color.Label.neutral)
         }
     }
 }

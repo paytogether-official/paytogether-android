@@ -50,7 +50,8 @@ data class JourneyExpenseModel(
     val amount: Double? = null, // 총 지출 금액
     val memo: String = "",
     val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
-    val currency: String = "",
+    val quoteCurrency: String = "",
+    val baseCurrency: String = "",
     val expenseDate: LocalDate? = null,
 ) {
 

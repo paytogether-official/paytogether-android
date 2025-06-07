@@ -18,7 +18,11 @@ data class JourneyDetail(val journeyId: String)
 data class Journey(val journeyId: String)
 
 @Serializable
-data class JourneyExpenseItemDetail(val journeyId: String, val expenseId: Int)
+data class JourneyExpenseItemDetail(
+    val journeyId: String,
+    val expenseId: Int,
+    val quoteCurrency: String
+)
 
 @Serializable
 data object JoinJourney

@@ -61,7 +61,8 @@ internal fun ExpenseDTO.asExpenseModel(): JourneyExpenseModel {
         membersAmount = this.members.map {
             JourneyExpenseModel.MemberAmount(it.name, it.amount)
         },
-        currency = this.quoteCurrency ?: "",
+        quoteCurrency = this.quoteCurrency ?: "",
+        baseCurrency = this.baseCurrency,
         categoryDescription = this.categoryDescription
     )
 }
