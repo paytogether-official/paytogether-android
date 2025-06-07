@@ -10,6 +10,7 @@ import com.payto.data.repository.JourneyRepository
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
+import com.payto.model.ExpenseParams
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel
 import com.payto.model.asMemberAmountList
@@ -51,7 +52,12 @@ class JourneyExpenseViewModel @Inject constructor(
 
     private suspend fun fetchInitData() = withContext(Dispatchers.IO) {
         val journeyInfoDeferred = async { repository.getJourneyInfoData(journey.journeyId) }
-        val expenseListDeferred = async { repository.getExpenses(journey.journeyId) }
+        val expenseListDeferred = async {
+            repository.getExpenses(
+                id = journey.journeyId,
+                params = journeyData.value?.params
+            )
+        }
         val payerDeferred = async { repository.getJourneyPayer(journey.journeyId) }
 
         val journeyInfo = journeyInfoDeferred.await()
@@ -62,7 +68,12 @@ class JourneyExpenseViewModel @Inject constructor(
             payer = payer,
             membersAmount = journeyInfo.asMemberAmountList()
         )
-        JourneyModel(journeyInfo, expenseModel, detailInfo)
+        JourneyModel(
+            infoModel = journeyInfo,
+            createExpenseModel = expenseModel,
+            detailInfoList = detailInfo,
+            params = journeyData.value?.params ?: ExpenseParams()
+        )
     }
 
     override fun onEvent(event: UiEvent) {
@@ -83,6 +94,13 @@ class JourneyExpenseViewModel @Inject constructor(
                 val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
                 journeyData.value = journeyData.value?.copy(
                     createExpenseModel = expenseModel.copy(category = event.category)
+                )
+            }
+
+            is OnCategoryDescriptionChange -> {
+                val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
+                journeyData.value = journeyData.value?.copy(
+                    createExpenseModel = expenseModel.copy(categoryDescription = event.description)
                 )
             }
 
@@ -109,6 +127,16 @@ class JourneyExpenseViewModel @Inject constructor(
                     OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(journeyData.value?.createExpenseModel?.amount.toString())
                     OnExpenseAmountChange.SplitMode.CUSTOM -> equalAmount("")
                 }
+            }
+
+            is OnChangeCurrency -> {
+                journeyData.value = journeyData.value?.updateCurrency(event.currency)
+                setInitData()
+            }
+
+            is OnChangeOrder -> {
+                journeyData.value = journeyData.value?.updateOrder(event.order)
+                setInitData()
             }
         }
     }

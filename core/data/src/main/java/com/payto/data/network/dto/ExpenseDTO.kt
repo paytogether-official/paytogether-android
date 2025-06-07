@@ -14,7 +14,10 @@ internal data class ExpenseDTO(
     val payerName: String,
     val category: String,
     val expenseDate: String,
-    val currency: String,
+    val baseCurrency: String,
+    val quoteCurrency: String? = null,
+    val currency: String? = null,
+    val categoryDescription: String?,
     val amount: Double,
     val remainingAmount: Double,
     val memo: String,
@@ -33,6 +36,7 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         payerName = this.createExpenseModel.payer,
         category = this.createExpenseModel.category.displayName,
         expenseDate = this.createExpenseModel.expenseDate.toString(),
+        baseCurrency = this.infoModel.currency,
         currency = this.infoModel.currency,
         amount = this.createExpenseModel.amount ?: 0.0,
         remainingAmount = (this.createExpenseModel.amount ?: 0.0)
@@ -40,7 +44,8 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         memo = this.createExpenseModel.memo,
         members = this.createExpenseModel.membersAmount.map {
             MemberExpenseDTO(it.name, it.amount ?: 0.0)
-        }
+        },
+        categoryDescription = this.createExpenseModel.categoryDescription
     )
 }
 
@@ -56,6 +61,7 @@ internal fun ExpenseDTO.asExpenseModel(): JourneyExpenseModel {
         membersAmount = this.members.map {
             JourneyExpenseModel.MemberAmount(it.name, it.amount)
         },
-        currency = this.currency
+        currency = this.quoteCurrency ?: "",
+        categoryDescription = this.categoryDescription
     )
 }

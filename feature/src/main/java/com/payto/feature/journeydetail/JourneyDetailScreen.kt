@@ -78,9 +78,12 @@ import com.payto.feature.R
 import com.payto.feature.common.HistoryToolbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.ext.getDrawableId
+import com.payto.feature.journey.OnChangeCurrency
+import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journeyhistory.JourneyDate
 import com.payto.model.JourneyDetailInfo
 import com.payto.model.JourneyDetailModel
+import com.payto.model.JourneyDetailOrder
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import kotlinx.coroutines.launch
@@ -150,8 +153,14 @@ fun JourneyDetailScreen(
             .fillMaxSize()
     ) {
         toolbar.invoke()
-        TitleHeader(modifier = Modifier, model = model.journeyInfo, onNavigate = onNavigate)
-        DetailContent()
+        TitleHeader(
+            modifier = Modifier,
+            model = model.journeyInfo,
+            currency = model.params.quoteCurrency,
+            uiEvent = uiEvent,
+            onNavigate = onNavigate
+        )
+        DetailContent(uiEvent = uiEvent, selectedOrder = model.params.order)
         JourneyDetailList(
             modifier = Modifier.weight(1f),
             list = model.list,
@@ -165,9 +174,10 @@ fun JourneyDetailScreen(
 private fun TitleHeader(
     modifier: Modifier,
     model: JourneyInfoModel,
+    currency: String,
+    uiEvent: (UiEvent) -> Unit,
     onNavigate: (Any) -> Unit,
 ) {
-    var selectedOption by remember { mutableStateOf("KRW") }
     var isExpanded by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
@@ -201,8 +211,10 @@ private fun TitleHeader(
             CurrencyToggle(
                 modifier = Modifier,
                 options = "KRW" to model.currency,
-                selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it }
+                selectedOption = currency,
+                onOptionSelected = {
+                    uiEvent.invoke(OnChangeCurrency(it))
+                }
             )
         }
         Row(
@@ -283,7 +295,11 @@ private fun UsageItem() {
 }
 
 @Composable
-private fun DetailContent(modifier: Modifier = Modifier) {
+private fun DetailContent(
+    modifier: Modifier = Modifier,
+    selectedOrder: JourneyDetailOrder,
+    uiEvent: (UiEvent) -> Unit,
+) {
     val tabs = listOf("전체", "1일차", "2일차", "3일차", "4일차", "5일차", "6일차", "7일차")
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
@@ -368,7 +384,11 @@ private fun DetailContent(modifier: Modifier = Modifier) {
             selectedTabIndex = selectedTabIndex,
             onSelectedTab = { selectedTabIndex = it }
         )
-        JourneyDetailOrder(modifier = Modifier.padding(8.dp))
+        JourneyDetailOrder(
+            modifier = Modifier.padding(8.dp),
+            selectedOrder = selectedOrder,
+            uiEvent = uiEvent
+        )
     }
 }
 
@@ -413,10 +433,11 @@ private fun DailyTab(
 }
 
 @Composable
-private fun JourneyDetailOrder(modifier: Modifier) {
-    var selectedOrder by remember {
-        mutableStateOf(JourneyDetailOrder.OLDEST)
-    }
+private fun JourneyDetailOrder(
+    modifier: Modifier,
+    selectedOrder: JourneyDetailOrder,
+    uiEvent: (UiEvent) -> Unit
+) {
     var isShowOrderDialog by remember {
         mutableStateOf(false)
     }
@@ -425,7 +446,7 @@ private fun JourneyDetailOrder(modifier: Modifier) {
         isShow = isShowOrderDialog,
         selectedOrder = selectedOrder,
         onSelected = {
-            selectedOrder = it
+            uiEvent.invoke(OnChangeOrder(it))
         },
         onDismissRequest = {
             isShowOrderDialog = false
@@ -548,9 +569,11 @@ private fun JourneyItem(
                     )
                 }
                 Text(
-                    text = model.category.displayName,
+                    modifier = Modifier,
+                    text = model.categoryDescription ?: model.category.displayName,
                     style = typography.contentAccent,
-                    color = Color.Label.normal
+                    color = Color.Label.normal,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             Text(

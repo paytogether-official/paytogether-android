@@ -1,7 +1,6 @@
 package com.payto.model
 
 import androidx.compose.runtime.Stable
-import com.payto.common.ext.toDateString
 import com.payto.common.ext.toLocalDate
 import java.time.LocalDate
 
@@ -33,6 +32,7 @@ data class JourneyExpenseModel(
     val id: Int = 0,
     val payer: String = "",
     val category: ExpenseCategory = ExpenseCategory.list.first(),
+    val categoryDescription: String? = null,
     val amount: Double? = null, // 총 지출 금액
     val memo: String = "",
     val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
@@ -64,7 +64,9 @@ fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: Double?): Jo
     val updatedMembers = membersAmount.map {
         if (it.name == name) it.copy(amount = newAmount) else it
     }
-    return this.copy(membersAmount = updatedMembers, amount = updatedMembers.sumOf { it.amount ?: 0.0 })
+    return this.copy(
+        membersAmount = updatedMembers,
+        amount = updatedMembers.sumOf { it.amount ?: 0.0 })
 }
 
 @Stable
@@ -72,8 +74,17 @@ data class JourneyModel(
     val infoModel: JourneyInfoModel = JourneyInfoModel(),
     val createExpenseModel: JourneyExpenseModel = JourneyExpenseModel(),
     val detailInfoList: List<JourneyDetailInfo> = listOf(),
+    val params: ExpenseParams = ExpenseParams(),
 ) {
-    val detailModel = JourneyDetailModel(infoModel, detailInfoList)
+    val detailModel = JourneyDetailModel(infoModel, detailInfoList, params)
+
+    fun updateOrder(order: JourneyDetailOrder): JourneyModel {
+        return this.copy(params = params.copy(order = order))
+    }
+
+    fun updateCurrency(currency: String): JourneyModel {
+        return this.copy(params = params.copy(quoteCurrency = currency))
+    }
 }
 
 enum class ExpenseCategory(val displayName: String) {

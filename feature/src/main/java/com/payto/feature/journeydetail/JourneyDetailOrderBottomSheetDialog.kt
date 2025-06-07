@@ -30,13 +30,14 @@ import com.payto.designsystem.icon.iconpack.Close
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
+import com.payto.model.JourneyDetailOrder
 import kotlinx.coroutines.launch
 
 @Composable
 fun JourneyDetailOrderBottomSheetDialog(
     modifier: Modifier,
     isShow: Boolean,
-    selectedOrder: JourneyDetailOrder = JourneyDetailOrder.OLDEST,
+    selectedOrder: JourneyDetailOrder = JourneyDetailOrder.default,
     onSelected: (JourneyDetailOrder) -> Unit,
     onDismissRequest: () -> Unit = {},
 ) {

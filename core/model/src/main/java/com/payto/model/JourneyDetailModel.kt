@@ -2,7 +2,8 @@ package com.payto.model
 
 data class JourneyDetailModel(
     val journeyInfo: JourneyInfoModel = JourneyInfoModel(),
-    val list: List<JourneyDetailInfo> = listOf()
+    val list: List<JourneyDetailInfo> = listOf(),
+    val params: ExpenseParams = ExpenseParams(),
 )
 
 data class JourneyDetailInfo(

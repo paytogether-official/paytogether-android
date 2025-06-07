@@ -59,6 +59,7 @@ import com.payto.designsystem.component.ContentBox
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.component.PaytoButtonStatus
 import com.payto.designsystem.component.PaytoTabRow
+import com.payto.designsystem.component.TextBox
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Bubbleplus
@@ -221,12 +222,12 @@ private fun Memo(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ContentBox(
+        TextBox(
             modifier = Modifier.weight(1f),
-            value = model?.createExpenseModel?.memo ?: "",
+            value = model?.createExpenseModel?.categoryDescription ?: "",
             placeholder = "어디에 사용하셨나요?",
         ) {
-            isShowDialog = true
+            uiEvent.invoke(OnCategoryDescriptionChange(it))
         }
         Column(
             modifier = Modifier
