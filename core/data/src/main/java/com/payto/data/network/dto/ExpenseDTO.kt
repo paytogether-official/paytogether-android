@@ -1,6 +1,7 @@
 package com.payto.data.network.dto
 
 import com.payto.common.ext.toLocalDate
+import com.payto.common.ext.truncateToTwoDecimalPlaces
 import com.payto.data.network.dto.ExpenseDTO.MemberExpenseDTO
 import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyExpenseModel
@@ -19,9 +20,9 @@ internal data class ExpenseDTO(
     val currency: String? = null,
     val categoryDescription: String?,
     val amount: Double,
-    val remainingAmount: Double,
-    val memo: String,
     val members: List<MemberExpenseDTO> = listOf(),
+    private val remainingAmount: Double = (amount - members.sumOf { it.amount }).truncateToTwoDecimalPlaces(),
+    val memo: String,
 ) {
     @Serializable
     internal data class MemberExpenseDTO(
@@ -39,12 +40,10 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         baseCurrency = this.infoModel.baseCurrency,
         currency = this.infoModel.baseCurrency,
         amount = this.createExpenseModel.amount ?: 0.0,
-        remainingAmount = (this.createExpenseModel.amount ?: 0.0)
-                - this.createExpenseModel.membersAmount.sumOf { it.amount ?: 0.0 },
-        memo = this.createExpenseModel.memo,
         members = this.createExpenseModel.membersAmount.map {
-            MemberExpenseDTO(it.name, it.amount ?: 0.0)
+            MemberExpenseDTO(it.name, it.amount?.truncateToTwoDecimalPlaces() ?: 0.0)
         },
+        memo = this.createExpenseModel.memo,
         categoryDescription = this.createExpenseModel.categoryDescription
     )
 }

@@ -11,3 +11,7 @@ fun Double.numberFormat(): String {
 fun Double.safeDiv(divisor: Double): Double {
     return this / if (divisor == 0.0) 1.0 else divisor
 }
+
+fun Double.truncateToTwoDecimalPlaces(): Double {
+    return kotlin.math.floor(this * 100) / 100
+}
