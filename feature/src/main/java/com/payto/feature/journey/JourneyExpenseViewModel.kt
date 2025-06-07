@@ -143,6 +143,10 @@ class JourneyExpenseViewModel @Inject constructor(
                 journeyData.value = journeyData.value?.updateOrder(event.order)
                 setInitData()
             }
+
+            OnClickClose -> {
+                closeJourney()
+            }
         }
     }
 
@@ -180,5 +184,15 @@ class JourneyExpenseViewModel @Inject constructor(
                 }
             )
         )
+    }
+
+    private fun closeJourney() {
+        viewModelScope.launch {
+            runCatching {
+                repository.closeJourney(journey.journeyId)
+            }.onSuccess {
+             // TODO 여정 결과로 이동
+            }
+        }
     }
 }

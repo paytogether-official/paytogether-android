@@ -54,4 +54,9 @@ internal interface PaytoService {
         @Path("journeyExpenseId") journeyExpenseId: Int,
         @Query("quoteCurrency") quoteCurrency: String,
     ): ExpenseDTO
+
+    @POST("/journeys/{id}/close")
+    suspend fun closeJourney(
+        @Path("id") id: String,
+    )
 }

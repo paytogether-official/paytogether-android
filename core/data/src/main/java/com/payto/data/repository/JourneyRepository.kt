@@ -50,4 +50,8 @@ class JourneyRepository @Inject internal constructor(
     ): JourneyExpenseModel {
         return dataSource.getExpense(id, expenseId, quoteCurrency).asExpenseModel()
     }
+
+    suspend fun closeJourney(id: String) {
+        dataSource.closeJourney(id)
+    }
 }

@@ -48,3 +48,5 @@ data class OnChangeOrder(
 data class OnChangeCurrency(
     val currency: String
 ) : JourneyEvent
+
+data object OnClickClose : JourneyEvent

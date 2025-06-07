@@ -33,14 +33,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.designsystem.component.PaytoTabRow
+import com.payto.designsystem.dialog.DialogData
+import com.payto.designsystem.dialog.PaytoDialog
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Listcategory
 import com.payto.designsystem.icon.iconpack.Morevertical
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
+import com.payto.feature.R
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
+import com.payto.feature.journey.JourneySetting.FINISH
+import com.payto.feature.journey.JourneySetting.LEAVE
+import com.payto.feature.journey.JourneySetting.SETTINGS
+import com.payto.feature.journey.JourneySetting.SHARE
 import com.payto.feature.journeydetail.JourneyDetailScreen
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
@@ -129,12 +136,53 @@ private fun Content(
         mutableStateOf(false)
     }
 
+    var isShowCloseDialog by remember {
+        mutableStateOf(false)
+    }
+
+
+    PaytoDialog(
+        isShowDialog = isShowCloseDialog,
+        model = remember {
+            DialogData(
+                title = "여정을 마무리하시겠어요?",
+                subtitle = "더 이상 항목을 추가할 수 없어요",
+                firstButton = "닫기",
+                secondButton = "마무리하기",
+                icon = R.drawable.travel_insurance
+            )
+        },
+        onDismissRequest = {
+            isShowCloseDialog = false
+        },
+        secondButtonClick = {
+            uiEvent.invoke(OnClickClose)
+        }
+    )
+
     JourneySettingBottomSheetDialog(
         modifier = Modifier.fillMaxWidth(),
         isShow = isShowSettingDialog,
         onDismissRequest = {
             isShowSettingDialog = false
-            // todo setting
+            when (it) {
+                FINISH -> isShowCloseDialog = true
+                SHARE -> {
+                    // TODO
+                }
+
+                SETTINGS -> {
+                    // TODO
+                }
+
+                LEAVE -> {
+                    // TODO
+                }
+
+                null -> {
+                    // TODO
+                }
+            }
         }
     )
 
@@ -191,7 +239,12 @@ private fun Content(
 @Composable
 private fun JourneyScreenPreview() {
     val model = JourneyModel(
-        infoModel = JourneyInfoModel(id = "", title = "", baseCurrency = "JPY", members = emptyList()),
+        infoModel = JourneyInfoModel(
+            id = "",
+            title = "",
+            baseCurrency = "JPY",
+            members = emptyList()
+        ),
         createExpenseModel = JourneyExpenseModel(
             amount = 100000000000.0,
             membersAmount = List(10) {
