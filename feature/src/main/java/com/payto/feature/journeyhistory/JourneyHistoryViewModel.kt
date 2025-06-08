@@ -18,7 +18,7 @@ class JourneyHistoryViewModel @Inject constructor(
 
     val journeyHistoryList = flow<List<JourneyHistoryModel>> {
         emit(getJourneyHistoryList())
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private suspend fun getJourneyHistoryList(): List<JourneyHistoryModel> {
         return repository.getJourneyHistoryList()

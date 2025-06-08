@@ -1,5 +1,6 @@
 package com.payto.feature.journeyhistory
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,20 +27,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.numberFormat
+import com.payto.common.navigate.CreateJourney
 import com.payto.common.navigate.JourneyDetail
 import com.payto.designsystem.component.Chips
+import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
+import com.payto.feature.common.EmptyScreen
 import com.payto.model.JourneyHistoryModel
 import com.payto.model.JourneyInfoModel
 
 @Composable
 fun JourneyHistoryRoute(
     viewModel: JourneyHistoryViewModel = hiltViewModel(),
-    onNavigate: (JourneyDetail) -> Unit,
+    onNavigate: (Any) -> Unit,
     onBackClick: () -> Unit
 ) {
     val list by viewModel.journeyHistoryList.collectAsStateWithLifecycle()
@@ -48,8 +52,8 @@ fun JourneyHistoryRoute(
 
 @Composable
 private fun JourneyHistoryScreen(
-    list: List<JourneyHistoryModel>,
-    onNavigate: (JourneyDetail) -> Unit,
+    list: List<JourneyHistoryModel>?,
+    onNavigate: (Any) -> Unit,
     onBackClick: () -> Unit
 ) {
     Column(
@@ -64,11 +68,49 @@ private fun JourneyHistoryScreen(
             title = "지난 여정",
             onBackClick = onBackClick
         )
-        JourneyHistoryList(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            list = list,
-            onNavigate = onNavigate
+        AnimatedVisibility(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            visible = list != null
+        ) {
+            if (list.isNullOrEmpty()) {
+                HistoryEmptyScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    onNavigate = onNavigate
+                )
+            } else {
+                JourneyHistoryList(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    list = list,
+                    onNavigate = onNavigate
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HistoryEmptyScreen(
+    modifier: Modifier = Modifier,
+    onNavigate: (Any) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        EmptyScreen(
+            modifier = Modifier.weight(1f),
+            title = "아직 마무리된 여정이 없어요!",
+            subtitle = "여정을 마무리하거나\n새 여정을 만들어보세요!"
         )
+        PaytoButton(
+            text = "새 여정 만들기",
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            onNavigate.invoke(CreateJourney)
+        }
     }
 }
 
