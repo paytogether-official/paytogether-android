@@ -48,6 +48,8 @@ import com.payto.feature.journey.JourneySetting.FINISH
 import com.payto.feature.journey.JourneySetting.LEAVE
 import com.payto.feature.journey.JourneySetting.SETTINGS
 import com.payto.feature.journey.JourneySetting.SHARE
+import com.payto.feature.journey.expense.ExpenseScreen
+import com.payto.feature.journey.expense.JourneyExpenseViewModel
 import com.payto.feature.journeydetail.JourneyDetailScreen
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
@@ -221,6 +223,7 @@ private fun Content(
                 0 -> ExpenseScreen(
                     modifier = Modifier.weight(1f),
                     model = model,
+                    onNavigate = onNavigate,
                     uiEvent = uiEvent,
                 )
 

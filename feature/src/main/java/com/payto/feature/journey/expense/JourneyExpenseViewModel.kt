@@ -1,4 +1,4 @@
-package com.payto.feature.journey
+package com.payto.feature.journey.expense
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -10,6 +10,18 @@ import com.payto.data.repository.JourneyRepository
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
+import com.payto.feature.journey.ClickAddExpense
+import com.payto.feature.journey.JourneyEvent
+import com.payto.feature.journey.OnCategoryDescriptionChange
+import com.payto.feature.journey.OnChangeCurrency
+import com.payto.feature.journey.OnChangeOrder
+import com.payto.feature.journey.OnClickClose
+import com.payto.feature.journey.OnClickDate
+import com.payto.feature.journey.OnExpenseAmountChange
+import com.payto.feature.journey.OnExpenseCategoryChange
+import com.payto.feature.journey.OnExpenseDateChange
+import com.payto.feature.journey.OnExpenseModeChange
+import com.payto.feature.journey.OnMemoChange
 import com.payto.model.ExpenseParams
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel

@@ -1,4 +1,4 @@
-package com.payto.feature.journey
+package com.payto.feature.journey.expense
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -54,6 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.payto.common.ext.numberFormat
+import com.payto.common.navigate.ExpenseSetting
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.ContentBox
 import com.payto.designsystem.component.PaytoButton
@@ -70,7 +71,15 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.ext.getDrawableId
+import com.payto.feature.journey.ClickAddExpense
+import com.payto.feature.journey.MemoBottomSheetDialog
+import com.payto.feature.journey.OnCategoryDescriptionChange
+import com.payto.feature.journey.OnExpenseAmountChange
 import com.payto.feature.journey.OnExpenseAmountChange.SplitMode
+import com.payto.feature.journey.OnExpenseCategoryChange
+import com.payto.feature.journey.OnExpenseDateChange
+import com.payto.feature.journey.OnExpenseModeChange
+import com.payto.feature.journey.OnMemoChange
 import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
@@ -82,6 +91,7 @@ import kotlinx.coroutines.launch
 fun ExpenseScreen(
     modifier: Modifier = Modifier,
     model: JourneyModel,
+    onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -130,6 +140,7 @@ fun ExpenseScreen(
             SettlementTab(
                 modifier = Modifier.fillMaxWidth(),
                 model = model,
+                onNavigate = onNavigate,
                 uiEvent = uiEvent
             )
         }
@@ -260,7 +271,8 @@ private fun Memo(
 @Composable
 private fun SettlementTab(
     modifier: Modifier = Modifier,
-    model: JourneyModel?,
+    model: JourneyModel,
+    onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit
 ) {
     val tabs = listOf("1/N하기", "직접입력")
@@ -311,6 +323,7 @@ private fun SettlementTab(
                     modifier = Modifier.weight(1f),
                     model = model,
                     mode = SplitMode.EQUAL,
+                    onNavigate = onNavigate,
                     uiEvent = uiEvent,
                 )
 
@@ -318,6 +331,7 @@ private fun SettlementTab(
                     modifier = Modifier.weight(1f),
                     model = model,
                     mode = SplitMode.CUSTOM,
+                    onNavigate = onNavigate,
                     uiEvent = uiEvent,
                 )
             }
@@ -375,8 +389,9 @@ private fun ModeChangeDialog(
 @Composable
 private fun SplitMode(
     modifier: Modifier = Modifier,
-    model: JourneyModel?,
+    model: JourneyModel,
     mode: SplitMode,
+    onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -385,6 +400,7 @@ private fun SplitMode(
             modifier = Modifier.padding(top = 16.dp),
             model = model,
             mode = mode,
+            onNavigate = onNavigate,
             uiEvent = uiEvent,
         )
     }
@@ -507,8 +523,9 @@ private fun AmountTextField(
 @Composable
 private fun SettlementSetting(
     modifier: Modifier = Modifier,
-    model: JourneyModel?,
+    model: JourneyModel,
     mode: SplitMode,
+    onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -516,7 +533,7 @@ private fun SettlementSetting(
             modifier = Modifier
                 .align(Alignment.End)
                 .rippleClickable {
-                    // TODO
+                    onNavigate.invoke(ExpenseSetting(model.infoModel.id))
                 },
             text = "정산설정",
             color = Component.Fill.primary,
@@ -643,7 +660,12 @@ private fun MemberAmountTextField(
 @Composable
 private fun JourneyExpenseScreenPreview() {
     val model = JourneyModel(
-        infoModel = JourneyInfoModel(id = "", title = "", baseCurrency = "JPY", members = emptyList()),
+        infoModel = JourneyInfoModel(
+            id = "",
+            title = "",
+            baseCurrency = "JPY",
+            members = emptyList()
+        ),
         createExpenseModel = JourneyExpenseModel(
             amount = 100000000000.0,
             membersAmount = List(10) {
@@ -651,5 +673,5 @@ private fun JourneyExpenseScreenPreview() {
             }
         )
     )
-    ExpenseScreen(model = model, uiEvent = {})
+    ExpenseScreen(model = model, onNavigate = {}, uiEvent = {})
 }

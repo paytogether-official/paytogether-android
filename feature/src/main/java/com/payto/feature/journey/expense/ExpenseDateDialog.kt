@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.payto.feature.journey
+package com.payto.feature.journey.expense
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

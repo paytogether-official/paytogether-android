@@ -36,4 +36,7 @@ data class JourneyResult(
 @Serializable
 data object CategoryDetail
 
+@Serializable
+data class ExpenseSetting(val journeyId: String)
+
 
