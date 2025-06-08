@@ -241,7 +241,10 @@ private fun TitleHeader(
             )
         }
         AnimatedVisibility(visible = isExpanded) {
-            UsageAmountByDate(modifier = Modifier.fillMaxWidth())
+            UsageAmountByDate(
+                modifier = Modifier.fillMaxWidth(),
+                model = model.dailyExpenseSum
+            )
         }
         Text(
             modifier = Modifier
@@ -275,28 +278,37 @@ private fun TitleHeader(
 @Composable
 private fun UsageAmountByDate(
     modifier: Modifier,
+    model: List<JourneyInfoModel.DailySum>,
 ) {
     LazyRow(
         modifier = modifier.padding(vertical = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(10) {
-            UsageItem()
+        items(model) {
+            UsageItem(it)
         }
     }
 }
 
 @Composable
-private fun UsageItem() {
+private fun UsageItem(model: JourneyInfoModel.DailySum) {
     Column(
         modifier = Modifier
             .background(Component.Fill.normal, shape = RoundedCornerShape(8.dp))
             .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Text(text = "4월 13일", color = Color.Label.neutral, style = typography.captionRegular)
-        Text(text = "123,145", color = Color.Label.normal, style = typography.contentRegular)
+        Text(
+            text = model.displayName,
+            color = Color.Label.neutral,
+            style = typography.captionRegular
+        )
+        Text(
+            text = model.amount.numberFormat(),
+            color = Color.Label.normal,
+            style = typography.contentAccent
+        )
     }
 }
 

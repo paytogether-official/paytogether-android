@@ -14,9 +14,16 @@ data class JourneyInfoModel(
     private val endDate: String = "",
     val members: List<Member> = listOf(),
     val totalExpenseAmount: Double = 0.0,
-    val totalExpenseCount : Int = 0
+    val totalExpenseCount: Int = 0,
+    val dailyExpenseSum: List<DailySum> = listOf()
 ) {
     data class Member(val name: String)
+    data class DailySum(
+        private val date: String,
+        val amount: Double
+    ) {
+        val displayName = date.toLocalDate()?.let { "${it.monthValue}월 ${it.dayOfMonth}일" } ?: "그외"
+    }
 
     val startLocalDate = startDate.toLocalDate()
     val endLocalDate = endDate.toLocalDate()

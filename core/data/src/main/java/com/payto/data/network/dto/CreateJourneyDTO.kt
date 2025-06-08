@@ -31,6 +31,7 @@ internal data class JourneyInfoDTO(
     val members: List<MemberDTO>?,
     val startDate: String,
     val endDate: String,
+    val dailyExpenseSumByDate: List<DailySumDTO>?
 ) {
     fun isOngoing() = closedAt == null
     fun isClosed() = closedAt != null
@@ -55,7 +56,19 @@ internal data class JourneyInfoDTO(
             startDate = startDate,
             endDate = endDate,
             totalExpenseAmount = totalExpenseAmount ?: 0.0,
-            totalExpenseCount = totalExpenseCount ?: 0
+            totalExpenseCount = totalExpenseCount ?: 0,
+            dailyExpenseSum = dailyExpenseSumByDate?.map {
+                JourneyInfoModel.DailySum(
+                    date = it.date,
+                    amount = it.totalAmount ?: 0.0
+                )
+            } ?: listOf()
         )
     }
 }
+
+@Serializable
+internal data class DailySumDTO(
+    val date: String, // yyyy-MM-dd | OTHER
+    val totalAmount: Double?
+)
