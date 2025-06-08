@@ -33,6 +33,7 @@ class JourneyRepository @Inject internal constructor(
         params: ExpenseParams?,
     ): List<JourneyDetailInfo> {
         return dataSource.getExpenses(id = id, params = params ?: ExpenseParams())
+            .expenses
             .groupBy { it.expenseDate }
             .map { (date, expenses) ->
                 JourneyDetailInfo(date, expenses.map(ExpenseDTO::asExpenseModel))

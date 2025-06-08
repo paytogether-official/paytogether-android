@@ -2,6 +2,7 @@ package com.payto.data.network.datasource
 
 import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExpenseDTO
+import com.payto.data.network.dto.ExpenseTotalDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.service.PaytoService
 import com.payto.model.ExpenseParams
@@ -33,7 +34,7 @@ internal class PaytoDatasource @Inject constructor(
     suspend fun getExpenses(
         id: String,
         params: ExpenseParams,
-    ): List<ExpenseDTO> {
+    ): ExpenseTotalDTO {
         val quoteCurrency = params.quoteCurrency
         val sort = "expenseDate,${params.order.sortName}"
 

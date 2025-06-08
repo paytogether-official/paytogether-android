@@ -3,6 +3,7 @@ package com.payto.data.network.service
 import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExchangeRateDTO
 import com.payto.data.network.dto.ExpenseDTO
+import com.payto.data.network.dto.ExpenseTotalDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.dto.LocaleDTO
 import com.payto.data.network.dto.ResultDTO
@@ -49,7 +50,7 @@ internal interface PaytoService {
         @Query("sort") sort: String,
         @Query("category") category: String?,
         @Query("expenseDate") expenseDate: String?,
-    ): List<ExpenseDTO>
+    ): ExpenseTotalDTO
 
     @GET("/journeys/{id}/expenses/{journeyExpenseId}")
     suspend fun getExpense(

@@ -7,6 +7,16 @@ import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
+//{
+//  "totalAmount": 754394.04,
+//  "quoteCurrency": "KRW",
+//  "expenses": [
+@Serializable
+internal data class ExpenseTotalDTO(
+    val totalAmount :String,
+    val quoteCurrency: String,
+    val expenses: List<ExpenseDTO>
+)
 
 @Serializable
 internal data class ExpenseDTO(
