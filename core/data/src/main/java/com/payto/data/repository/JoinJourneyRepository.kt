@@ -12,7 +12,10 @@ class JoinJourneyRepository @Inject internal constructor(
 ) {
     suspend fun getJourneyState(id: String): JourneyState {
         val info = dataSource.getJourney(id, quoteCurrency = "KRW")
-        dao.insert(info.asEntity())
+
+        val localData = dao.getJourney(id)
+        dao.insert(info.asEntity(payer = localData.payer, memberInfo = localData.memberInfo))
+
         return if (info.asModel().isClosed) JourneyState.Closed else JourneyState.InProgress
     }
 }

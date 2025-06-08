@@ -20,7 +20,12 @@ class JourneyHistoryRepository @Inject internal constructor(
         if (ids.isEmpty()) return emptyList()
 
         val list = dataSource.getJourneys(ids)
-        dao.insertAll(list.map(JourneyInfoDTO::asEntity))
+        dao.insertAll(
+            list.map {
+                val localData = dao.getJourney(it.journeyId)
+                it.asEntity(localData.payer, localData.memberInfo)
+            }
+        )
         return list.filter { it.isClosed() }
             .let(::groupByStartYearMonth)
     }

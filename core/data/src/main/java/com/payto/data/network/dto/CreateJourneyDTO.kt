@@ -1,7 +1,6 @@
 package com.payto.data.network.dto
 
 import com.payto.data.database.entity.JourneyEntity
-import com.payto.data.database.entity.MemberPayInfo
 import com.payto.model.JourneyInfoModel
 import kotlinx.serialization.Serializable
 
@@ -37,12 +36,12 @@ internal data class JourneyInfoDTO(
     fun isOngoing() = closedAt == null
     fun isClosed() = closedAt != null
 
-    fun asEntity(payer: String? = null, memberInfo: List<MemberPayInfo>? = null): JourneyEntity {
+    fun asEntity(payer: String? = null, memberInfo: Map<String, Boolean>? = null): JourneyEntity {
         return JourneyEntity(
             id = journeyId,
             isClosed = closedAt != null,
             payer = payer ?: members?.firstOrNull()?.name ?: "",
-            memberInfo = memberInfo ?: members?.map { MemberPayInfo(it.name, true) } ?: listOf()
+            memberInfo = memberInfo ?: members?.associate { it.name to false }?.toMap() ?: mapOf()
         )
     }
 
