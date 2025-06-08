@@ -15,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.payto.common.ext.addFocusCleaner
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.component.TextBox
 import com.payto.designsystem.theme.Color
@@ -46,8 +48,10 @@ private fun JoinJourneyScreen(
     uiEvent: (UiEvent) -> Unit = {},
     onBackClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
+            .addFocusCleaner(focusManager)
             .background(Color.Static.white)
             .fillMaxSize()
             .navigationBarsPadding()
@@ -56,7 +60,6 @@ private fun JoinJourneyScreen(
         DefaultToolbar(title = "여정 참여하기", onBackClick = onBackClick)
         Content(
             modifier = Modifier.weight(1f),
-            onNavigate = onNavigate,
             uiEvent = uiEvent
         )
     }
@@ -65,8 +68,7 @@ private fun JoinJourneyScreen(
 @Composable
 private fun Content(
     modifier: Modifier,
-    uiEvent: (UiEvent) -> Unit = {},
-    onNavigate: (Any) -> Unit
+    uiEvent: (UiEvent) -> Unit,
 ) {
     var inviteCode by remember { mutableStateOf("") }
 
