@@ -158,7 +158,7 @@ fun JourneyDetailScreen(
         TitleHeader(
             modifier = Modifier,
             model = model.journeyInfo,
-            currency = model.params.quoteCurrency,
+            quoteCurrency = model.params.quoteCurrency,
             uiEvent = uiEvent,
             onNavigate = onNavigate
         )
@@ -176,7 +176,7 @@ fun JourneyDetailScreen(
 private fun TitleHeader(
     modifier: Modifier,
     model: JourneyInfoModel,
-    currency: String,
+    quoteCurrency: String,
     uiEvent: (UiEvent) -> Unit,
     onNavigate: (Any) -> Unit,
 ) {
@@ -213,7 +213,7 @@ private fun TitleHeader(
             CurrencyToggle(
                 modifier = Modifier,
                 options = "KRW" to model.baseCurrency,
-                selectedOption = currency,
+                selectedOption = quoteCurrency,
                 onOptionSelected = {
                     uiEvent.invoke(OnChangeCurrency(it))
                 }
@@ -262,7 +262,7 @@ private fun TitleHeader(
                     .padding(top = 16.dp),
                 text = "정산결과",
                 onClick = {
-                    onNavigate.invoke(JourneyResult(model.id))
+                    onNavigate.invoke(JourneyResult(model.id, quoteCurrency))
                 },
                 status = PaytoButtonStatus.SECONDARY
             )
@@ -276,7 +276,7 @@ private fun TitleHeader(
 }
 
 @Composable
-private fun UsageAmountByDate(
+fun UsageAmountByDate(
     modifier: Modifier,
     model: List<JourneyInfoModel.DailySum>,
 ) {

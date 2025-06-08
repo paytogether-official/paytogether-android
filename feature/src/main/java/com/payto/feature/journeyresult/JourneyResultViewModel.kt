@@ -24,21 +24,21 @@ class JourneyResultViewModel @Inject constructor(
     val model = MutableStateFlow<JourneyResultModel?>(null)
 
     init {
-        fetchData()
+        fetchData(route.quoteCurrency)
     }
 
     override fun onEvent(event: UiEvent) {
         when (event) {
             is OnChangeCurrency -> {
-//                model.value = model.value?.updateCurrency(event.currency)
+                fetchData(event.currency)
             }
         }
     }
 
-    private fun fetchData() {
+    private fun fetchData(quoteCurrency: String) {
         viewModelScope.launch {
             runCatching {
-                val data = repository.getSettlement(route.journeyId, "KRW")
+                val data = repository.getSettlement(route.journeyId, quoteCurrency)
                 model.value = data
             }.onFailure {
                 showErrorMessage()

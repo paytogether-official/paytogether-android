@@ -20,13 +20,13 @@ class ResultRepository @Inject internal constructor(
         withContext(Dispatchers.IO) {
 
             val info = async { getJourneyInfoData(id, quoteCurrency) }
-            // todo quoteCurrency: String
-            val result = dataSource.getSettlement(id)
+            val result = dataSource.getSettlement(id, quoteCurrency)
 
             return@withContext JourneyResultModel(
                 infoModel = info.await(),
                 ratioModel = result.asRatioModelList(),
-                settlementSummaryModel = result.asSettlementSummaryModelList()
+                settlementSummaryModel = result.asSettlementSummaryModelList(),
+                quoteCurrency = quoteCurrency
             )
         }
 }

@@ -64,5 +64,6 @@ internal interface PaytoService {
     @GET("/journeys/{id}/settlement")
     suspend fun getSettlement(
         @Path("id") id: String,
+        @Query("quoteCurrency") quoteCurrency: String,
     ): ResultDTO
 }

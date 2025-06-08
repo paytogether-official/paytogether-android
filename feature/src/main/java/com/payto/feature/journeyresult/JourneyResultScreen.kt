@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -64,6 +63,7 @@ import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.ext.getDrawableId
 import com.payto.feature.journey.OnChangeCurrency
+import com.payto.feature.journeydetail.UsageAmountByDate
 import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyResultModel
@@ -120,6 +120,7 @@ private fun JourneyResultScreen(
                     TitleHeader(
                         modifier = Modifier.fillMaxWidth(),
                         model = model.infoModel,
+                        quoteCurrency = model.quoteCurrency,
                         uiEvent = uiEvent
                     )
                     Content(
@@ -137,6 +138,7 @@ private fun JourneyResultScreen(
 private fun TitleHeader(
     modifier: Modifier,
     model: JourneyInfoModel,
+    quoteCurrency: String,
     uiEvent: (UiEvent) -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -172,7 +174,7 @@ private fun TitleHeader(
             CurrencyToggle(
                 modifier = Modifier,
                 options = "KRW" to model.baseCurrency,
-                selectedOption = "", // TODO
+                selectedOption = quoteCurrency,
                 onOptionSelected = {
                     uiEvent.invoke(OnChangeCurrency(it))
                 }
@@ -200,7 +202,7 @@ private fun TitleHeader(
             )
         }
         AnimatedVisibility(visible = isExpanded) {
-            UsageAmountByDate(modifier = Modifier.fillMaxWidth())
+            UsageAmountByDate(modifier = Modifier.fillMaxWidth(), model = model.dailyExpenseSum)
         }
         Text(
             modifier = Modifier
@@ -210,34 +212,6 @@ private fun TitleHeader(
             color = Color.Label.alternative,
             style = typography.captionRegular
         )
-    }
-}
-
-@Composable
-private fun UsageAmountByDate(
-    modifier: Modifier,
-) {
-    LazyRow(
-        modifier = modifier.padding(vertical = 8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(10) {
-            UsageItem()
-        }
-    }
-}
-
-@Composable
-private fun UsageItem() {
-    Column(
-        modifier = Modifier
-            .background(Component.Fill.normal, shape = RoundedCornerShape(8.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        Text(text = "4월 13일", color = Color.Label.neutral, style = typography.captionRegular)
-        Text(text = "123,145", color = Color.Label.normal, style = typography.contentRegular)
     }
 }
 

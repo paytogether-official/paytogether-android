@@ -1,6 +1,10 @@
 package com.payto.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class JourneyResultModel(
+    val quoteCurrency : String = "KRW",
     val infoModel: JourneyInfoModel = JourneyInfoModel(),
     val ratioModel: List<ResultRatioModel>,
     val settlementSummaryModel: List<SettlementSummaryModel>,
