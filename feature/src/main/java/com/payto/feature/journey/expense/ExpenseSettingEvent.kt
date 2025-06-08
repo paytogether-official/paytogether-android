@@ -9,3 +9,5 @@ data class OnParticipantsChange(
     val name: String,
     val exclude: Boolean,
 ) : ExpenseSettingEvent
+
+data class OnPayerChange(val name: String) : ExpenseSettingEvent

@@ -77,7 +77,7 @@ data class JourneyExpenseModel(
 
     fun getAmountErrorText(): String {
         return when {
-            amount == null -> ""
+            amount.isNullOrEmpty() -> ""
             BigDecimal(amount) >= BigDecimal("10000000000") -> "숫자는 10자리까지 입력 가능합니다."
             else -> ""
         }
@@ -90,7 +90,8 @@ fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: String?): Jo
     }
     return this.copy(
         membersAmount = updatedMembers,
-        amount = updatedMembers.sumOf { BigDecimal(it.amount ?: "0.0") }.toString()
+        amount = updatedMembers.sumOf { BigDecimal(it.amount ?: "0.0") }
+            .takeIf { it != BigDecimal.ZERO }?.toString()
     )
 }
 

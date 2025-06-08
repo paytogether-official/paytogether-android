@@ -5,4 +5,5 @@ data class ExpenseSettingModel(
     val memberInfoMap: Map<String, Boolean>
 ) {
     val members = memberInfoMap.toList()
+    val payMembers = memberInfoMap.filter { it.value.not() }.keys.toList()
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +63,9 @@ fun JourneyRoute(
     onBackClick: () -> Unit,
     viewModel: JourneyExpenseViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.setInitData()
+    }
     val journeyModel by viewModel.journeyData.collectAsStateWithLifecycle()
 
     HandleSideEffect(viewModel, onNavigate, onBackClick)

@@ -16,8 +16,8 @@ import com.payto.common.navigate.Home
 import com.payto.common.navigate.JoinJourney
 import com.payto.common.navigate.Journey
 import com.payto.common.navigate.JourneyDetail
-import com.payto.common.navigate.JourneyHistory
 import com.payto.common.navigate.JourneyExpenseItemDetail
+import com.payto.common.navigate.JourneyHistory
 import com.payto.common.navigate.JourneyResult
 import com.payto.feature.createjourney.CreateJourneyRoute
 import com.payto.feature.home.HomeRoute

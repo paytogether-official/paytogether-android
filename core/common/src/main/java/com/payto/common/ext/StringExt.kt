@@ -29,7 +29,7 @@ fun String.numberFormat(): String {
 
 
 fun String.safeDiv(divisor: Int): String {
-    val num = BigDecimal(this)
+    val num = BigDecimal(this.takeIf { it.isNotEmpty() } ?: "0")
     return if (BigDecimal(divisor) == BigDecimal.ZERO) this
     else num.divide(BigDecimal(divisor), 2, RoundingMode.DOWN).toString()
 }

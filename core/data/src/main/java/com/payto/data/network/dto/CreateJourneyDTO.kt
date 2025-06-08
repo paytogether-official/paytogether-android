@@ -45,15 +45,16 @@ internal data class JourneyInfoDTO(
         )
     }
 
-    fun asModel(): JourneyInfoModel {
+    fun asModel(memberInfo: Map<String, Boolean>? = null): JourneyInfoModel {
         return JourneyInfoModel(
             id = journeyId,
             title = title,
             isClosed = closedAt != null,
             baseCurrency = this@JourneyInfoDTO.baseCurrency,
-            members = members?.map {
-                JourneyInfoModel.Member(it.name)
-            } ?: listOf(),
+            members = memberInfo?.filter { it.value == false }?.map {
+                JourneyInfoModel.Member(it.key)
+            } ?: members?.map { JourneyInfoModel.Member(it.name) }
+            ?: listOf(),
             startDate = startDate,
             endDate = endDate,
             totalExpenseAmount = totalExpenseAmount ?: "0.0",

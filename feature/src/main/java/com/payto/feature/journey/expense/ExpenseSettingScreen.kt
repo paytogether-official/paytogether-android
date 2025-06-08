@@ -1,5 +1,6 @@
 package com.payto.feature.journey.expense
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -46,6 +50,8 @@ fun ExpenseSettingRoute(
     val model by viewModel.model.collectAsStateWithLifecycle()
 
     HandleSideEffect(viewModel, onNavigate, onBackClick)
+    BackHandler(onBack = onBackClick)
+
     ExpenseSettingScreen(
         model = model,
         onBackClick = onBackClick,
@@ -75,7 +81,11 @@ fun ExpenseSettingScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                SelectPayer(payer = model.payer, uiEvent = uiEvent)
+                SelectPayer(
+                    payer = model.payer,
+                    payers = model.payMembers,
+                    uiEvent = uiEvent
+                )
                 MemberList(
                     modifier = Modifier
                         .weight(1f),
@@ -90,8 +100,25 @@ fun ExpenseSettingScreen(
 @Composable
 private fun SelectPayer(
     payer: String,
+    payers: List<String>,
     uiEvent: (UiEvent) -> Unit
 ) {
+    var isShowPayerSettingDialog by remember {
+        mutableStateOf(false)
+    }
+
+    PayerSettingDialog(
+        isShow = isShowPayerSettingDialog,
+        payers = payers,
+        selectedPayer = payer,
+        onDismissRequest = { payer ->
+            isShowPayerSettingDialog = false
+            if (payer != null) {
+                uiEvent.invoke(OnPayerChange(payer))
+            }
+        }
+    )
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -106,7 +133,7 @@ private fun SelectPayer(
             value = payer,
             endIcon = IconPack.Caretdown,
             onClick = {
-                // TODO
+                isShowPayerSettingDialog = true
             }
         )
     }

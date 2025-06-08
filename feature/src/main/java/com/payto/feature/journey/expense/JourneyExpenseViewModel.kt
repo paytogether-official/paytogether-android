@@ -30,7 +30,6 @@ import com.payto.model.updateMemberAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,15 +45,10 @@ class JourneyExpenseViewModel @Inject constructor(
 
     val journeyData = MutableStateFlow<JourneyModel?>(null)
 
-    init {
-        setInitData()
-    }
-
-    private fun setInitData() {
+    fun setInitData() {
         viewModelScope.launch {
             runCatching {
                 val data = fetchInitData()
-                delay(100)
                 journeyData.value = data
             }.onFailure {
                 showSnackbar("오류가 발생했습니다.", ShowSnackbar.Status.FAIL)
@@ -141,7 +135,7 @@ class JourneyExpenseViewModel @Inject constructor(
 
             is OnExpenseModeChange -> {
                 when (event.splitMode) {
-                    OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(journeyData.value?.createExpenseModel?.amount.toString())
+                    OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(journeyData.value?.createExpenseModel?.amount ?: "")
                     OnExpenseAmountChange.SplitMode.CUSTOM -> equalAmount("")
                 }
             }
@@ -183,7 +177,7 @@ class JourneyExpenseViewModel @Inject constructor(
 
     private fun customAmount(amount: String, memberName: String) {
         val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
-        val amount = amount.filter { it.isDigit() }
+        val amount = amount.filter { it.isDigit() }.takeIf { it.isNotEmpty() }
         journeyData.value = journeyData.value?.copy(
             createExpenseModel = expenseModel.updateMemberAmount(memberName, amount)
         )
@@ -191,13 +185,13 @@ class JourneyExpenseViewModel @Inject constructor(
 
     private fun equalAmount(amount: String) {
         val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
-        val totalAmount = amount.filter { it.isDigit() }
+        val totalAmount = amount.filter { it.isDigit() }.takeIf { it.isNotEmpty() }
 
         journeyData.value = journeyData.value?.copy(
             createExpenseModel = expenseModel.copy(
                 amount = totalAmount,
                 membersAmount = expenseModel.membersAmount.map {
-                    it.copy(amount = totalAmount.safeDiv(expenseModel.membersAmount.size))
+                    it.copy(amount = totalAmount?.safeDiv(expenseModel.membersAmount.size))
                 }
             )
         )
@@ -208,7 +202,7 @@ class JourneyExpenseViewModel @Inject constructor(
             runCatching {
                 repository.closeJourney(journey.journeyId)
             }.onSuccess {
-             // TODO 여정 결과로 이동
+                // TODO 여정 결과로 이동
             }
         }
     }

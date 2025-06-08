@@ -34,6 +34,10 @@ class ExpenseSettingViewModel @Inject constructor(
             is OnParticipantsChange -> {
                 updateMemberInfo(event)
             }
+
+            is OnPayerChange -> {
+                updatePayer(event.name)
+            }
         }
     }
 
@@ -45,6 +49,20 @@ class ExpenseSettingViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 repository.updateMemberInfo(route.journeyId, event.name, event.exclude)
+            }.onFailure {
+                showErrorMessage()
+            }
+        }
+    }
+
+    private fun updatePayer(payer: String) {
+        if (model.value?.payer == payer) return
+
+        viewModelScope.launch {
+            runCatching {
+                repository.updatePayer(route.journeyId, payer)
+            }.onFailure {
+                showErrorMessage()
             }
         }
     }
