@@ -496,15 +496,15 @@ internal fun JourneyDetailList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (list.isEmpty()) {
-            item {
+            item(key = "EmptyBox", contentType = "EmptyBox") {
                 EmptyBox(modifier = Modifier.fillParentMaxHeight())
             }
         }
         list.forEach {
-            item {
+            item(key = it.date, contentType = "Date") {
                 JourneyDate(modifier = Modifier, date = it.date)
             }
-            items(it.list) { model ->
+            items(items = it.list, key = { it.id }, contentType = { "JourneyItem" }) { model ->
                 JourneyItem(modifier = Modifier, model = model, onNavigate = onNavigate)
             }
         }

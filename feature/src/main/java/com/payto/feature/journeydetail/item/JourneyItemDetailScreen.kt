@@ -35,6 +35,7 @@ import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
+import com.payto.feature.journey.OnChangeCurrency
 import com.payto.model.JourneyExpenseModel
 
 @Composable

@@ -8,6 +8,7 @@ import com.payto.common.navigate.JourneyExpenseItemDetail
 import com.payto.data.repository.JourneyRepository
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
+import com.payto.feature.journey.OnChangeCurrency
 import com.payto.model.JourneyExpenseModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,6 @@ class JourneyExpenseItemViewModel @Inject constructor(
     }
 
     override fun onEvent(event: UiEvent) {
-        event as? ExpenseItemEvent ?: return
         when(event) {
             is OnChangeCurrency -> {
                 fetchExpense(event.currency)

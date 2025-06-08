@@ -5,6 +5,7 @@ import com.payto.data.network.dto.ExchangeRateDTO
 import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.dto.LocaleDTO
+import com.payto.data.network.dto.ResultDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -59,4 +60,9 @@ internal interface PaytoService {
     suspend fun closeJourney(
         @Path("id") id: String,
     )
+
+    @GET("/journeys/{id}/settlement")
+    suspend fun getSettlement(
+        @Path("id") id: String,
+    ): ResultDTO
 }

@@ -1,24 +1,48 @@
 package com.payto.feature.journeyresult
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.payto.common.navigate.JourneyResult
+import com.payto.data.repository.ResultRepository
+import com.payto.feature.common.UiEvent
+import com.payto.feature.common.arch.BaseViewModel
+import com.payto.feature.journey.OnChangeCurrency
+import com.payto.model.JourneyResultModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class JourneyResultViewModel @Inject constructor() : ViewModel() {
+@HiltViewModel
+class JourneyResultViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repository: ResultRepository
+) : BaseViewModel() {
+    private val route = savedStateHandle.toRoute<JourneyResult>()
 
-    val model = MutableStateFlow(
-        JourneyResultModel(
-            ratioModel = listOf(
-                ResultRatioModel("title", 0.333, "123453436"),
-                ResultRatioModel("title", 0.5, "123456"),
-                ResultRatioModel("title", 0.22, "333"),
-                ResultRatioModel("title", 0.8, "123456"),
-            ),
-            settlementSummaryModel = listOf(
-                SettlementSummaryModel("sender", 3434, "receiver"),
-                SettlementSummaryModel("sender", 1455, "receiver"),
-                SettlementSummaryModel("sender", 9999999, "receiver"),
-            )
-        )
-    )
+    val model = MutableStateFlow<JourneyResultModel?>(null)
+
+    init {
+        fetchData()
+    }
+
+    override fun onEvent(event: UiEvent) {
+        when (event) {
+            is OnChangeCurrency -> {
+//                model.value = model.value?.updateCurrency(event.currency)
+            }
+        }
+    }
+
+    private fun fetchData() {
+        viewModelScope.launch {
+            runCatching {
+                val data = repository.getSettlement(route.journeyId, "KRW")
+                model.value = data
+            }.onFailure {
+                showErrorMessage()
+            }
+        }
+    }
 }
