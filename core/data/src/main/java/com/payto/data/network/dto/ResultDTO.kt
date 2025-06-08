@@ -40,18 +40,18 @@ internal data class JourneySettlementDTO(
     val fromMemberName: String,
     val toMemberId: Int,
     val toMemberName: String,
-    val amount: Double,
+    val amount: String,
 )
 
 @Serializable
 internal data class ExpenseCategoryDTO(
     val category: String,
-    val amount: Double,
-    val percentage: Double,
+    val amount: String,
+    val percentage: String,
 )
 
 @Serializable
 internal data class MemberExpenseDTO(
     val name: String,
-    val amount: Double,
+    val amount: String,
 )

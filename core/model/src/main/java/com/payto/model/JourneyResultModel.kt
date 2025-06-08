@@ -12,12 +12,12 @@ data class JourneyResultModel(
 
 data class ResultRatioModel(
     val category: ExpenseCategory,
-    val percentage: Double,
-    val amount: Double,
+    val percentage: String,
+    val amount: String,
 )
 
 data class SettlementSummaryModel(
     val sender: String,
-    val amount: Double,
+    val amount: String,
     val receiver: String,
 )

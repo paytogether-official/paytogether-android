@@ -232,10 +232,10 @@ private fun MemoItem(
 private fun JourneyExpenseItemDetailScreenPreview() {
     val model = JourneyExpenseModel(
         membersAmount = listOf(
-            JourneyExpenseModel.MemberAmount(name = "가망이", amount = 10000.0),
-            JourneyExpenseModel.MemberAmount(name = "니망이", amount = 10000.0),
-            JourneyExpenseModel.MemberAmount(name = "다망이", amount = 10000.0),
-            JourneyExpenseModel.MemberAmount(name = "라망이", amount = 10000.0)
+            JourneyExpenseModel.MemberAmount(name = "가망이", amount = "10000.0"),
+            JourneyExpenseModel.MemberAmount(name = "니망이", amount = "10000.0"),
+            JourneyExpenseModel.MemberAmount(name = "다망이", amount = "10000.0"),
+            JourneyExpenseModel.MemberAmount(name = "라망이", amount = "10000.0")
         )
     )
     JourneyExpenseItemDetailScreen(model = model, uiEvent = {})

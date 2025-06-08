@@ -1,5 +1,8 @@
 package com.payto.common.ext
 
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.time.LocalDate
 
 
@@ -12,4 +15,21 @@ fun String.toLocalDate(): LocalDate? = try {
     }
 } catch (e: Exception) {
     null
+}
+
+fun String.numberFormat(): String {
+    return try {
+        val number = BigDecimal(this)
+        val formatter = DecimalFormat("#,###.##")
+        formatter.format(number)
+    } catch (e: Exception) {
+        this
+    }
+}
+
+
+fun String.safeDiv(divisor: Int): String {
+    val num = BigDecimal(this)
+    return if (BigDecimal(divisor) == BigDecimal.ZERO) this
+    else num.divide(BigDecimal(divisor), 2, RoundingMode.DOWN).toString()
 }

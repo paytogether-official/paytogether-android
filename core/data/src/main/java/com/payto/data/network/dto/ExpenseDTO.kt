@@ -1,12 +1,12 @@
 package com.payto.data.network.dto
 
 import com.payto.common.ext.toLocalDate
-import com.payto.common.ext.truncateToTwoDecimalPlaces
 import com.payto.data.network.dto.ExpenseDTO.MemberExpenseDTO
 import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyModel
 import kotlinx.serialization.Serializable
+import java.math.BigDecimal
 
 @Serializable
 internal data class ExpenseDTO(
@@ -18,15 +18,16 @@ internal data class ExpenseDTO(
     val baseCurrency: String,
     val quoteCurrency: String? = null,
     val categoryDescription: String?,
-    val amount: Double,
+    val amount: String,
     val members: List<MemberExpenseDTO> = listOf(),
-    private val remainingAmount: Double = (amount - members.sumOf { it.amount }).truncateToTwoDecimalPlaces(),
+    private val remainingAmount: String = (BigDecimal(amount.toString())
+            - members.sumOf { BigDecimal(it.amount) }).toString(),
     val memo: String,
 ) {
     @Serializable
     internal data class MemberExpenseDTO(
         val name: String,
-        val amount: Double,
+        val amount: String,
     )
 }
 
@@ -37,9 +38,9 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         category = this.createExpenseModel.category.displayName,
         expenseDate = this.createExpenseModel.expenseDate.toString(),
         baseCurrency = this.infoModel.baseCurrency,
-        amount = this.createExpenseModel.amount ?: 0.0,
+        amount = this.createExpenseModel.amount ?: "0.0",
         members = this.createExpenseModel.membersAmount.map {
-            MemberExpenseDTO(it.name, it.amount?.truncateToTwoDecimalPlaces() ?: 0.0)
+            MemberExpenseDTO(it.name, it.amount ?: "0.0")
         },
         memo = this.createExpenseModel.memo,
         categoryDescription = this.createExpenseModel.categoryDescription

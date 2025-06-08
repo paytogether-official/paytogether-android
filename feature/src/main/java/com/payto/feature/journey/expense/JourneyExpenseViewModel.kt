@@ -183,7 +183,7 @@ class JourneyExpenseViewModel @Inject constructor(
 
     private fun customAmount(amount: String, memberName: String) {
         val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
-        val amount = amount.filter { it.isDigit() }.toDoubleOrNull()
+        val amount = amount.filter { it.isDigit() }
         journeyData.value = journeyData.value?.copy(
             createExpenseModel = expenseModel.updateMemberAmount(memberName, amount)
         )
@@ -191,13 +191,13 @@ class JourneyExpenseViewModel @Inject constructor(
 
     private fun equalAmount(amount: String) {
         val expenseModel = journeyData.value?.createExpenseModel ?: JourneyExpenseModel()
-        val totalAmount = amount.filter { it.isDigit() }.toDoubleOrNull()
+        val totalAmount = amount.filter { it.isDigit() }
 
         journeyData.value = journeyData.value?.copy(
             createExpenseModel = expenseModel.copy(
                 amount = totalAmount,
                 membersAmount = expenseModel.membersAmount.map {
-                    it.copy(amount = totalAmount?.safeDiv(expenseModel.membersAmount.size.toDouble()))
+                    it.copy(amount = totalAmount.safeDiv(expenseModel.membersAmount.size))
                 }
             )
         )

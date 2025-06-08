@@ -449,7 +449,7 @@ private fun Amount(
 @Composable
 private fun AmountTextField(
     modifier: Modifier = Modifier,
-    amount: Double?,
+    amount: String?,
     currency: String,
     enabled: Boolean = true,
     mode: SplitMode,
@@ -546,11 +546,11 @@ private fun SettlementSetting(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(model?.createExpenseModel?.membersAmount ?: listOf()) {
+            items(model.createExpenseModel.membersAmount) {
                 Member(
                     modifier = Modifier.fillMaxWidth(),
                     model = it,
-                    isPayer = it.name == model?.createExpenseModel?.payer,
+                    isPayer = it.name == model.createExpenseModel.payer,
                     mode = mode,
                     uiEvent = uiEvent
                 )
@@ -667,9 +667,9 @@ private fun JourneyExpenseScreenPreview() {
             members = emptyList()
         ),
         createExpenseModel = JourneyExpenseModel(
-            amount = 100000000000.0,
+            amount = "100000000000.0",
             membersAmount = List(10) {
-                JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = 0.0)
+                JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = "0.0")
             }
         )
     )

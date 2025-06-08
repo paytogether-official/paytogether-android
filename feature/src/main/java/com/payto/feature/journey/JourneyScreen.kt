@@ -249,9 +249,9 @@ private fun JourneyScreenPreview() {
             members = emptyList()
         ),
         createExpenseModel = JourneyExpenseModel(
-            amount = 100000000000.0,
+            amount = "100000000000.0",
             membersAmount = List(10) {
-                JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = 0.0)
+                JourneyExpenseModel.MemberAmount(name = "멤버 $it", amount = "0.0")
             }
         )
     )

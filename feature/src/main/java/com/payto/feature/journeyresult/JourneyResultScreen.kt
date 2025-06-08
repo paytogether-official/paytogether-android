@@ -338,7 +338,7 @@ private fun RatioItem(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .height(36.dp)
-                        .fillMaxWidth((model.percentage / 100).toFloat())
+                        .fillMaxWidth((model.percentage.toDouble() / 100).toFloat())
                         .background(
                             color = Color.Primary.normal,
                             shape = RoundedCornerShape(8.dp)
@@ -471,15 +471,15 @@ private fun SettlementSummaryItem(
 private fun JourneyResultScreenPreview() {
     val model = JourneyResultModel(
         ratioModel = listOf(
-            ResultRatioModel(ExpenseCategory.ACCOMMODATION, 0.333, 12.0),
-            ResultRatioModel(ExpenseCategory.ACCOMMODATION, 0.5, 12.0),
-            ResultRatioModel(ExpenseCategory.ACCOMMODATION, 0.22, 12.0),
-            ResultRatioModel(ExpenseCategory.ACCOMMODATION, 1.0, 12.0),
+            ResultRatioModel(ExpenseCategory.ACCOMMODATION, "0.333", "12.0"),
+            ResultRatioModel(ExpenseCategory.ACCOMMODATION, "0.5", "12.0"),
+            ResultRatioModel(ExpenseCategory.ACCOMMODATION, "0.22", "12.0"),
+            ResultRatioModel(ExpenseCategory.ACCOMMODATION, "1.0", "12.0"),
         ),
         settlementSummaryModel = listOf(
-            SettlementSummaryModel("sender", 123456.0, "receiver"),
-            SettlementSummaryModel("sender", 123456.0, "receiver"),
-            SettlementSummaryModel("sender", 123456.0, "receiver"),
+            SettlementSummaryModel("sender", "123456.0", "receiver"),
+            SettlementSummaryModel("sender", "123456.0", "receiver"),
+            SettlementSummaryModel("sender", "123456.0", "receiver"),
         )
     )
     JourneyResultScreen(onBackClick = {}, onNavigate = {}, model = model, uiEvent = {})
@@ -489,9 +489,9 @@ private fun JourneyResultScreenPreview() {
 @Composable
 private fun SettlementSummaryPreview() {
     val model = listOf(
-        SettlementSummaryModel("sender", 123456.0, "receiver"),
-        SettlementSummaryModel("sender", 123456.0, "receiver"),
-        SettlementSummaryModel("sender", 123456.0, "receiver"),
+        SettlementSummaryModel("sender", "123456.0", "receiver"),
+        SettlementSummaryModel("sender", "123456.0", "receiver"),
+        SettlementSummaryModel("sender", "123456.0", "receiver"),
     )
     SettlementSummary(modifier = Modifier, list = model)
 }

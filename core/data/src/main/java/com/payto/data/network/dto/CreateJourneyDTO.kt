@@ -1,6 +1,7 @@
 package com.payto.data.network.dto
 
 import com.payto.data.database.entity.JourneyEntity
+import com.payto.data.database.entity.MemberPayInfo
 import com.payto.model.JourneyInfoModel
 import kotlinx.serialization.Serializable
 
@@ -25,7 +26,7 @@ internal data class JourneyInfoDTO(
     val journeyId: String,
     val title: String,
     val baseCurrency: String,
-    val totalExpenseAmount: Double?,
+    val totalExpenseAmount: String?,
     val totalExpenseCount: Int?,
     val closedAt: String?,
     val members: List<MemberDTO>?,
@@ -36,11 +37,12 @@ internal data class JourneyInfoDTO(
     fun isOngoing() = closedAt == null
     fun isClosed() = closedAt != null
 
-    fun asEntity(): JourneyEntity {
+    fun asEntity(payer: String? = null, memberInfo: List<MemberPayInfo>? = null): JourneyEntity {
         return JourneyEntity(
             id = journeyId,
             isClosed = closedAt != null,
-            payer = members?.firstOrNull()?.name ?: "",
+            payer = payer ?: members?.firstOrNull()?.name ?: "",
+            memberInfo = memberInfo ?: members?.map { MemberPayInfo(it.name, true) } ?: listOf()
         )
     }
 
@@ -55,12 +57,12 @@ internal data class JourneyInfoDTO(
             } ?: listOf(),
             startDate = startDate,
             endDate = endDate,
-            totalExpenseAmount = totalExpenseAmount ?: 0.0,
+            totalExpenseAmount = totalExpenseAmount ?: "0.0",
             totalExpenseCount = totalExpenseCount ?: 0,
             dailyExpenseSum = dailyExpenseSumByDate?.map {
                 JourneyInfoModel.DailySum(
                     date = it.date,
-                    amount = it.totalAmount ?: 0.0
+                    amount = it.totalAmount ?: "0.0"
                 )
             } ?: listOf()
         )
@@ -70,5 +72,5 @@ internal data class JourneyInfoDTO(
 @Serializable
 internal data class DailySumDTO(
     val date: String, // yyyy-MM-dd | OTHER
-    val totalAmount: Double?
+    val totalAmount: String?
 )

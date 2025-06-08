@@ -2,6 +2,7 @@ package com.payto.model
 
 import androidx.compose.runtime.Stable
 import com.payto.common.ext.toLocalDate
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Stable
@@ -13,14 +14,14 @@ data class JourneyInfoModel(
     private val startDate: String = "", // 2025-03-21
     private val endDate: String = "",
     val members: List<Member> = listOf(),
-    val totalExpenseAmount: Double = 0.0,
+    val totalExpenseAmount: String = "0.0",
     val totalExpenseCount: Int = 0,
     val dailyExpenseSum: List<DailySum> = listOf()
 ) {
     data class Member(val name: String)
     data class DailySum(
         val date: String,
-        val amount: Double
+        val amount: String
     ) {
         val displayName = date.toLocalDate()?.let { "${it.monthValue}월 ${it.dayOfMonth}일" } ?: "그외"
     }
@@ -55,7 +56,7 @@ data class JourneyExpenseModel(
     val payer: String = "",
     val category: ExpenseCategory = ExpenseCategory.list.first(),
     val categoryDescription: String? = null,
-    val amount: Double? = null, // 총 지출 금액
+    val amount: String? = null, // 총 지출 금액
     val memo: String = "",
     val membersAmount: List<MemberAmount> = listOf(), // 개인별 금액
     val quoteCurrency: String = "",
@@ -65,31 +66,32 @@ data class JourneyExpenseModel(
 
     data class MemberAmount(
         val name: String,
-        val amount: Double? = null,
+        val amount: String? = null,
     )
 
     fun isFullyFilled(): Boolean {
         return expenseDate != null &&
                 amount != null &&
-                amount != 0.0
+                amount.toDoubleOrNull() != 0.0
     }
 
     fun getAmountErrorText(): String {
         return when {
             amount == null -> ""
-            kotlin.math.abs(amount) >= 10_000_000_000 -> "숫자는 10자리 까지 입력 가능합니다."
+            BigDecimal(amount) >= BigDecimal("10000000000") -> "숫자는 10자리까지 입력 가능합니다."
             else -> ""
         }
     }
 }
 
-fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: Double?): JourneyExpenseModel {
+fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: String?): JourneyExpenseModel {
     val updatedMembers = membersAmount.map {
         if (it.name == name) it.copy(amount = newAmount) else it
     }
     return this.copy(
         membersAmount = updatedMembers,
-        amount = updatedMembers.sumOf { it.amount ?: 0.0 })
+        amount = updatedMembers.sumOf { BigDecimal(it.amount ?: "0.0") }.toString()
+    )
 }
 
 @Stable
