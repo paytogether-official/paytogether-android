@@ -47,6 +47,8 @@ internal interface PaytoService {
         @Path("id") id: String,
         @Query("quoteCurrency") quoteCurrency: String,
         @Query("sort") sort: String,
+        @Query("category") category: String?,
+        @Query("expenseDate") expenseDate: String?,
     ): List<ExpenseDTO>
 
     @GET("/journeys/{id}/expenses/{journeyExpenseId}")

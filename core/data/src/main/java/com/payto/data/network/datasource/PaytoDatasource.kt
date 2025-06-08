@@ -37,7 +37,8 @@ internal class PaytoDatasource @Inject constructor(
         val quoteCurrency = params.quoteCurrency
         val sort = "expenseDate,${params.order.sortName}"
 
-        return service.getExpenses(id, quoteCurrency, sort)
+        // TODO category
+        return service.getExpenses(id, quoteCurrency, sort, null, params.expenseDate)
     }
 
     suspend fun getExpense(id: String, journeyExpenseId: Int, quoteCurrency: String) =
@@ -45,6 +46,7 @@ internal class PaytoDatasource @Inject constructor(
 
     suspend fun closeJourney(id: String) = service.closeJourney(id)
 
-    suspend fun getSettlement(id: String, quoteCurrency: String) = service.getSettlement(id, quoteCurrency)
+    suspend fun getSettlement(id: String, quoteCurrency: String) =
+        service.getSettlement(id, quoteCurrency)
 
 }

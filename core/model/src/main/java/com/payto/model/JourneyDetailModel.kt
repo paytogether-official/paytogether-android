@@ -12,6 +12,10 @@ data class JourneyDetailModel(
     fun updateCurrency(currency: String): JourneyDetailModel {
         return this.copy(params = params.copy(quoteCurrency = currency))
     }
+
+    fun updateDate(date: String?): JourneyDetailModel {
+        return this.copy(params = params.copy(expenseDate = date))
+    }
 }
 
 data class JourneyDetailInfo(

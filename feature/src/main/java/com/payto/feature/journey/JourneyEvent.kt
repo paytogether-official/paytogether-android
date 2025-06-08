@@ -1,8 +1,8 @@
 package com.payto.feature.journey
 
 import com.payto.feature.common.UiEvent
-import com.payto.model.JourneyDetailOrder
 import com.payto.model.ExpenseCategory
+import com.payto.model.JourneyDetailOrder
 
 
 sealed interface JourneyEvent : UiEvent
@@ -47,6 +47,10 @@ data class OnChangeOrder(
 
 data class OnChangeCurrency(
     val currency: String
+) : JourneyEvent
+
+data class OnClickDate(
+    val date: String?
 ) : JourneyEvent
 
 data object OnClickClose : JourneyEvent

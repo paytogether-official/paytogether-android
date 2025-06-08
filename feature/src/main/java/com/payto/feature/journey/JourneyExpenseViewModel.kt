@@ -147,6 +147,11 @@ class JourneyExpenseViewModel @Inject constructor(
             OnClickClose -> {
                 closeJourney()
             }
+
+            is OnClickDate -> {
+                journeyData.value = journeyData.value?.updateDate(event.date)
+                setInitData()
+            }
         }
     }
 

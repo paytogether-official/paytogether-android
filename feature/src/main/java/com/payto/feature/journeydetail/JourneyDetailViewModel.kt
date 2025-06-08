@@ -9,6 +9,7 @@ import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
 import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
+import com.payto.feature.journey.OnClickDate
 import com.payto.model.JourneyDetailModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,11 @@ class JourneyDetailViewModel @Inject constructor(
 
             is OnChangeCurrency -> {
                 model.value = model.value.updateCurrency(event.currency)
+                fetchInitData()
+            }
+
+            is OnClickDate -> {
+                model.value = model.value.updateDate(event.date)
                 fetchInitData()
             }
         }

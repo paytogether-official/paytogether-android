@@ -19,7 +19,7 @@ data class JourneyInfoModel(
 ) {
     data class Member(val name: String)
     data class DailySum(
-        private val date: String,
+        val date: String,
         val amount: Double
     ) {
         val displayName = date.toLocalDate()?.let { "${it.monthValue}월 ${it.dayOfMonth}일" } ?: "그외"
@@ -107,6 +107,10 @@ data class JourneyModel(
 
     fun updateCurrency(currency: String): JourneyModel {
         return this.copy(params = params.copy(quoteCurrency = currency))
+    }
+
+    fun updateDate(date: String?): JourneyModel {
+        return this.copy(params = params.copy(expenseDate = date))
     }
 }
 

@@ -31,8 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -81,7 +81,9 @@ import com.payto.feature.common.UiEvent
 import com.payto.feature.common.ext.getDrawableId
 import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
+import com.payto.feature.journey.OnClickDate
 import com.payto.feature.journeyhistory.JourneyDate
+import com.payto.model.ExpenseParams
 import com.payto.model.JourneyDetailInfo
 import com.payto.model.JourneyDetailModel
 import com.payto.model.JourneyDetailOrder
@@ -162,7 +164,11 @@ fun JourneyDetailScreen(
             uiEvent = uiEvent,
             onNavigate = onNavigate
         )
-        DetailContent(uiEvent = uiEvent, selectedOrder = model.params.order)
+        DetailContent(
+            uiEvent = uiEvent,
+            params = model.params,
+            dateList = model.journeyInfo.dailyExpenseSum
+        )
         JourneyDetailList(
             modifier = Modifier.weight(1f),
             list = model.list,
@@ -315,13 +321,26 @@ private fun UsageItem(model: JourneyInfoModel.DailySum) {
 @Composable
 private fun DetailContent(
     modifier: Modifier = Modifier,
-    selectedOrder: JourneyDetailOrder,
+    params: ExpenseParams,
+    dateList: List<JourneyInfoModel.DailySum>,
     uiEvent: (UiEvent) -> Unit,
 ) {
-    val tabs = listOf("전체", "1일차", "2일차", "3일차", "4일차", "5일차", "6일차", "7일차")
-    var selectedTabIndex by remember {
-        mutableIntStateOf(0)
+    val tabs by remember(dateList.size) {
+        derivedStateOf {
+            dateList.mapIndexed { index, data ->
+                if (index == dateList.lastIndex) "그외" else "${index + 1}일차"
+            }.toMutableList().apply {
+                add(0, "전체")
+            }
+        }
     }
+
+    val selectedTabIndex by remember(params.expenseDate, dateList.size) {
+        derivedStateOf {
+            dateList.indexOfFirst { it.date == params.expenseDate } + 1
+        }
+    }
+
     val tooltipState = rememberTooltipState(initialIsVisible = false)
     val scope = rememberCoroutineScope()
     val tooltipLeftPadding = 30.dp.toPx()
@@ -400,11 +419,13 @@ private fun DetailContent(
         DailyTab(
             tabs = tabs,
             selectedTabIndex = selectedTabIndex,
-            onSelectedTab = { selectedTabIndex = it }
+            onSelectedTab = {
+                uiEvent.invoke(OnClickDate(dateList.getOrNull(it - 1)?.date))
+            }
         )
         JourneyDetailOrder(
             modifier = Modifier.padding(8.dp),
-            selectedOrder = selectedOrder,
+            selectedOrder = params.order,
             uiEvent = uiEvent
         )
     }
