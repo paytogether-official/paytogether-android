@@ -25,7 +25,6 @@ internal data class JourneyInfoDTO(
     val journeyId: String,
     val title: String,
     val baseCurrency: String,
-    val quoteCurrency: String,
     val totalExpenseAmount: Double?,
     val totalExpenseCount: Int?,
     val closedAt: String?,

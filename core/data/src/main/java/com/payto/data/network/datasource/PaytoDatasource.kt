@@ -4,6 +4,7 @@ import com.payto.data.network.dto.CreateJourneyDTO
 import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.service.PaytoService
+import com.payto.model.ExpenseParams
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,8 +30,15 @@ internal class PaytoDatasource @Inject constructor(
     suspend fun createExpense(createExpenseDTO: ExpenseDTO) =
         service.createExpense(createExpenseDTO.journeyId, createExpenseDTO)
 
-    suspend fun getExpenses(id: String, quoteCurrency: String, sort: String = "desc") =
-        service.getExpenses(id, quoteCurrency, sort)
+    suspend fun getExpenses(
+        id: String,
+        params: ExpenseParams,
+    ): List<ExpenseDTO> {
+        val quoteCurrency = params.quoteCurrency
+        val sort = "expenseDate,${params.order.sortName}"
+
+        return service.getExpenses(id, quoteCurrency, sort)
+    }
 
     suspend fun getExpense(id: String, journeyExpenseId: Int, quoteCurrency: String) =
         service.getExpense(id, journeyExpenseId, quoteCurrency)

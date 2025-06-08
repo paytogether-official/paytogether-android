@@ -32,12 +32,8 @@ class JourneyRepository @Inject internal constructor(
         id: String,
         params: ExpenseParams?,
     ): List<JourneyDetailInfo> {
-        val param = params ?: ExpenseParams()
-        return dataSource.getExpenses(
-            id = id,
-            quoteCurrency = param.quoteCurrency,
-            sort = "expenseDate,${param.order.sortName}"
-        ).groupBy { it.expenseDate }
+        return dataSource.getExpenses(id = id, params = params ?: ExpenseParams())
+            .groupBy { it.expenseDate }
             .map { (date, expenses) ->
                 JourneyDetailInfo(date, expenses.map(ExpenseDTO::asExpenseModel))
             }

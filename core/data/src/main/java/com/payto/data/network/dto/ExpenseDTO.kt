@@ -17,7 +17,6 @@ internal data class ExpenseDTO(
     val expenseDate: String,
     val baseCurrency: String,
     val quoteCurrency: String? = null,
-    val currency: String? = null,
     val categoryDescription: String?,
     val amount: Double,
     val members: List<MemberExpenseDTO> = listOf(),
@@ -38,7 +37,6 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
         category = this.createExpenseModel.category.displayName,
         expenseDate = this.createExpenseModel.expenseDate.toString(),
         baseCurrency = this.infoModel.baseCurrency,
-        currency = this.infoModel.baseCurrency,
         amount = this.createExpenseModel.amount ?: 0.0,
         members = this.createExpenseModel.membersAmount.map {
             MemberExpenseDTO(it.name, it.amount?.truncateToTwoDecimalPlaces() ?: 0.0)
@@ -62,6 +60,6 @@ internal fun ExpenseDTO.asExpenseModel(): JourneyExpenseModel {
         },
         quoteCurrency = this.quoteCurrency ?: "",
         baseCurrency = this.baseCurrency,
-        categoryDescription = this.categoryDescription
+        categoryDescription = this.categoryDescription?.takeIf { it.isNotEmpty() }
     )
 }

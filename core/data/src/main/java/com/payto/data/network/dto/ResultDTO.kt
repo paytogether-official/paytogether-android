@@ -16,7 +16,7 @@ internal data class ResultDTO(
     fun asRatioModelList(): List<ResultRatioModel> {
         return expenseCategories.map {
             ResultRatioModel(
-                category = ExpenseCategory.fromName(it.name),
+                category = ExpenseCategory.fromName(it.category),
                 amount = it.amount,
                 percentage = it.percentage
             )
@@ -45,7 +45,7 @@ internal data class JourneySettlementDTO(
 
 @Serializable
 internal data class ExpenseCategoryDTO(
-    val name: String,
+    val category: String,
     val amount: Double,
     val percentage: Double,
 )
