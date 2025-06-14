@@ -1,5 +1,8 @@
 package com.payto.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class JourneyDetailModel(
     val journeyInfo: JourneyInfoModel = JourneyInfoModel(),
     val list: List<ExpenseGroupByDateModel> = listOf(),
@@ -18,6 +21,7 @@ data class JourneyDetailModel(
     }
 }
 
+@Stable
 data class ExpenseGroupByDateModel(
     val date: String = "",
     val list: List<JourneyExpenseModel> = listOf()

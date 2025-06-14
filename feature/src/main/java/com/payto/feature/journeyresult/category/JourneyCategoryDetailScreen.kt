@@ -1,5 +1,8 @@
 package com.payto.feature.journeyresult.category
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +37,9 @@ import com.payto.designsystem.icon.iconpack.Caretdown
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
+import com.payto.feature.common.HandleSideEffect
+import com.payto.feature.common.UiEvent
+import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journeydetail.JourneyDetailList
 import com.payto.model.CategoryDetailModel
 import com.payto.model.ExpenseCategory
@@ -47,10 +53,12 @@ fun CategoryDetailRoute(
     viewModel: CategoryDetailViewModel = hiltViewModel(),
 ) {
     val model by viewModel.model.collectAsStateWithLifecycle()
+    HandleSideEffect(viewModel, onNavigate, onBackClick)
     CategoryDetailScreen(
         onNavigate = onNavigate,
         onBackClick = onBackClick,
         model = model,
+        viewModel::onEvent
     )
 }
 
@@ -59,6 +67,7 @@ private fun CategoryDetailScreen(
     onNavigate: (Any) -> Unit,
     onBackClick: () -> Unit,
     model: CategoryDetailModel?,
+    uiEvent: (UiEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -71,20 +80,32 @@ private fun CategoryDetailScreen(
             modifier = Modifier.fillMaxWidth(),
             onBackClick = onBackClick
         )
-        if (model != null) {
-            TitleHeader(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                model = model
-            )
-            JourneyDetailList(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 16.dp),
-                onNavigate = onNavigate,
-                list = model.expenseInfoModel.expenseList
-            )
+        AnimatedVisibility(
+            visible = model != null,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (model != null) {
+                    TitleHeader(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp),
+                        model = model,
+                        uiEvent = uiEvent,
+                    )
+                    JourneyDetailList(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 16.dp),
+                        onNavigate = onNavigate,
+                        list = model.expenseInfoModel.expenseList
+                    )
+                }
+            }
         }
     }
 }
@@ -92,7 +113,8 @@ private fun CategoryDetailScreen(
 @Composable
 private fun TitleHeader(
     modifier: Modifier,
-    model: CategoryDetailModel
+    model: CategoryDetailModel,
+    uiEvent: (UiEvent) -> Unit,
 ) {
     var isShowCategoryDialog by remember {
         mutableStateOf(false)
@@ -103,7 +125,7 @@ private fun TitleHeader(
         categoryList = model.categoryList,
         selectedCategory = model.params.category ?: ExpenseCategory.ETC,
         onSelected = {
-            // TODO
+            uiEvent.invoke(OnChangeCategory(it))
         },
         onDismissRequest = {
             isShowCategoryDialog = false
@@ -139,10 +161,12 @@ private fun TitleHeader(
             }
             Text(
                 text = AnnotatedString(
-                    "${model.expenseInfoModel.totalAmount.numberFormat()}원을 쓰셨어요", // TODO
+                    "${model.expenseInfoModel.totalAmount.numberFormat()}을 쓰셨어요",
                     spanStyles = listOf(
                         AnnotatedString.Range(
-                            SpanStyle(color = Color.Primary.normal), 0, 7
+                            item = SpanStyle(color = Color.Primary.normal),
+                            start = 0,
+                            end = model.expenseInfoModel.totalAmount.numberFormat().length
                         )
                     ),
                 ),
@@ -155,7 +179,7 @@ private fun TitleHeader(
             options = "KRW" to model.baseCurrency,
             selectedOption = model.params.quoteCurrency,
             onOptionSelected = {
-                // TODO
+                uiEvent.invoke(OnChangeCurrency(it))
             }
         )
     }
@@ -165,10 +189,10 @@ private fun TitleHeader(
 @Preview(showBackground = true)
 @Composable
 private fun CategoryDetailScreenPreview() {
-
     CategoryDetailScreen(
         onBackClick = {},
         onNavigate = {},
-        model = CategoryDetailModel(params = ExpenseParams(), categoryList = ExpenseCategory.list)
+        model = CategoryDetailModel(params = ExpenseParams(), categoryList = ExpenseCategory.list),
+        uiEvent = {},
     )
 }
