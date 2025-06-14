@@ -94,7 +94,7 @@ private fun JourneyScreen(
         AnimatedVisibility(model != null, modifier = Modifier.weight(1f)) {
             if (model != null) {
                 Content(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxSize(),
                     model = model,
                     onNavigate = onNavigate,
                     uiEvent = uiEvent

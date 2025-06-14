@@ -146,7 +146,7 @@ fun JourneyDetailRoute(
 @Composable
 fun JourneyDetailScreen(
     modifier: Modifier = Modifier,
-    model: JourneyDetailModel,
+    model: JourneyDetailModel?,
     onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit,
     toolbar: @Composable () -> Unit = {}
@@ -157,23 +157,34 @@ fun JourneyDetailScreen(
             .fillMaxSize()
     ) {
         toolbar.invoke()
-        TitleHeader(
-            modifier = Modifier,
-            model = model.journeyInfo,
-            quoteCurrency = model.params.quoteCurrency,
-            uiEvent = uiEvent,
-            onNavigate = onNavigate
-        )
-        DetailContent(
-            uiEvent = uiEvent,
-            params = model.params,
-            dateList = model.journeyInfo.dailyExpenseSum
-        )
-        JourneyDetailList(
-            modifier = Modifier.weight(1f),
-            list = model.list,
-            onNavigate = onNavigate
-        )
+        AnimatedVisibility(
+            visible = model != null,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (model != null) {
+                    TitleHeader(
+                        modifier = Modifier,
+                        model = model.journeyInfo,
+                        quoteCurrency = model.params.quoteCurrency,
+                        uiEvent = uiEvent,
+                        onNavigate = onNavigate
+                    )
+                    DetailContent(
+                        uiEvent = uiEvent,
+                        params = model.params,
+                        dateList = model.journeyInfo.dailyExpenseSum
+                    )
+                    JourneyDetailList(
+                        modifier = Modifier.weight(1f),
+                        list = model.list,
+                        onNavigate = onNavigate
+                    )
+                }
+            }
+        }
     }
 }
 

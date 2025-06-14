@@ -10,6 +10,7 @@ import com.payto.feature.common.arch.BaseViewModel
 import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journey.OnClickDate
+import com.payto.model.ExpenseParams
 import com.payto.model.JourneyDetailModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,7 @@ class JourneyDetailViewModel @Inject constructor(
 
     private val route = savedStateHandle.toRoute<JourneyDetail>()
 
-    val model = MutableStateFlow(JourneyDetailModel())
+    val model = MutableStateFlow<JourneyDetailModel?>(null)
 
     init {
         fetchInitData()
@@ -36,17 +37,17 @@ class JourneyDetailViewModel @Inject constructor(
     override fun onEvent(event: UiEvent) {
         when (event) {
             is OnChangeOrder -> {
-                model.value = model.value.updateOrder(event.order)
+                model.value = model.value?.updateOrder(event.order)
                 fetchInitData()
             }
 
             is OnChangeCurrency -> {
-                model.value = model.value.updateCurrency(event.currency)
+                model.value = model.value?.updateCurrency(event.currency)
                 fetchInitData()
             }
 
             is OnClickDate -> {
-                model.value = model.value.updateDate(event.date)
+                model.value = model.value?.updateDate(event.date)
                 fetchInitData()
             }
         }
@@ -66,13 +67,13 @@ class JourneyDetailViewModel @Inject constructor(
         val journeyInfoDeferred = async {
             repository.getJourneyInfoData(
                 route.journeyId,
-                model.value.params.quoteCurrency
+                model.value?.params?.quoteCurrency ?: "KRW"
             )
         }
         val expenseListDeferred = async {
             repository.getExpenses(
                 id = route.journeyId,
-                params = model.value.params
+                params = model.value?.params
             )
         }
 
@@ -82,7 +83,7 @@ class JourneyDetailViewModel @Inject constructor(
         model.value = JourneyDetailModel(
             journeyInfo = journeyInfo,
             list = detailInfoList,
-            params = model.value.params
+            params = model.value?.params ?: ExpenseParams()
         )
     }
 }

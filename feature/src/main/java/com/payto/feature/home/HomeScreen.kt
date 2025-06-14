@@ -1,5 +1,6 @@
 package com.payto.feature.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,10 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.payto.model.navigate.CreateJourney
-import com.payto.model.navigate.JoinJourney
-import com.payto.model.navigate.Journey
-import com.payto.model.navigate.JourneyHistory
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight
@@ -43,6 +40,10 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.R
 import com.payto.model.JourneyInfoModel
+import com.payto.model.navigate.CreateJourney
+import com.payto.model.navigate.JoinJourney
+import com.payto.model.navigate.Journey
+import com.payto.model.navigate.JourneyHistory
 
 @Composable
 fun HomeRoute(
@@ -98,7 +99,7 @@ fun HomeScreen(
             JoinJourneyBox(modifier = Modifier.weight(1f), onNavigate = onNavigate)
             LastJourneyBox(onNavigate = onNavigate)
         }
-        if (ongoingJourneys.isNotEmpty()) {
+        AnimatedVisibility(visible = ongoingJourneys.isNotEmpty()) {
             OngoingJourneyBox(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {

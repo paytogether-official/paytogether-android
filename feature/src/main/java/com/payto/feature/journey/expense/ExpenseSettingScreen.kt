@@ -1,6 +1,7 @@
 package com.payto.feature.journey.expense
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -73,25 +74,29 @@ fun ExpenseSettingScreen(
             .background(color = Color.Static.white)
     ) {
         DefaultToolbar(title = "정산 설정", onBackClick = onBackClick)
-        if (model != null) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                SelectPayer(
-                    payer = model.payer,
-                    payers = model.payMembers,
-                    uiEvent = uiEvent
-                )
-                MemberList(
+        AnimatedVisibility(
+            visible = model != null,
+            modifier = Modifier.fillMaxWidth().weight(1f)
+        ) {
+            if (model != null) {
+                Column(
                     modifier = Modifier
-                        .weight(1f),
-                    members = model.members,
-                    uiEvent = uiEvent
-                )
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    SelectPayer(
+                        payer = model.payer,
+                        payers = model.payMembers,
+                        uiEvent = uiEvent
+                    )
+                    MemberList(
+                        modifier = Modifier
+                            .weight(1f),
+                        members = model.members,
+                        uiEvent = uiEvent
+                    )
+                }
             }
         }
     }
