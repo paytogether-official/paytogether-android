@@ -69,4 +69,9 @@ internal interface PaytoService {
         @Path("id") id: String,
         @Query("quoteCurrency") quoteCurrency: String,
     ): ResultDTO
+
+    @GET("/journeys/{id}/expenses/categories")
+    suspend fun getCategories(
+        @Path("id") id: String,
+    ): List<String>
 }

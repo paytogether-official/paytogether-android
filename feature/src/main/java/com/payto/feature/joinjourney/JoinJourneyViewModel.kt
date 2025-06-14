@@ -1,8 +1,8 @@
 package com.payto.feature.joinjourney
 
 import androidx.lifecycle.viewModelScope
-import com.payto.common.navigate.Journey
-import com.payto.common.navigate.JourneyDetail
+import com.payto.model.navigate.Journey
+import com.payto.model.navigate.JourneyDetail
 import com.payto.data.repository.JoinJourneyRepository
 import com.payto.feature.common.Navigate
 import com.payto.feature.common.ShowSnackbar

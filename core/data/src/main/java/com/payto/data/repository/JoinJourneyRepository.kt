@@ -11,7 +11,7 @@ class JoinJourneyRepository @Inject internal constructor(
     private val dao: JourneyDao,
 ) {
     suspend fun getJourneyState(id: String): JourneyState {
-        val info = dataSource.getJourney(id, quoteCurrency = "KRW")
+        val info = dataSource.getJourney(id)
 
         val localData = dao.getJourney(id)
         dao.insert(info.asEntity(payer = localData?.payer, memberInfo = localData?.memberInfo))

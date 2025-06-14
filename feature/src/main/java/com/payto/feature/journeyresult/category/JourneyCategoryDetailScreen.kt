@@ -24,6 +24,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.ext.numberFormat
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
@@ -32,36 +35,31 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.journeydetail.JourneyDetailList
-import com.payto.model.JourneyDetailInfo
-import com.payto.model.JourneyExpenseModel
+import com.payto.model.CategoryDetailModel
+import com.payto.model.ExpenseCategory
+import com.payto.model.ExpenseParams
 
 
 @Composable
 fun CategoryDetailRoute(
     onNavigate: (Any) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel: CategoryDetailViewModel = hiltViewModel(),
 ) {
+    val model by viewModel.model.collectAsStateWithLifecycle()
     CategoryDetailScreen(
         onNavigate = onNavigate,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        model = model,
     )
 }
 
 @Composable
 private fun CategoryDetailScreen(
     onNavigate: (Any) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    model: CategoryDetailModel?,
 ) {
-    val list = remember {
-        List((1..10).random()) {
-            JourneyDetailInfo(
-                date = "3월 12일",
-                List((1..10).random()) {
-                    JourneyExpenseModel()
-                }
-            )
-        }
-    }
     Column(
         modifier = Modifier
             .statusBarsPadding()
@@ -73,40 +71,39 @@ private fun CategoryDetailScreen(
             modifier = Modifier.fillMaxWidth(),
             onBackClick = onBackClick
         )
-        TitleHeader(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-        )
-        JourneyDetailList(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 16.dp),
-            onNavigate = onNavigate,
-            list = list
-        )
+        if (model != null) {
+            TitleHeader(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                model = model
+            )
+            JourneyDetailList(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp),
+                onNavigate = onNavigate,
+                list = model.expenseInfoModel.expenseList
+            )
+        }
     }
 }
 
 @Composable
-private fun TitleHeader(modifier: Modifier) {
-    var selectedOption by remember { mutableStateOf("KRW") }
-    val categoryList = remember {
-        listOf("기타", "식비", "교통", "관광")
-    }
-    var selectedCategory by remember {
-        mutableStateOf(categoryList.firstOrNull() ?: "")
-    }
+private fun TitleHeader(
+    modifier: Modifier,
+    model: CategoryDetailModel
+) {
     var isShowCategoryDialog by remember {
         mutableStateOf(false)
     }
     CategoryBottomSheetDialog(
         modifier = Modifier,
         isShow = isShowCategoryDialog,
-        categoryList = categoryList,
-        selectedCategory = selectedCategory,
+        categoryList = model.categoryList,
+        selectedCategory = model.params.category ?: ExpenseCategory.ETC,
         onSelected = {
-            selectedCategory = it
+            // TODO
         },
         onDismissRequest = {
             isShowCategoryDialog = false
@@ -128,7 +125,7 @@ private fun TitleHeader(modifier: Modifier) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "${selectedCategory}에",
+                    text = "${model.params.category?.displayName}에",
                     color = Color.Label.normal,
                     style = typography.heading2,
                     maxLines = 1,
@@ -142,7 +139,7 @@ private fun TitleHeader(modifier: Modifier) {
             }
             Text(
                 text = AnnotatedString(
-                    "123,432원을 쓰셨어요",
+                    "${model.expenseInfoModel.totalAmount.numberFormat()}원을 쓰셨어요", // TODO
                     spanStyles = listOf(
                         AnnotatedString.Range(
                             SpanStyle(color = Color.Primary.normal), 0, 7
@@ -155,9 +152,11 @@ private fun TitleHeader(modifier: Modifier) {
         }
         CurrencyToggle(
             modifier = Modifier,
-            options = "KRW" to "JPY",
-            selectedOption = selectedOption,
-            onOptionSelected = { selectedOption = it }
+            options = "KRW" to model.baseCurrency,
+            selectedOption = model.params.quoteCurrency,
+            onOptionSelected = {
+                // TODO
+            }
         )
     }
 }
@@ -166,5 +165,10 @@ private fun TitleHeader(modifier: Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun CategoryDetailScreenPreview() {
-    CategoryDetailScreen(onBackClick = {}, onNavigate = {})
+
+    CategoryDetailScreen(
+        onBackClick = {},
+        onNavigate = {},
+        model = CategoryDetailModel(params = ExpenseParams(), categoryList = ExpenseCategory.list)
+    )
 }

@@ -57,8 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.numberFormat
 import com.payto.common.ext.toPx
-import com.payto.common.navigate.JourneyExpenseItemDetail
-import com.payto.common.navigate.JourneyResult
+import com.payto.model.navigate.JourneyExpenseItemDetail
+import com.payto.model.navigate.JourneyResult
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
@@ -84,7 +84,7 @@ import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journey.OnClickDate
 import com.payto.feature.journeyhistory.JourneyDate
 import com.payto.model.ExpenseParams
-import com.payto.model.JourneyDetailInfo
+import com.payto.model.ExpenseGroupByDateModel
 import com.payto.model.JourneyDetailModel
 import com.payto.model.JourneyDetailOrder
 import com.payto.model.JourneyExpenseModel
@@ -518,7 +518,7 @@ private fun JourneyDetailOrder(
 @Composable
 internal fun JourneyDetailList(
     modifier: Modifier,
-    list: List<JourneyDetailInfo>,
+    list: List<ExpenseGroupByDateModel>,
     onNavigate: (Any) -> Unit,
 ) {
     LazyColumn(

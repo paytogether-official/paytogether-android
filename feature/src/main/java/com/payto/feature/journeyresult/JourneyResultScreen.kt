@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.numberFormat
-import com.payto.common.navigate.CategoryDetail
+import com.payto.model.navigate.CategoryDetail
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.component.PaytoTabRow
@@ -246,7 +246,7 @@ private fun Content(
                 0 -> RatioList(
                     modifier = Modifier.weight(1f),
                     onNavigate = onNavigate,
-                    list = model.ratioModel
+                    model = model
                 )
 
                 else -> SettlementSummary(Modifier.weight(1f), list = model.settlementSummaryModel)
@@ -259,15 +259,21 @@ private fun Content(
 private fun RatioList(
     modifier: Modifier,
     onNavigate: (Any) -> Unit,
-    list: List<ResultRatioModel>
+    model: JourneyResultModel
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        items(list) {
-            RatioItem(modifier = Modifier, onNavigate = onNavigate, model = it)
+        items(model.ratioModel) {
+            RatioItem(
+                modifier = Modifier,
+                onNavigate = onNavigate,
+                model = it,
+                journeyId = model.infoModel.id,
+                quoteCurrency = model.quoteCurrency,
+            )
         }
     }
 }
@@ -276,7 +282,9 @@ private fun RatioList(
 private fun RatioItem(
     modifier: Modifier,
     onNavigate: (Any) -> Unit,
-    model: ResultRatioModel
+    model: ResultRatioModel,
+    journeyId: String,
+    quoteCurrency: String,
 ) {
     val iconRes by remember {
         derivedStateOf {
@@ -288,7 +296,13 @@ private fun RatioItem(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .rippleClickable {
-                onNavigate.invoke(CategoryDetail)
+                onNavigate.invoke(
+                    CategoryDetail(
+                        journeyId,
+                        quoteCurrency,
+                        model.category
+                    )
+                )
             },
         verticalAlignment = Alignment.CenterVertically
     ) {

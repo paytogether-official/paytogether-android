@@ -29,6 +29,7 @@ import com.payto.designsystem.icon.iconpack.Close
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
+import com.payto.model.ExpenseCategory
 import kotlinx.coroutines.launch
 
 
@@ -36,9 +37,9 @@ import kotlinx.coroutines.launch
 fun CategoryBottomSheetDialog(
     modifier: Modifier,
     isShow: Boolean,
-    selectedCategory: String,
-    categoryList: List<String>,
-    onSelected: (String) -> Unit,
+    selectedCategory: ExpenseCategory,
+    categoryList: List<ExpenseCategory>,
+    onSelected: (ExpenseCategory) -> Unit,
     onDismissRequest: () -> Unit = {},
 ) {
 
@@ -59,11 +60,11 @@ fun CategoryBottomSheetDialog(
             Content(
                 categoryList = categoryList,
                 selected = selectedCategory,
-                onSelected = { order ->
+                onSelected = { category ->
                     coroutineScope
                         .launch { sheetState.hide() }
                         .invokeOnCompletion {
-                            onSelected(order)
+                            onSelected(category)
                             onDismissRequest()
                         }
                 }
@@ -75,9 +76,9 @@ fun CategoryBottomSheetDialog(
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    categoryList: List<String>,
-    selected: String,
-    onSelected: (String) -> Unit
+    categoryList: List<ExpenseCategory>,
+    selected: ExpenseCategory,
+    onSelected: (ExpenseCategory) -> Unit
 ) {
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
@@ -100,10 +101,12 @@ private fun Content(
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(categoryList) {
-                OrderItem(
-                    title = it,
+                CategoryItem(
+                    title = it.displayName,
                     isSelected = { selected == it },
-                    onClick = onSelected
+                    onClick = {
+                        onSelected(it)
+                    }
                 )
             }
         }
@@ -111,16 +114,14 @@ private fun Content(
 }
 
 @Composable
-private fun OrderItem(
+private fun CategoryItem(
     title: String,
     isSelected: () -> Boolean,
-    onClick: (String) -> Unit
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .rippleClickable {
-                onClick.invoke(title)
-            }
+            .rippleClickable(onClick = onClick)
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -146,5 +147,5 @@ private fun OrderItem(
 @Preview(showBackground = true)
 @Composable
 private fun CategoryContentPreview() {
-    Content(categoryList = listOf("기타", "식비", "교통", "관광"), selected ="기타") {}
+    Content(categoryList = ExpenseCategory.list, selected = ExpenseCategory.ETC) {}
 }

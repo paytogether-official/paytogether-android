@@ -6,7 +6,7 @@ import com.payto.data.network.dto.ExpenseDTO
 import com.payto.data.network.dto.asDTO
 import com.payto.data.network.dto.asExpenseModel
 import com.payto.model.ExpenseParams
-import com.payto.model.JourneyDetailInfo
+import com.payto.model.ExpenseGroupByDateModel
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
@@ -32,12 +32,12 @@ class JourneyRepository @Inject internal constructor(
     suspend fun getExpenses(
         id: String,
         params: ExpenseParams?,
-    ): List<JourneyDetailInfo> {
+    ): List<ExpenseGroupByDateModel> {
         return dataSource.getExpenses(id = id, params = params ?: ExpenseParams())
             .expenses
             .groupBy { it.expenseDate }
             .map { (date, expenses) ->
-                JourneyDetailInfo(date, expenses.map(ExpenseDTO::asExpenseModel))
+                ExpenseGroupByDateModel(date, expenses.map(ExpenseDTO::asExpenseModel))
             }
     }
 

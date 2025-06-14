@@ -3,7 +3,7 @@ package com.payto.feature.journeyresult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.payto.common.navigate.JourneyResult
+import com.payto.model.navigate.JourneyResult
 import com.payto.data.repository.ResultRepository
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel

@@ -31,10 +31,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.payto.common.navigate.CreateJourney
-import com.payto.common.navigate.JoinJourney
-import com.payto.common.navigate.Journey
-import com.payto.common.navigate.JourneyHistory
+import com.payto.model.navigate.CreateJourney
+import com.payto.model.navigate.JoinJourney
+import com.payto.model.navigate.Journey
+import com.payto.model.navigate.JourneyHistory
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.ArrowRight

@@ -2,7 +2,7 @@ package com.payto.feature.createjourney
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.payto.common.navigate.Journey
+import com.payto.model.navigate.Journey
 import com.payto.data.repository.CreateJourneyRepository
 import com.payto.feature.common.Navigate
 import com.payto.feature.common.PopBackStack

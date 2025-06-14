@@ -3,7 +3,7 @@ package com.payto.feature.journey.expense
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.payto.common.navigate.ExpenseSetting
+import com.payto.model.navigate.ExpenseSetting
 import com.payto.data.repository.ExpenseSettingRepository
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent

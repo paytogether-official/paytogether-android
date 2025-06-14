@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.numberFormat
-import com.payto.common.navigate.CreateJourney
-import com.payto.common.navigate.JourneyDetail
+import com.payto.model.navigate.CreateJourney
+import com.payto.model.navigate.JourneyDetail
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.extension.rippleClickable

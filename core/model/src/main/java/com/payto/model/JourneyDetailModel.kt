@@ -2,7 +2,7 @@ package com.payto.model
 
 data class JourneyDetailModel(
     val journeyInfo: JourneyInfoModel = JourneyInfoModel(),
-    val list: List<JourneyDetailInfo> = listOf(),
+    val list: List<ExpenseGroupByDateModel> = listOf(),
     val params: ExpenseParams = ExpenseParams(),
 ) {
     fun updateOrder(order: JourneyDetailOrder): JourneyDetailModel {
@@ -18,7 +18,7 @@ data class JourneyDetailModel(
     }
 }
 
-data class JourneyDetailInfo(
+data class ExpenseGroupByDateModel(
     val date: String = "",
     val list: List<JourneyExpenseModel> = listOf()
 )

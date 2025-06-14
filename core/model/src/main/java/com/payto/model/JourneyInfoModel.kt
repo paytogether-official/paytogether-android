@@ -99,7 +99,7 @@ fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: String?): Jo
 data class JourneyModel(
     val infoModel: JourneyInfoModel = JourneyInfoModel(),
     val createExpenseModel: JourneyExpenseModel = JourneyExpenseModel(),
-    val detailInfoList: List<JourneyDetailInfo> = listOf(),
+    val detailInfoList: List<ExpenseGroupByDateModel> = listOf(),
     val params: ExpenseParams = ExpenseParams(),
 ) {
     val detailModel = JourneyDetailModel(infoModel, detailInfoList, params)

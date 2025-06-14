@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.common.ext.safeDiv
 import com.payto.common.ext.toLocalDate
-import com.payto.common.navigate.Journey
+import com.payto.model.navigate.Journey
 import com.payto.data.repository.JourneyRepository
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent

@@ -1,10 +1,9 @@
 package com.payto.feature.journeydetail.item
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.payto.common.navigate.JourneyExpenseItemDetail
+import com.payto.model.navigate.JourneyExpenseItemDetail
 import com.payto.data.repository.JourneyRepository
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel

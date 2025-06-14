@@ -54,7 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.payto.common.ext.numberFormat
-import com.payto.common.navigate.ExpenseSetting
+import com.payto.model.navigate.ExpenseSetting
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.ContentBox
 import com.payto.designsystem.component.PaytoButton

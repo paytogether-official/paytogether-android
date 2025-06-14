@@ -1,5 +1,6 @@
-package com.payto.common.navigate
+package com.payto.model.navigate
 
+import com.payto.model.ExpenseCategory
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -34,9 +35,12 @@ data class JourneyResult(
 )
 
 @Serializable
-data object CategoryDetail
+data class CategoryDetail(
+    val journeyId: String,
+    val quoteCurrency: String,
+    val category: ExpenseCategory
+)
 
 @Serializable
 data class ExpenseSetting(val journeyId: String)
-
 
