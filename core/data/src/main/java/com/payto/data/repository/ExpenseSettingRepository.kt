@@ -18,16 +18,22 @@ class ExpenseSettingRepository @Inject internal constructor(
         name: String,
         exclude: Boolean
     ) {
-        val memberInfo = dao.getJourney(id).memberInfo.toMutableMap().apply {
+        val entity = dao.getJourney(id) ?: return
+
+        val info = entity.memberInfo.toMutableMap().apply {
             put(name, exclude)
         }
-        dao.insert(dao.getJourney(id).copy(memberInfo = memberInfo))
+
+        dao.insert(entity.copy(memberInfo = info))
     }
 
     suspend fun updatePayer(id: String, payer: String) {
-        val memberInfo = dao.getJourney(id).memberInfo.toMutableMap().apply {
+        val entity = dao.getJourney(id) ?: return
+
+        val memberInfo = entity.memberInfo.toMutableMap().apply {
             put(payer, false)
         }
-        dao.insert(dao.getJourney(id).copy(memberInfo = memberInfo, payer = payer))
+
+        dao.insert(entity.copy(memberInfo = memberInfo, payer = payer))
     }
 }

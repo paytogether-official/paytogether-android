@@ -14,7 +14,7 @@ class JoinJourneyRepository @Inject internal constructor(
         val info = dataSource.getJourney(id, quoteCurrency = "KRW")
 
         val localData = dao.getJourney(id)
-        dao.insert(info.asEntity(payer = localData.payer, memberInfo = localData.memberInfo))
+        dao.insert(info.asEntity(payer = localData?.payer, memberInfo = localData?.memberInfo))
 
         return if (info.asModel().isClosed) JourneyState.Closed else JourneyState.InProgress
     }

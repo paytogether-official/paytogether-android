@@ -20,7 +20,7 @@ class OngoingJourneyRepository @Inject internal constructor(
         dao.insertAll(
             list.map {
                 val localData = dao.getJourney(it.journeyId)
-                it.asEntity(localData.payer, localData.memberInfo)
+                it.asEntity(localData?.payer, localData?.memberInfo)
             }
         )
         return list

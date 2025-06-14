@@ -15,7 +15,7 @@ internal interface JourneyDao {
     suspend fun getOngoingJourneys(): List<JourneyEntity>
 
     @Query("SELECT * FROM Journey WHERE id = :id")
-    suspend fun getJourney(id: String): JourneyEntity
+    suspend fun getJourney(id: String): JourneyEntity?
 
     @Query("SELECT * FROM Journey WHERE id = :id")
     fun getJourneyFlow(id: String): Flow<JourneyEntity>
