@@ -72,9 +72,9 @@ fun CreateJourneyRoute(
     CompositionLocalProvider(LocalCreateJourneyRepository provides viewModel.repository) {
         CreateJourneyScreen(
             modifier = Modifier
+                .background(Color.Static.white)
                 .statusBarsPadding()
-                .navigationBarsPadding()
-                .background(Color.Static.white),
+                .navigationBarsPadding(),
             onBackClick = onBackClick,
             journeyData = { journeyData },
             uiEvent = viewModel::onEvent
@@ -83,7 +83,7 @@ fun CreateJourneyRoute(
 }
 
 @Composable
-private fun CreateJourneyScreen(
+fun CreateJourneyScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     journeyData: () -> CreateJourneyModel,
@@ -110,9 +110,9 @@ private fun CreateJourneyScreen(
                 title = "여정 생성하기",
                 onBackClick = onBackClick,
             )
-            Contents(
+            JourneyContents(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
                     .padding(16.dp),
                 journeyData = journeyData,
                 uiEvent = uiEvent
@@ -133,8 +133,9 @@ private fun CreateJourneyScreen(
 }
 
 @Composable
-private fun Contents(
+fun JourneyContents(
     modifier: Modifier,
+    isCreateScreen: Boolean = true,
     journeyData: () -> CreateJourneyModel,
     uiEvent: (UiEvent) -> Unit,
 ) {
@@ -147,6 +148,7 @@ private fun Contents(
             JourneyTitleBox(
                 modifier = Modifier.padding(bottom = 16.dp),
                 title = journeyData().title,
+                enabled = isCreateScreen,
                 uiEvent = uiEvent
             )
         }
@@ -162,11 +164,15 @@ private fun Contents(
                 modifier = Modifier.padding(bottom = 16.dp),
                 country = journeyData().country,
                 exchangeRateModel = journeyData().exchangeRateModel,
+                enabled = isCreateScreen,
                 uiEvent = uiEvent
             )
         }
 
-        this@LazyColumn.journeyParticipantBox(members = { journeyData().members }, uiEvent = uiEvent)
+        this@LazyColumn.journeyParticipantBox(
+            members = { journeyData().members },
+            uiEvent = uiEvent
+        )
     }
 }
 
@@ -174,6 +180,7 @@ private fun Contents(
 private fun JourneyTitleBox(
     modifier: Modifier,
     title: String?,
+    enabled: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
     Column(
@@ -187,7 +194,8 @@ private fun JourneyTitleBox(
         )
         TextBox(
             value = title ?: "",
-            placeholder = "어떤 여정인가요?"
+            placeholder = "어떤 여정인가요?",
+            enabled = enabled
         ) {
             uiEvent.invoke(OnJourneyTitleChange(it))
         }
@@ -249,6 +257,7 @@ private fun JourneyCountryBox(
     modifier: Modifier,
     country: Country? = null,
     exchangeRateModel: ExchangeRateModel,
+    enabled: Boolean,
     uiEvent: (UiEvent) -> Unit
 ) {
     var isShowCountryDialog by remember {
@@ -276,7 +285,8 @@ private fun JourneyCountryBox(
         ContentBox(
             value = country?.koreanName ?: "",
             placeholder = "어디로 여행을 떠나시나요?",
-            endIcon = IconPack.Caretdown
+            endIcon = IconPack.Caretdown,
+            enabled = enabled
         ) {
             isShowCountryDialog = true
         }
@@ -357,6 +367,7 @@ private fun ExchangeRate(
 
 private fun LazyListScope.journeyParticipantBox(
     members: () -> List<String>,
+    isSetting: Boolean = false,
     uiEvent: (UiEvent) -> Unit
 ) {
     item {
@@ -406,7 +417,12 @@ private fun CreateJourneyScreenPreview() {
         journeyData = {
             CreateJourneyModel(
                 members = listOf("정산요정"),
-                country = Country(continent = Continent.ASIA, currency = "USD", koreanName = "한국", localeCode = "KO")
+                country = Country(
+                    continent = Continent.ASIA,
+                    currency = "USD",
+                    koreanName = "한국",
+                    localeCode = "KO"
+                )
             )
         },
         onBackClick = {},

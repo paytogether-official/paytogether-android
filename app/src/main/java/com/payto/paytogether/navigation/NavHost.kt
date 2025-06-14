@@ -29,6 +29,8 @@ import com.payto.feature.journeydetail.item.JourneyExpenseItemDetailRoute
 import com.payto.feature.journeyhistory.JourneyHistoryRoute
 import com.payto.feature.journeyresult.JourneyResultRoute
 import com.payto.feature.journeyresult.category.CategoryDetailRoute
+import com.payto.feature.journeysetting.JourneySettingRoute
+import com.payto.model.navigate.JourneySetting
 
 
 @Composable
@@ -109,6 +111,12 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
         }
         composable<ExpenseSetting> {
             ExpenseSettingRoute(
+                onNavigate = { navController.navigate(it) },
+                onBackClick = { navController.popBackStack() },
+            )
+        }
+        composable<JourneySetting> {
+            JourneySettingRoute(
                 onNavigate = { navController.navigate(it) },
                 onBackClick = { navController.popBackStack() },
             )

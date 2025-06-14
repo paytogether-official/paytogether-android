@@ -97,9 +97,9 @@ private fun JourneyResultScreen(
 ) {
     Column(
         modifier = Modifier
+            .background(Color.Static.white)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .background(Color.Static.white)
             .fillMaxSize()
     ) {
         DefaultToolbar(

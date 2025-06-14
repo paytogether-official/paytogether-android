@@ -97,7 +97,7 @@ fun TextBox(
                 value = value,
                 enabled = enabled,
                 onValueChange = onValueChange,
-                textStyle = typography.contentAccent.copy(color = Color.Label.normal),
+                textStyle = typography.contentAccent.copy(color = if (enabled) Color.Label.normal else Color.Label.disable),
             )
             endDecoration.invoke()
         }

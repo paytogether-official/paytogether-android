@@ -122,9 +122,9 @@ fun JourneyDetailRoute(
 
     JourneyDetailScreen(
         modifier = Modifier
+            .background(color = Color.Static.white)
             .statusBarsPadding()
-            .navigationBarsPadding()
-            .background(color = Color.Static.white),
+            .navigationBarsPadding(),
         onNavigate = onNavigate,
         uiEvent = viewModel::onEvent,
         model = model,

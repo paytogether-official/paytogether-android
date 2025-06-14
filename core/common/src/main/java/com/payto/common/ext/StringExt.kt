@@ -4,15 +4,14 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
+import java.time.ZoneId
 
 
 /**
  * 2025-03-21 형식
  * */
 fun String.toLocalDate(): LocalDate? = try {
-    this.split("-").let { (year, month, day) ->
-        LocalDate.of(year.toInt(), month.toInt(), day.toInt())
-    }
+    LocalDate.parse(this)
 } catch (e: Exception) {
     null
 }
@@ -27,6 +26,18 @@ fun String.numberFormat(): String {
     }
 }
 
+/**
+ * 2025-03-21 형식
+ * */
+fun String.toTimeMilli(): Long? {
+    return try {
+        val localDate = LocalDate.parse(this)
+        val zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault())
+        return zonedDateTime.toInstant().toEpochMilli()
+    } catch (e: Exception) {
+        null
+    }
+}
 
 fun String.safeDiv(divisor: Int): String {
     val num = BigDecimal(this.takeIf { it.isNotEmpty() } ?: "0")

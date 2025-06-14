@@ -31,6 +31,8 @@ internal data class JourneyInfoDTO(
     val members: List<MemberDTO>?,
     val startDate: String,
     val endDate: String,
+    val exchangeRate: String = "",
+    val localeCode: String,
     val dailyExpenseSumByDate: List<DailySumDTO>?
 ) {
     fun isOngoing() = closedAt == null

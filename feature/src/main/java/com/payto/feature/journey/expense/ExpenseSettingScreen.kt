@@ -68,10 +68,10 @@ fun ExpenseSettingScreen(
 ) {
     Column(
         modifier = Modifier
+            .background(color = Color.Static.white)
             .fillMaxSize()
             .navigationBarsPadding()
             .statusBarsPadding()
-            .background(color = Color.Static.white)
     ) {
         DefaultToolbar(title = "정산 설정", onBackClick = onBackClick)
         AnimatedVisibility(

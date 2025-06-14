@@ -45,16 +45,17 @@ import com.payto.designsystem.theme.typography
 import com.payto.feature.R
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
-import com.payto.feature.journey.JourneySetting.FINISH
-import com.payto.feature.journey.JourneySetting.LEAVE
-import com.payto.feature.journey.JourneySetting.SETTINGS
-import com.payto.feature.journey.JourneySetting.SHARE
+import com.payto.feature.journey.JourneySettingType.FINISH
+import com.payto.feature.journey.JourneySettingType.LEAVE
+import com.payto.feature.journey.JourneySettingType.SETTINGS
+import com.payto.feature.journey.JourneySettingType.SHARE
 import com.payto.feature.journey.expense.ExpenseScreen
 import com.payto.feature.journey.expense.JourneyExpenseViewModel
 import com.payto.feature.journeydetail.JourneyDetailScreen
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
+import com.payto.model.navigate.JourneySetting
 import kotlinx.coroutines.launch
 
 @Composable
@@ -85,10 +86,10 @@ private fun JourneyScreen(
 
     Column(
         modifier = Modifier
+            .background(color = Color.Static.white)
             .fillMaxSize()
             .navigationBarsPadding()
             .statusBarsPadding()
-            .background(color = Color.Static.white)
     ) {
         Toolbar(title = model?.infoModel?.title ?: "")
         AnimatedVisibility(model != null, modifier = Modifier.weight(1f)) {
@@ -178,7 +179,7 @@ private fun Content(
                 }
 
                 SETTINGS -> {
-                    // TODO
+                    onNavigate(JourneySetting(model.infoModel.id))
                 }
 
                 LEAVE -> {

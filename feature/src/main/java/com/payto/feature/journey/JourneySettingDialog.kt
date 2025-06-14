@@ -34,13 +34,13 @@ import kotlinx.coroutines.launch
 fun JourneySettingBottomSheetDialog(
     modifier: Modifier,
     isShow: Boolean,
-    onDismissRequest: (JourneySetting?) -> Unit,
+    onDismissRequest: (JourneySettingType?) -> Unit,
 ) {
 
     val sheetState = rememberModalBottomSheetState()
     val coroutineScope = rememberCoroutineScope()
 
-    val onSelected: (JourneySetting?) -> Unit = { setting ->
+    val onSelected: (JourneySettingType?) -> Unit = { setting ->
         coroutineScope
             .launch { sheetState.hide() }
             .invokeOnCompletion {
@@ -71,10 +71,10 @@ fun JourneySettingBottomSheetDialog(
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
-    onSelected: (JourneySetting) -> Unit
+    onSelected: (JourneySettingType) -> Unit
 ) {
     val orderList = remember {
-        JourneySetting.entries.toList()
+        JourneySettingType.entries.toList()
     }
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
@@ -96,8 +96,8 @@ private fun Content(
 
 @Composable
 private fun SettingItem(
-    setting: JourneySetting,
-    onClick: (JourneySetting) -> Unit
+    setting: JourneySettingType,
+    onClick: (JourneySettingType) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -113,7 +113,7 @@ private fun SettingItem(
         Text(
             text = setting.displayName,
             style = typography.captionAccent,
-            color = if (setting == JourneySetting.LEAVE) Color.Status.error else Color.Label.neutral
+            color = if (setting == JourneySettingType.LEAVE) Color.Status.error else Color.Label.neutral
         )
     }
 }
@@ -125,7 +125,7 @@ private fun ContentPreview() {
 }
 
 
-enum class JourneySetting(val displayName: String) {
+enum class JourneySettingType(val displayName: String) {
     FINISH("여정 마무리"),
     SHARE("여정 공유하기"),
     SETTINGS("설정 변경"),

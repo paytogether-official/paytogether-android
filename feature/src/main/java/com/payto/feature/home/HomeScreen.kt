@@ -84,9 +84,9 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
+            .background(Color.Static.white)
             .statusBarsPadding()
             .navigationBarsPadding()
-            .background(Color.Static.white)
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 122.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

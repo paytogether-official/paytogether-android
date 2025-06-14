@@ -44,3 +44,5 @@ data class CategoryDetail(
 @Serializable
 data class ExpenseSetting(val journeyId: String)
 
+@Serializable
+data class JourneySetting(val journeyId: String)
