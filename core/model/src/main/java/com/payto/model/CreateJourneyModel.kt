@@ -8,9 +8,10 @@ data class CreateJourneyModel(
     val journeyDate: JourneyDate? = null,
     val country: Country? = null,
     val exchangeRateModel: ExchangeRateModel = ExchangeRateModel(),
-    val members: List<String> = emptyList(),
+    val members: List<Member> = emptyList(),
 ) {
     data class JourneyDate(val startTimeMill: Long, val endTimeMill: Long)
+    data class Member(val name: String, val enable: Boolean = true)
 
     fun isFullyFilled(): Boolean {
         return !title.isNullOrBlank() &&
@@ -25,7 +26,7 @@ data class CreateJourneyModel(
     }
 
     fun hasEmptyName(): Boolean {
-        return members.any { it.isBlank() }
+        return members.any { it.name.isBlank() }
     }
 
     fun over30Member(): Boolean {

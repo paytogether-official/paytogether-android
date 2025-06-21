@@ -366,8 +366,7 @@ private fun ExchangeRate(
 }
 
 private fun LazyListScope.journeyParticipantBox(
-    members: () -> List<String>,
-    isSetting: Boolean = false,
+    members: () -> List<CreateJourneyModel.Member>,
     uiEvent: (UiEvent) -> Unit
 ) {
     item {
@@ -396,13 +395,14 @@ private fun LazyListScope.journeyParticipantBox(
 }
 
 private fun LazyListScope.participantList(
-    members: () -> List<String>,
+    members: () -> List<CreateJourneyModel.Member>,
     uiEvent: (UiEvent) -> Unit,
 ) {
-    itemsIndexed(members()) { index, name ->
+    itemsIndexed(members()) { index, member ->
         TextBox(
             modifier = Modifier.padding(bottom = 8.dp),
-            value = name,
+            value = member.name,
+            enabled = member.enable,
             placeholder = "이름을 입력해주세요"
         ) {
             uiEvent.invoke(OnNameChange(index, it))
@@ -416,7 +416,7 @@ private fun CreateJourneyScreenPreview() {
     CreateJourneyScreen(
         journeyData = {
             CreateJourneyModel(
-                members = listOf("정산요정"),
+                members = listOf(CreateJourneyModel.Member(name = "정산요정")),
                 country = Country(
                     continent = Continent.ASIA,
                     currency = "USD",

@@ -45,7 +45,7 @@ class CreateJourneyRepository @Inject internal constructor(
             startDate = journey.journeyDate?.startTimeMill?.toDateString(),
             endDate = journey.journeyDate?.endTimeMill?.toDateString(),
             localeCode = journey.country?.localeCode ?: "",
-            members = journey.members.map { MemberDTO(it) }
+            members = journey.members.map { MemberDTO(it.name) }
         )
         return dataSource.createJourney(request)
     }

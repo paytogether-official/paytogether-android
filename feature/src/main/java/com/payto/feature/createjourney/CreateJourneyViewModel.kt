@@ -25,7 +25,7 @@ class CreateJourneyViewModel @Inject constructor(
 
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
-    val journeyData = MutableStateFlow(CreateJourneyModel(members = listOf("")))
+    val journeyData = MutableStateFlow(CreateJourneyModel(members = listOf(CreateJourneyModel.Member(""))))
 
     private val exchangeRateMap = MutableStateFlow<Map<String, ExchangeRateModel>>(mapOf())
 
@@ -73,7 +73,7 @@ class CreateJourneyViewModel @Inject constructor(
                 val name = event.name
                 val members = journeyData.value.members
                 val newMember = members.toMutableList().apply {
-                    this[event.index] = name
+                    this[event.index] = this[event.index].copy(name = name)
                 }
                 journeyData.value = journeyData.value.copy(members = newMember.toList())
             }
@@ -121,7 +121,7 @@ class CreateJourneyViewModel @Inject constructor(
     private fun addPerson() {
         val old = journeyData.value
         val name = randomNameSet.firstOrNull() ?: return
-        journeyData.value = old.copy(members = old.members.plus(name))
+        journeyData.value = old.copy(members = old.members.plus(CreateJourneyModel.Member(name)))
         randomNameSet.remove(name)
     }
 

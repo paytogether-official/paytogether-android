@@ -113,7 +113,7 @@ private fun JourneySettingScreenPreview() {
     JourneySettingScreen(
         journeyData =
             CreateJourneyModel(
-                members = listOf("정산요정"),
+                members = listOf(CreateJourneyModel.Member(name = "정산요정")),
                 country = Country(
                     continent = Continent.ASIA,
                     currency = "USD",

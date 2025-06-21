@@ -36,7 +36,9 @@ class JourneySettingRepository @Inject internal constructor(
                     currency = info.baseCurrency,
                     exchangeRate = info.exchangeRate
                 ),
-                members = info.members?.map { it.name } ?: emptyList()
+                members = info.members?.map {
+                    CreateJourneyModel.Member(it.name, enable = false)
+                } ?: emptyList()
             )
         }
 }
