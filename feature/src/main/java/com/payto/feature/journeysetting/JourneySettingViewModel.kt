@@ -111,9 +111,10 @@ class JourneySettingViewModel @Inject constructor(
         if (checkJourneyValidation()) {
             viewModelScope.launch {
                 runCatching {
-                    val journey = repository.updateJourney(route.journeyId, journeyData.value)
+                    repository.updateJourney(route.journeyId, journeyData.value)
                     _sideEffectEvent.emit(PopBackStack)
-                    _sideEffectEvent.emit(Navigate(Journey(journey.id)))
+                }.onFailure {
+                    showErrorMessage()
                 }
             }
         }

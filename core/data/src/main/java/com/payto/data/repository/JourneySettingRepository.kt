@@ -61,8 +61,11 @@ class JourneySettingRepository @Inject internal constructor(
                 members = journey.members.map { MemberDTO(it.name) }
             )
             val data = dataSource.updateJourney(id, request)
-            val payer = dao.getJourneyPayer(id)
-            val memberInfo = data.members?.associate { it.name to (it.name == payer) }?.toMap()
+            val memberInfo = dao.getJourney(id)?.memberInfo?.toMutableMap() ?: mutableMapOf()
+            data.members?.forEach {
+                val disabled = memberInfo[it.name] ?: false
+                memberInfo[it.name] = disabled
+            }
             dao.insert(data.asEntity(memberInfo = memberInfo))
             return@withContext data.asModel()
         }
