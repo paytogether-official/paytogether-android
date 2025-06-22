@@ -22,7 +22,7 @@ data class CreateJourneyModel(
     }
 
     fun hasDuplicateName(): Boolean {
-        return members.size != members.distinct().size
+        return members.size != members.map { it.name }.distinct().size
     }
 
     fun hasEmptyName(): Boolean {

@@ -24,6 +24,7 @@ import com.payto.common.ext.addFocusCleaner
 import com.payto.designsystem.component.PaytoButton
 import com.payto.designsystem.theme.Color
 import com.payto.feature.common.DefaultToolbar
+import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
 import com.payto.feature.createjourney.JourneyContents
 import com.payto.model.Continent
@@ -37,6 +38,7 @@ fun JourneySettingRoute(
     viewModel: JourneySettingViewModel = hiltViewModel(),
 ) {
     val journeyData by viewModel.journeyData.collectAsStateWithLifecycle()
+    HandleSideEffect(viewModel, onNavigate, onBackClick)
     JourneySettingScreen(
         onBackClick = onBackClick,
         journeyData = journeyData,

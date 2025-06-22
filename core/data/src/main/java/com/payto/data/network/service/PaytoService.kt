@@ -9,6 +9,7 @@ import com.payto.data.network.dto.LocaleDTO
 import com.payto.data.network.dto.ResultDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -23,6 +24,12 @@ internal interface PaytoService {
 
     @POST("/journeys")
     suspend fun createJourney(
+        @Body createJourneyDTO: CreateJourneyDTO
+    ): JourneyInfoDTO
+
+    @PATCH("/journeys/{id}")
+    suspend fun updateJourney(
+        @Path("id") id: String,
         @Body createJourneyDTO: CreateJourneyDTO
     ): JourneyInfoDTO
 

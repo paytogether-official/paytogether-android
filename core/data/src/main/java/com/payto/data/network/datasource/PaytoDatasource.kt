@@ -20,6 +20,9 @@ internal class PaytoDatasource @Inject constructor(
     suspend fun createJourney(createJourneyDTO: CreateJourneyDTO) =
         service.createJourney(createJourneyDTO)
 
+    suspend fun updateJourney(id: String, createJourneyDTO: CreateJourneyDTO) =
+        service.updateJourney(id, createJourneyDTO)
+
     suspend fun getJourneys(ids: List<String>): List<JourneyInfoDTO> {
         val journeyIds = ids.joinToString(",")
         return service.getJourneys(journeyIds)

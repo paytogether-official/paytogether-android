@@ -1,8 +1,6 @@
 package com.payto.feature.createjourney
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.payto.model.navigate.Journey
 import com.payto.data.repository.CreateJourneyRepository
 import com.payto.feature.common.Navigate
 import com.payto.feature.common.PopBackStack
@@ -13,6 +11,7 @@ import com.payto.model.Country
 import com.payto.model.CreateJourneyModel
 import com.payto.model.CreateJourneyModel.JourneyDate
 import com.payto.model.ExchangeRateModel
+import com.payto.model.navigate.Journey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +24,8 @@ class CreateJourneyViewModel @Inject constructor(
 
     private val randomNameSet: MutableSet<String> = createRandomNameSet()
 
-    val journeyData = MutableStateFlow(CreateJourneyModel(members = listOf(CreateJourneyModel.Member(""))))
+    val journeyData =
+        MutableStateFlow(CreateJourneyModel(members = listOf(CreateJourneyModel.Member(""))))
 
     private val exchangeRateMap = MutableStateFlow<Map<String, ExchangeRateModel>>(mapOf())
 
@@ -161,10 +161,5 @@ class CreateJourneyViewModel @Inject constructor(
             }
         }
         return true
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        Log.e("흐흐", "CreateJourneyViewModel onCleared ${this.hashCode()}")
     }
 }
