@@ -17,6 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +31,7 @@ import com.payto.common.ext.numberFormat
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
 import com.payto.designsystem.icon.IconPack
-import com.payto.designsystem.icon.iconpack.Shareios
+import com.payto.designsystem.icon.iconpack.Morevertical
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
@@ -37,6 +40,7 @@ import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
 import com.payto.feature.journey.OnChangeCurrency
 import com.payto.model.JourneyExpenseModel
+import com.payto.model.navigate.ExpenseItemSetting
 
 @Composable
 fun JourneyExpenseItemDetailRoute(
@@ -47,6 +51,7 @@ fun JourneyExpenseItemDetailRoute(
     val model by viewModel.item.collectAsStateWithLifecycle()
     HandleSideEffect(viewModel, onNavigate = onNavigate, popBackStack = onBackClick)
     JourneyExpenseItemDetailScreen(
+        onNavigate = onNavigate,
         onBackClick = onBackClick,
         model = model,
         uiEvent = viewModel::onEvent
@@ -55,10 +60,36 @@ fun JourneyExpenseItemDetailRoute(
 
 @Composable
 private fun JourneyExpenseItemDetailScreen(
-    onBackClick: () -> Unit = {},
+    onNavigate: (Any) -> Unit,
+    onBackClick: () -> Unit,
     model: JourneyExpenseModel,
     uiEvent: (UiEvent) -> Unit,
 ) {
+    var isShowDialog by remember { mutableStateOf(false) }
+    ExpenseSettingBottomSheetDialog(
+        modifier = Modifier.fillMaxWidth(),
+        isShow = isShowDialog,
+        onDismissRequest = {
+            isShowDialog = false
+            when (it) {
+                ExpenseSettingType.UPDATE -> {
+                    onNavigate.invoke(ExpenseItemSetting(model.journeyId, model.id))
+                }
+
+                ExpenseSettingType.SHARE -> {
+                    // TODO
+                }
+
+                ExpenseSettingType.DELETE -> {
+                    // TODO
+                }
+
+                null -> {
+
+                }
+            }
+        }
+    )
     Column(
         modifier = Modifier
             .background(Color.Static.white)
@@ -68,9 +99,9 @@ private fun JourneyExpenseItemDetailScreen(
     ) {
         DefaultToolbar(
             onBackClick = onBackClick,
-            secondIcon = IconPack.Shareios,
+            secondIcon = IconPack.Morevertical,
             onSecondIconClick = {
-                // todo 공유하기
+                isShowDialog = true
             }
         )
         Content(
@@ -238,5 +269,5 @@ private fun JourneyExpenseItemDetailScreenPreview() {
             JourneyExpenseModel.MemberAmount(name = "라망이", amount = "10000.0")
         )
     )
-    JourneyExpenseItemDetailScreen(model = model, uiEvent = {})
+    JourneyExpenseItemDetailScreen(model = model, uiEvent = {}, onNavigate = {}, onBackClick = {})
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.data.repository.JourneySettingRepository
-import com.payto.feature.common.Navigate
 import com.payto.feature.common.PopBackStack
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent
@@ -15,7 +14,6 @@ import com.payto.feature.createjourney.OnJourneyDateChange
 import com.payto.feature.createjourney.OnNameChange
 import com.payto.model.CreateJourneyModel
 import com.payto.model.CreateJourneyModel.JourneyDate
-import com.payto.model.navigate.Journey
 import com.payto.model.navigate.JourneySetting
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
