@@ -84,6 +84,12 @@ data class JourneyExpenseModel(
     }
 }
 
+fun JourneyExpenseModel.asMemberAmountList(): List<JourneyExpenseModel.MemberAmount> {
+    return membersAmount.map {
+        JourneyExpenseModel.MemberAmount(name = it.name, amount = it.amount)
+    }
+}
+
 fun JourneyExpenseModel.updateMemberAmount(name: String, newAmount: String?): JourneyExpenseModel {
     val updatedMembers = membersAmount.map {
         if (it.name == name) it.copy(amount = newAmount) else it

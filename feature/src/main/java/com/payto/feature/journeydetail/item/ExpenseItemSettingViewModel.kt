@@ -46,6 +46,10 @@ class ExpenseItemSettingViewModel @Inject constructor(
 
     val journeyData = MutableStateFlow<JourneyModel?>(null)
 
+    init {
+        setInitData()
+    }
+
     fun setInitData() {
         viewModelScope.launch {
             runCatching {
@@ -58,32 +62,34 @@ class ExpenseItemSettingViewModel @Inject constructor(
     }
 
     private suspend fun fetchInitData() = withContext(Dispatchers.IO) {
-        val journeyInfoDeferred = async {
-            repository.getJourneyInfoData(
-                route.journeyId,
-                journeyData.value?.params?.quoteCurrency ?: "KRW"
-            )
-        }
-        val expenseListDeferred = async {
-            repository.getExpenses(
+        val journeyInfo = repository.getJourneyInfoData(route.journeyId, "KRW")
+        val expenseDeferred = async {
+            repository.getExpenseItemInfo(
                 id = route.journeyId,
-                params = journeyData.value?.params
+                expenseId = route.expenseId,
+                quoteCurrency = journeyInfo.baseCurrency,
             )
         }
         val payerDeferred = async { repository.getJourneyPayer(route.journeyId) }
 
-        val journeyInfo = journeyInfoDeferred.await()
-        val detailInfo = expenseListDeferred.await()
         val payer = payerDeferred.await()
+        val expenseData = expenseDeferred.await()
 
         val expenseModel = JourneyExpenseModel(
             payer = payer,
-            membersAmount = journeyInfo.asMemberAmountList()
+            membersAmount = expenseData.asMemberAmountList(),
+            expenseDate = expenseData.expenseDate,
+            category = expenseData.category,
+            categoryDescription = expenseData.categoryDescription,
+            amount = expenseData.amount,
+            memo = expenseData.memo,
+            id = expenseData.id,
+            quoteCurrency = expenseData.quoteCurrency,
+            baseCurrency = expenseData.baseCurrency
         )
         JourneyModel(
             infoModel = journeyInfo,
             createExpenseModel = expenseModel,
-            detailInfoList = detailInfo,
             params = journeyData.value?.params ?: ExpenseParams()
         )
     }

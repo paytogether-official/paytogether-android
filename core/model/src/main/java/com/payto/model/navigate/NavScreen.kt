@@ -48,4 +48,7 @@ data class ExpenseSetting(val journeyId: String)
 data class JourneySetting(val journeyId: String)
 
 @Serializable
-data class ExpenseItemSetting(val journeyId: String, val expenseId: Int)
+data class ExpenseItemSetting(
+    val journeyId: String,
+    val expenseId: Int,
+)
