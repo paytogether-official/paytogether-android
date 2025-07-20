@@ -53,7 +53,7 @@ internal fun JourneyModel.asDTO(): ExpenseDTO {
             MemberExpenseDTO(it.name, it.amount ?: "0.0")
         },
         memo = this.createExpenseModel.memo,
-        categoryDescription = this.createExpenseModel.categoryDescription
+        categoryDescription = this.createExpenseModel.categoryDescription,
     )
 }
 

@@ -54,3 +54,5 @@ data class OnClickDate(
 ) : JourneyEvent
 
 data object OnClickClose : JourneyEvent
+
+data object OnClickUpdateExpenseItem : JourneyEvent

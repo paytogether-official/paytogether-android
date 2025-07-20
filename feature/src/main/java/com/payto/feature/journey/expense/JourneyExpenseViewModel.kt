@@ -135,7 +135,10 @@ class JourneyExpenseViewModel @Inject constructor(
 
             is OnExpenseModeChange -> {
                 when (event.splitMode) {
-                    OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(journeyData.value?.createExpenseModel?.amount ?: "")
+                    OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(
+                        journeyData.value?.createExpenseModel?.amount ?: ""
+                    )
+
                     OnExpenseAmountChange.SplitMode.CUSTOM -> equalAmount("")
                 }
             }
@@ -158,6 +161,8 @@ class JourneyExpenseViewModel @Inject constructor(
                 journeyData.value = journeyData.value?.updateDate(event.date)
                 setInitData()
             }
+
+            else -> {}
         }
     }
 

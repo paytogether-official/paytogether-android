@@ -41,11 +41,20 @@ internal class PaytoDatasource @Inject constructor(
         val quoteCurrency = params.quoteCurrency
         val sort = "expenseDate,${params.order.sortName}"
 
-        return service.getExpenses(id, quoteCurrency, sort, params.category?.displayName, params.expenseDate)
+        return service.getExpenses(
+            id,
+            quoteCurrency,
+            sort,
+            params.category?.displayName,
+            params.expenseDate
+        )
     }
 
     suspend fun getExpense(id: String, journeyExpenseId: Int, quoteCurrency: String) =
         service.getExpense(id, journeyExpenseId, quoteCurrency)
+
+    suspend fun updateExpense(id: String, journeyExpenseId: Int, createExpenseDTO: ExpenseDTO) =
+        service.updateExpense(id, journeyExpenseId, createExpenseDTO)
 
     suspend fun closeJourney(id: String) = service.closeJourney(id)
 

@@ -29,6 +29,10 @@ class JourneyRepository @Inject internal constructor(
         dataSource.createExpense(model.asDTO())
     }
 
+    suspend fun updateJourneyExpense(model: JourneyModel) {
+        dataSource.updateExpense(model.infoModel.id, model.createExpenseModel.id, model.asDTO())
+    }
+
     suspend fun getExpenses(
         id: String,
         params: ExpenseParams?,

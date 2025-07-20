@@ -1,5 +1,6 @@
 package com.payto.feature.journeydetail.item
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -16,6 +17,7 @@ import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journey.OnClickClose
 import com.payto.feature.journey.OnClickDate
+import com.payto.feature.journey.OnClickUpdateExpenseItem
 import com.payto.feature.journey.OnExpenseAmountChange
 import com.payto.feature.journey.OnExpenseCategoryChange
 import com.payto.feature.journey.OnExpenseDateChange
@@ -136,10 +138,6 @@ class ExpenseItemSettingViewModel @Inject constructor(
                 )
             }
 
-            ClickAddExpense -> {
-                addExpense()
-            }
-
             is OnExpenseModeChange -> {
                 when (event.splitMode) {
                     OnExpenseAmountChange.SplitMode.EQUAL -> equalAmount(
@@ -168,16 +166,22 @@ class ExpenseItemSettingViewModel @Inject constructor(
                 journeyData.value = journeyData.value?.updateDate(event.date)
                 setInitData()
             }
+
+            is OnClickUpdateExpenseItem -> {
+                updateExpense()
+            }
+
+            else -> {}
         }
     }
 
-    private fun addExpense() {
+    private fun updateExpense() {
         viewModelScope.launch {
             runCatching {
                 journeyData.value?.let {
-                    repository.addJourneyExpense(it)
+                    repository.updateJourneyExpense(it)
                     setInitData()
-                    showSnackbar("지출이 추가되었습니다.", ShowSnackbar.Status.SUCCESS)
+                    showSnackbar("지출이 수정되었습니다.", ShowSnackbar.Status.SUCCESS)
                 }
             }.onFailure {
                 showSnackbar("오류가 발생했습니다.", ShowSnackbar.Status.FAIL)

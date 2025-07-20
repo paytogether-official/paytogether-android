@@ -29,6 +29,7 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
+import com.payto.feature.journey.OnClickUpdateExpenseItem
 import com.payto.feature.journey.expense.ExpenseScreen
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
@@ -74,6 +75,7 @@ fun ExpenseItemSettingScreen(
             ExpenseScreen(
                 modifier = Modifier.weight(1f),
                 model = model,
+                isEdit = true,
                 onNavigate = onNavigate,
                 uiEvent = uiEvent,
             )
@@ -107,7 +109,11 @@ private fun ExpenseItemSettingToolbar(
         )
 
         Text(
-            modifier = Modifier.width(48.dp),
+            modifier = Modifier
+                .width(48.dp)
+                .rippleClickable {
+                    uiEvent.invoke(OnClickUpdateExpenseItem)
+                },
             text = "수정",
             style = typography.contentAccent,
             textAlign = TextAlign.Center,

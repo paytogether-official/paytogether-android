@@ -91,6 +91,7 @@ import kotlinx.coroutines.launch
 fun ExpenseScreen(
     modifier: Modifier = Modifier,
     model: JourneyModel,
+    isEdit: Boolean = false,
     onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -145,13 +146,15 @@ fun ExpenseScreen(
             )
         }
 
-        PaytoButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "지출 추가",
-            enabled = isFullFilled,
-        ) {
-            focusManager.clearFocus()
-            uiEvent.invoke(ClickAddExpense)
+        if (isEdit.not()) {
+            PaytoButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "지출 추가",
+                enabled = isFullFilled,
+            ) {
+                focusManager.clearFocus()
+                uiEvent.invoke(ClickAddExpense)
+            }
         }
     }
 }

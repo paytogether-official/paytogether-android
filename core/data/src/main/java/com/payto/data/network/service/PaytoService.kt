@@ -66,6 +66,13 @@ internal interface PaytoService {
         @Query("quoteCurrency") quoteCurrency: String,
     ): ExpenseDTO
 
+    @PATCH("/journeys/{id}/expenses/{journeyExpenseId}")
+    suspend fun updateExpense(
+        @Path("id") id: String,
+        @Path("journeyExpenseId") journeyExpenseId: Int,
+        @Body createExpenseDTO: ExpenseDTO
+    )
+
     @POST("/journeys/{id}/close")
     suspend fun closeJourney(
         @Path("id") id: String,
