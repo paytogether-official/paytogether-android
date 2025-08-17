@@ -5,6 +5,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -59,73 +60,203 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
             EnterTransition.None
         }
     ) {
-        composable<Home> { HomeRoute(onNavigate = { navController.navigate(it) }) }
+        composable<Home> { HomeRoute(onNavigate = { destination ->
+            if (destination == Home) {
+                navController.navigate(Home) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            } else {
+                navController.navigate(destination)
+            }
+        }) }
         composable<CreateJourney> {
             CreateJourneyRoute(
                 onBackClick = { navController.popBackStack() },
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
             )
         }
         composable<Journey> {
             JourneyRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }
         composable<JourneyHistory> {
             JourneyHistoryRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }
         composable<JourneyDetail> {
             JourneyDetailRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }
         composable<JourneyExpenseItemDetail> {
             JourneyExpenseItemDetailRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }
         composable<JoinJourney> {
             JoinJourneyRoute(
-                onNavigate = {
-                    navController.popBackStack()
-                    navController.navigate(it)
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.popBackStack()
+                        navController.navigate(destination)
+                    }
                 },
                 onBackClick = { navController.popBackStack() }
             )
         }
         composable<JourneyResult> {
             JourneyResultRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
         composable<CategoryDetail> {
             CategoryDetailRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
         composable<ExpenseSetting> {
             ExpenseSettingRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
         composable<JourneySetting> {
             JourneySettingRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }
         composable<ExpenseItemSetting> {
             ExpenseItemSettingRoute(
-                onNavigate = { navController.navigate(it) },
+                onNavigate = { destination ->
+                    if (destination == Home) {
+                        navController.navigate(Home) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    } else {
+                        navController.navigate(destination)
+                    }
+                },
                 onBackClick = { navController.popBackStack() },
             )
         }

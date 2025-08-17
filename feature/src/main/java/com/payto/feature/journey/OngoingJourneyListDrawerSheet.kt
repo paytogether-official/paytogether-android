@@ -27,6 +27,8 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.UiEvent
 import com.payto.model.JourneyInfoModel
+import com.payto.model.navigate.CreateJourney
+import com.payto.model.navigate.Home
 import com.payto.model.navigate.Journey
 
 @Composable
@@ -94,12 +96,21 @@ private fun OngoingJourneyListContent(
                 .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            PaytoButton(modifier = Modifier.fillMaxWidth(), text = "새 여정 만들기", onClick = {})
+            PaytoButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "새 여정 만들기",
+                onClick = {
+                    onNavigate(CreateJourney)
+                }
+            )
             PaytoButton(
                 modifier = Modifier.fillMaxWidth(),
                 status = PaytoButtonStatus.SECONDARY,
                 text = "홈으로",
-                onClick = {})
+                onClick = {
+                    onNavigate(Home)
+                }
+            )
         }
     }
 }
