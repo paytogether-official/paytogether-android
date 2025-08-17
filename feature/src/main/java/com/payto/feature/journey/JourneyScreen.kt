@@ -2,6 +2,7 @@
 
 package com.payto.feature.journey
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,8 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -68,10 +73,12 @@ fun JourneyRoute(
         viewModel.setInitData()
     }
     val journeyModel by viewModel.journeyData.collectAsStateWithLifecycle()
+    val ongoingJourneyList by viewModel.ongoingJourneys.collectAsStateWithLifecycle()
 
     HandleSideEffect(viewModel, onNavigate, onBackClick)
     JourneyScreen(
         model = journeyModel,
+        ongoingJourneyList = ongoingJourneyList,
         onNavigate = onNavigate,
         uiEvent = viewModel::onEvent
     )
@@ -80,26 +87,64 @@ fun JourneyRoute(
 @Composable
 private fun JourneyScreen(
     model: JourneyModel?,
+    ongoingJourneyList: List<JourneyInfoModel>,
     onNavigate: (Any) -> Unit,
     uiEvent: (UiEvent) -> Unit
 ) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .background(color = Color.Static.white)
-            .fillMaxSize()
-            .navigationBarsPadding()
-            .statusBarsPadding()
+    // 드로어가 열려 있을 때 뒤로가기 버튼 처리
+    BackHandler(enabled = drawerState.isOpen) {
+        scope.launch {
+            drawerState.close()
+        }
+    }
+
+    ModalNavigationDrawer(
+        modifier = Modifier,
+        drawerState = drawerState,
+        drawerContent = {
+            OngoingJourneyListDrawerSheet(
+                ongoingJourneyList = ongoingJourneyList,
+                currentJourneyInfoModel = model?.infoModel,
+                onNavigate = onNavigate,
+                uiEvent = uiEvent
+            )
+        }
     ) {
-        Toolbar(title = model?.infoModel?.title ?: "")
-        AnimatedVisibility(model != null, modifier = Modifier.weight(1f)) {
-            if (model != null) {
-                Content(
-                    modifier = Modifier.fillMaxSize(),
-                    model = model,
-                    onNavigate = onNavigate,
-                    uiEvent = uiEvent
+        Scaffold(
+            modifier = Modifier.statusBarsPadding(),
+            topBar = {
+                Toolbar(
+                    title = model?.infoModel?.title ?: "",
+                    onNavigationIconClick = {
+                        scope.launch {
+                            drawerState.apply {
+                                if (isClosed) open() else close()
+                            }
+                        }
+                    }
                 )
+            }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .background(color = Color.Static.white)
+                    .fillMaxSize()
+                    .padding(paddingValues) // Scaffold로부터 content padding을 적용합니다.
+                    .navigationBarsPadding()
+            ) {
+                AnimatedVisibility(model != null, modifier = Modifier.weight(1f)) {
+                    if (model != null) {
+                        Content(
+                            modifier = Modifier.fillMaxSize(),
+                            model = model,
+                            onNavigate = onNavigate,
+                            uiEvent = uiEvent
+                        )
+                    }
+                }
             }
         }
     }
@@ -108,16 +153,18 @@ private fun JourneyScreen(
 @Composable
 private fun Toolbar(
     modifier: Modifier = Modifier,
-    title: String = ""
+    title: String = "",
+    onNavigationIconClick: () -> Unit
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
         Image(
             modifier = Modifier
+                .rippleClickable(onClick = onNavigationIconClick) // 클릭 시 드로어 열기
                 .align(Alignment.CenterStart)
                 .padding(12.dp)
                 .size(24.dp),
             imageVector = IconPack.Listcategory,
-            contentDescription = ""
+            contentDescription = "메뉴 열기" // contentDescription 추가
         )
         Text(
             modifier = Modifier.align(Alignment.Center),
@@ -260,5 +307,5 @@ private fun JourneyScreenPreview() {
             }
         )
     )
-    JourneyScreen(model = model, onNavigate = {}, uiEvent = {})
+    JourneyScreen(model = model, onNavigate = {}, ongoingJourneyList = emptyList(), uiEvent = {})
 }

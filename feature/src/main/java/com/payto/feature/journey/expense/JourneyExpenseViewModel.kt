@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.common.ext.safeDiv
 import com.payto.common.ext.toLocalDate
-import com.payto.model.navigate.Journey
 import com.payto.data.repository.JourneyRepository
+import com.payto.data.repository.OngoingJourneyRepository
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
@@ -24,8 +24,10 @@ import com.payto.feature.journey.OnExpenseModeChange
 import com.payto.feature.journey.OnMemoChange
 import com.payto.model.ExpenseParams
 import com.payto.model.JourneyExpenseModel
+import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
 import com.payto.model.asMemberAmountList
+import com.payto.model.navigate.Journey
 import com.payto.model.updateMemberAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -39,11 +41,16 @@ import javax.inject.Inject
 class JourneyExpenseViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
     private val repository: JourneyRepository,
+    private val ongoingRepository: OngoingJourneyRepository,
 ) : BaseViewModel() {
 
     val journey = stateHandle.toRoute<Journey>()
-
     val journeyData = MutableStateFlow<JourneyModel?>(null)
+    val ongoingJourneys = MutableStateFlow(emptyList<JourneyInfoModel>())
+
+    init {
+        getOngoingJourneys()
+    }
 
     fun setInitData() {
         viewModelScope.launch {
@@ -208,6 +215,18 @@ class JourneyExpenseViewModel @Inject constructor(
                 repository.closeJourney(journey.journeyId)
             }.onSuccess {
                 // TODO 여정 결과로 이동
+            }
+        }
+    }
+
+    private fun getOngoingJourneys() {
+        viewModelScope.launch {
+            runCatching {
+                ongoingRepository.getOngoingJourney()
+            }.onSuccess {
+                ongoingJourneys.value = it
+            }.onFailure {
+                showErrorMessage()
             }
         }
     }
