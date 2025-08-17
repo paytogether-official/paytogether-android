@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.designsystem.component.PaytoTabRow
 import com.payto.designsystem.dialog.DialogData
+import com.payto.designsystem.dialog.DialogStyle
 import com.payto.designsystem.dialog.PaytoDialog
 import com.payto.designsystem.extension.rippleClickable
 import com.payto.designsystem.icon.IconPack
@@ -202,6 +203,9 @@ private fun Content(
         mutableStateOf(false)
     }
 
+    var isShowLeaveDialog by remember {
+        mutableStateOf(false)
+    }
 
     PaytoDialog(
         isShowDialog = isShowCloseDialog,
@@ -238,13 +242,33 @@ private fun Content(
                 }
 
                 LEAVE -> {
-                    // TODO
+                    isShowLeaveDialog = true
                 }
 
                 null -> {
                     // TODO
                 }
             }
+        }
+    )
+
+    PaytoDialog(
+        isShowDialog = isShowLeaveDialog,
+        model = remember {
+            DialogData(
+                title = "여정을 나가시겠어요?",
+                subtitle = "목록에서 해당 여정이 사라집니다.",
+                firstButton = "닫기",
+                secondButton = "나가기",
+                icon = R.drawable.dialog_delete,
+                style = DialogStyle.RED,
+            )
+        },
+        onDismissRequest = {
+            isShowLeaveDialog = false
+        },
+        secondButtonClick = {
+            uiEvent.invoke(OnDeleteJourney(model.infoModel.id))
         }
     )
 

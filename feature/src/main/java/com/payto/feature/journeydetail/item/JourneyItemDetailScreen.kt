@@ -46,7 +46,7 @@ import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
 import com.payto.feature.journey.OnChangeCurrency
-import com.payto.feature.journey.OnClickDeleteExpense
+import com.payto.feature.journey.OnDeleteExpense
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.navigate.ExpenseItemSetting
 
@@ -117,7 +117,7 @@ private fun JourneyExpenseItemDetailScreen(
             isShowDeleteDialog = false
         },
         secondButtonClick = {
-            uiEvent.invoke(OnClickDeleteExpense(model.journeyId, model.id))
+            uiEvent.invoke(OnDeleteExpense(model.journeyId, model.id))
         }
     )
 

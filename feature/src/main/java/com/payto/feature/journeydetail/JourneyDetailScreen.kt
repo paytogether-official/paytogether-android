@@ -76,12 +76,14 @@ import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.R
+import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.HistoryToolbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.ext.getDrawableId
 import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journey.OnClickDate
+import com.payto.feature.journey.OnDeleteJourney
 import com.payto.feature.journeyhistory.JourneyDate
 import com.payto.model.ExpenseParams
 import com.payto.model.ExpenseGroupByDateModel
@@ -116,10 +118,11 @@ fun JourneyDetailRoute(
             isShowDeleteDialog = false
         },
         secondButtonClick = {
-            // TODO 삭제하기
+            viewModel.onEvent(OnDeleteJourney(model?.journeyInfo?.id ?: ""))
         }
     )
 
+    HandleSideEffect(viewModel, onNavigate, onBackClick)
     JourneyDetailScreen(
         modifier = Modifier
             .background(color = Color.Static.white)

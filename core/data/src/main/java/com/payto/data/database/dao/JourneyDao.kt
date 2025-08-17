@@ -21,7 +21,7 @@ internal interface JourneyDao {
     fun getJourneyFlow(id: String): Flow<JourneyEntity>
 
     @Query("SELECT * FROM Journey")
-    suspend fun getJourneys(): List<JourneyEntity>
+    fun getJourneys(): Flow<List<JourneyEntity>>
 
     @Query("SELECT payer FROM Journey WHERE id = :id")
     suspend fun getJourneyPayer(id: String): String
@@ -32,6 +32,6 @@ internal interface JourneyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<JourneyEntity>)
 
-    @Delete
-    suspend fun delete(journey: JourneyEntity)
+    @Query("DELETE FROM Journey WHERE id = :journeyId")
+    suspend fun deleteJourneyById(journeyId: String)
 }

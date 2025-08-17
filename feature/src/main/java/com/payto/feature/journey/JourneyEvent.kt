@@ -53,9 +53,13 @@ data class OnClickDate(
     val date: String?
 ) : JourneyEvent
 
-data class OnClickDeleteExpense(
+data class OnDeleteExpense(
     val id: String,
     val journeyExpenseId: Int
+) : JourneyEvent
+
+data class OnDeleteJourney(
+    val journeyId: String,
 ) : JourneyEvent
 
 data object OnClickClose : JourneyEvent

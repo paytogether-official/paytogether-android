@@ -8,7 +8,7 @@ import com.payto.feature.common.PopBackStack
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
 import com.payto.feature.journey.OnChangeCurrency
-import com.payto.feature.journey.OnClickDeleteExpense
+import com.payto.feature.journey.OnDeleteExpense
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.navigate.JourneyExpenseItemDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +36,7 @@ class JourneyExpenseItemViewModel @Inject constructor(
                 fetchExpense(event.currency)
             }
 
-            is OnClickDeleteExpense -> {
+            is OnDeleteExpense -> {
                 deleteExpense(id = event.id, journeyExpenseId = event.journeyExpenseId)
             }
         }

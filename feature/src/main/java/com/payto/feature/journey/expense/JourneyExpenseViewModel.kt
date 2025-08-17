@@ -18,6 +18,7 @@ import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journey.OnClickClose
 import com.payto.feature.journey.OnClickDate
+import com.payto.feature.journey.OnDeleteJourney
 import com.payto.feature.journey.OnExpenseAmountChange
 import com.payto.feature.journey.OnExpenseCategoryChange
 import com.payto.feature.journey.OnExpenseDateChange
@@ -28,6 +29,7 @@ import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
 import com.payto.model.asMemberAmountList
+import com.payto.model.navigate.Home
 import com.payto.model.navigate.Journey
 import com.payto.model.navigate.JourneyResult
 import com.payto.model.updateMemberAmount
@@ -171,6 +173,10 @@ class JourneyExpenseViewModel @Inject constructor(
                 setInitData()
             }
 
+            is OnDeleteJourney -> {
+                deleteJourney(event.journeyId)
+            }
+
             else -> {}
         }
     }
@@ -234,6 +240,17 @@ class JourneyExpenseViewModel @Inject constructor(
                 ongoingRepository.getOngoingJourney()
             }.onSuccess {
                 ongoingJourneys.value = it
+            }.onFailure {
+                showErrorMessage()
+            }
+        }
+    }
+
+    private fun deleteJourney(journeyId: String) {
+        viewModelScope.launch {
+            runCatching {
+                repository.deleteJourney(journeyId)
+                sendSideEffectEvent(Navigate(Home))
             }.onFailure {
                 showErrorMessage()
             }

@@ -60,4 +60,8 @@ class JourneyRepository @Inject internal constructor(
     suspend fun closeJourney(id: String) {
         dataSource.closeJourney(id)
     }
+
+    suspend fun deleteJourney(id: String) {
+        dao.deleteJourneyById(id)
+    }
 }

@@ -4,6 +4,8 @@ import com.payto.data.database.dao.JourneyDao
 import com.payto.data.network.datasource.PaytoDatasource
 import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.model.JourneyHistoryModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -15,20 +17,15 @@ class JourneyHistoryRepository @Inject internal constructor(
     private val dataSource: PaytoDatasource,
     private val dao: JourneyDao,
 ) {
-    suspend fun getJourneyHistoryList(): List<JourneyHistoryModel> {
-        val ids = dao.getJourneys().map { it.id }
-        if (ids.isEmpty()) return emptyList()
+    fun getJourneyHistoryList(): Flow<List<JourneyHistoryModel>> =
+        dao.getJourneys().map { list ->
+            val ids = list.map { it.id }
+            if (ids.isEmpty()) return@map emptyList()
 
-        val list = dataSource.getJourneys(ids)
-        dao.insertAll(
-            list.map {
-                val localData = dao.getJourney(it.journeyId)
-                it.asEntity(localData?.payer, localData?.memberInfo)
-            }
-        )
-        return list.filter { it.isClosed() }
-            .let(::groupByStartYearMonth)
-    }
+            val list = dataSource.getJourneys(ids)
+            list.filter { it.isClosed() }
+                .let(::groupByStartYearMonth)
+        }
 
     private fun groupByStartYearMonth(journeys: List<JourneyInfoDTO>): List<JourneyHistoryModel> {
         val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")

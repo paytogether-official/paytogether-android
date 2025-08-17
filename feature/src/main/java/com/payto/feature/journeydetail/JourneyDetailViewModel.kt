@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.payto.model.navigate.JourneyDetail
 import com.payto.data.repository.JourneyRepository
+import com.payto.feature.common.PopBackStack
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
 import com.payto.feature.journey.OnChangeCurrency
 import com.payto.feature.journey.OnChangeOrder
 import com.payto.feature.journey.OnClickDate
+import com.payto.feature.journey.OnDeleteJourney
 import com.payto.model.ExpenseParams
 import com.payto.model.JourneyDetailModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,6 +52,10 @@ class JourneyDetailViewModel @Inject constructor(
                 model.value = model.value?.updateDate(event.date)
                 fetchInitData()
             }
+
+            is OnDeleteJourney -> {
+                deleteJourney(event.journeyId)
+            }
         }
     }
 
@@ -85,5 +91,16 @@ class JourneyDetailViewModel @Inject constructor(
             list = detailInfoList,
             params = model.value?.params ?: ExpenseParams()
         )
+    }
+
+    private fun deleteJourney(journeyId: String) {
+        viewModelScope.launch {
+            runCatching {
+                repository.deleteJourney(journeyId)
+                sendSideEffectEvent(PopBackStack)
+            }.onFailure {
+                showErrorMessage()
+            }
+        }
     }
 }
