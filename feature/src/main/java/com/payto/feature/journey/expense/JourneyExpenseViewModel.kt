@@ -7,6 +7,7 @@ import com.payto.common.ext.safeDiv
 import com.payto.common.ext.toLocalDate
 import com.payto.data.repository.JourneyRepository
 import com.payto.data.repository.OngoingJourneyRepository
+import com.payto.feature.common.Navigate
 import com.payto.feature.common.ShowSnackbar
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
@@ -28,6 +29,7 @@ import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
 import com.payto.model.asMemberAmountList
 import com.payto.model.navigate.Journey
+import com.payto.model.navigate.JourneyResult
 import com.payto.model.updateMemberAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -214,7 +216,14 @@ class JourneyExpenseViewModel @Inject constructor(
             runCatching {
                 repository.closeJourney(journey.journeyId)
             }.onSuccess {
-                // TODO 여정 결과로 이동
+                sendSideEffectEvent(
+                    Navigate(
+                        JourneyResult(
+                            journeyId = journey.journeyId,
+                            quoteCurrency = journeyData.value?.params?.quoteCurrency ?: "KRW"
+                        )
+                    )
+                )
             }
         }
     }

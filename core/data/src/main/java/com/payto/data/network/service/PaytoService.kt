@@ -8,6 +8,7 @@ import com.payto.data.network.dto.JourneyInfoDTO
 import com.payto.data.network.dto.LocaleDTO
 import com.payto.data.network.dto.ResultDTO
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -58,6 +59,12 @@ internal interface PaytoService {
         @Query("category") category: String?,
         @Query("expenseDate") expenseDate: String?,
     ): ExpenseTotalDTO
+
+    @DELETE("/journeys/{id}/expenses/{journeyExpenseId}")
+    suspend fun deleteExpense(
+        @Path("id") id: String,
+        @Path("journeyExpenseId") journeyExpenseId: Int,
+    )
 
     @GET("/journeys/{id}/expenses/{journeyExpenseId}")
     suspend fun getExpense(

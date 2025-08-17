@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.payto.feature.journeydetail.item
 
 import androidx.compose.foundation.background
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,15 +33,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.payto.common.ext.numberFormat
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
+import com.payto.designsystem.dialog.DialogData
+import com.payto.designsystem.dialog.DialogStyle
+import com.payto.designsystem.dialog.PaytoDialog
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Morevertical
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
+import com.payto.feature.R
 import com.payto.feature.common.DefaultToolbar
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.common.UiEvent
 import com.payto.feature.journey.OnChangeCurrency
+import com.payto.feature.journey.OnClickDeleteExpense
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.navigate.ExpenseItemSetting
 
@@ -66,6 +74,8 @@ private fun JourneyExpenseItemDetailScreen(
     uiEvent: (UiEvent) -> Unit,
 ) {
     var isShowDialog by remember { mutableStateOf(false) }
+    var isShowDeleteDialog by remember { mutableStateOf(false) }
+
     ExpenseSettingBottomSheetDialog(
         modifier = Modifier.fillMaxWidth(),
         isShow = isShowDialog,
@@ -81,7 +91,7 @@ private fun JourneyExpenseItemDetailScreen(
                 }
 
                 ExpenseSettingType.DELETE -> {
-                    // TODO
+                    isShowDeleteDialog = true
                 }
 
                 null -> {
@@ -90,6 +100,27 @@ private fun JourneyExpenseItemDetailScreen(
             }
         }
     )
+
+    PaytoDialog(
+        isShowDialog = isShowDeleteDialog,
+        model = remember {
+            DialogData(
+                title = "지출을 삭제하시겠어요?",
+                subtitle = "삭제시 모든 데이터가 사라집니다.",
+                firstButton = "닫기",
+                secondButton = "삭제하기",
+                icon = R.drawable.dialog_delete,
+                style = DialogStyle.RED,
+            )
+        },
+        onDismissRequest = {
+            isShowDeleteDialog = false
+        },
+        secondButtonClick = {
+            uiEvent.invoke(OnClickDeleteExpense(model.journeyId, model.id))
+        }
+    )
+
     Column(
         modifier = Modifier
             .background(Color.Static.white)

@@ -45,6 +45,10 @@ class JourneyRepository @Inject internal constructor(
             }
     }
 
+    suspend fun deleteExpense(id: String, expenseId: Int) {
+        dataSource.deleteExpense(id, expenseId)
+    }
+
     suspend fun getExpenseItemInfo(
         id: String,
         expenseId: Int,

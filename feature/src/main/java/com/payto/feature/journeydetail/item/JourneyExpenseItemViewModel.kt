@@ -3,12 +3,14 @@ package com.payto.feature.journeydetail.item
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.payto.model.navigate.JourneyExpenseItemDetail
 import com.payto.data.repository.JourneyRepository
+import com.payto.feature.common.PopBackStack
 import com.payto.feature.common.UiEvent
 import com.payto.feature.common.arch.BaseViewModel
 import com.payto.feature.journey.OnChangeCurrency
+import com.payto.feature.journey.OnClickDeleteExpense
 import com.payto.model.JourneyExpenseModel
+import com.payto.model.navigate.JourneyExpenseItemDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -29,9 +31,13 @@ class JourneyExpenseItemViewModel @Inject constructor(
     }
 
     override fun onEvent(event: UiEvent) {
-        when(event) {
+        when (event) {
             is OnChangeCurrency -> {
                 fetchExpense(event.currency)
+            }
+
+            is OnClickDeleteExpense -> {
+                deleteExpense(id = event.id, journeyExpenseId = event.journeyExpenseId)
             }
         }
     }
@@ -44,6 +50,17 @@ class JourneyExpenseItemViewModel @Inject constructor(
                     data.expenseId,
                     qutCurrency
                 )
+            }.onFailure {
+                showErrorMessage()
+            }
+        }
+    }
+
+    private fun deleteExpense(id: String, journeyExpenseId: Int) {
+        viewModelScope.launch {
+            runCatching {
+                repository.deleteExpense(id, journeyExpenseId)
+                sendSideEffectEvent(PopBackStack)
             }.onFailure {
                 showErrorMessage()
             }

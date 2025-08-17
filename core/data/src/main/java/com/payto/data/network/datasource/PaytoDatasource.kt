@@ -50,6 +50,9 @@ internal class PaytoDatasource @Inject constructor(
         )
     }
 
+    suspend fun deleteExpense(id: String, journeyExpenseId: Int) =
+        service.deleteExpense(id, journeyExpenseId)
+
     suspend fun getExpense(id: String, journeyExpenseId: Int, quoteCurrency: String) =
         service.getExpense(id, journeyExpenseId, quoteCurrency)
 
