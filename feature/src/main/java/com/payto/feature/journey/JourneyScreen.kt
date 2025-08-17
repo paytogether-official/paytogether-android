@@ -5,7 +5,6 @@ package com.payto.feature.journey
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -102,19 +101,29 @@ private fun JourneyScreen(
     }
 
     ModalNavigationDrawer(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxSize(),
         drawerState = drawerState,
         drawerContent = {
             OngoingJourneyListDrawerSheet(
                 ongoingJourneyList = ongoingJourneyList,
                 currentJourneyInfoModel = model?.infoModel,
-                onNavigate = onNavigate,
+                onNavigate = { screen ->
+                    scope.launch {
+                        drawerState.close()
+                    }.invokeOnCompletion {
+                        onNavigate(screen)
+                    }
+                },
                 uiEvent = uiEvent
             )
         }
     ) {
         Scaffold(
-            modifier = Modifier.statusBarsPadding(),
+            modifier = Modifier
+                .navigationBarsPadding()
+                .statusBarsPadding(),
+            containerColor = Color.Static.white,
+            contentColor = Color.Static.white,
             topBar = {
                 Toolbar(
                     title = model?.infoModel?.title ?: "",
@@ -130,10 +139,8 @@ private fun JourneyScreen(
         ) { paddingValues ->
             Column(
                 modifier = Modifier
-                    .background(color = Color.Static.white)
                     .fillMaxSize()
                     .padding(paddingValues) // Scaffold로부터 content padding을 적용합니다.
-                    .navigationBarsPadding()
             ) {
                 AnimatedVisibility(model != null, modifier = Modifier.weight(1f)) {
                     if (model != null) {
@@ -169,7 +176,8 @@ private fun Toolbar(
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = title,
-            style = typography.highlightBold
+            style = typography.highlightBold,
+            color = Color.Label.normal
         )
     }
 }
@@ -296,7 +304,7 @@ private fun JourneyScreenPreview() {
     val model = JourneyModel(
         infoModel = JourneyInfoModel(
             id = "",
-            title = "",
+            title = "타이틀",
             baseCurrency = "JPY",
             members = emptyList()
         ),

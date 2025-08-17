@@ -27,6 +27,7 @@ import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
 import com.payto.feature.common.UiEvent
 import com.payto.model.JourneyInfoModel
+import com.payto.model.navigate.Journey
 
 @Composable
 fun OngoingJourneyListDrawerSheet(
@@ -114,8 +115,11 @@ private fun OngoingItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .rippleClickable(shape = RoundedCornerShape(8.dp)) {
-
+            .rippleClickable(
+                shape = RoundedCornerShape(8.dp),
+                enabled = isSelected.not()
+            ) {
+                onNavigate(Journey(model.id))
             }
             .background(Component.Fill.normal)
             .padding(16.dp),
