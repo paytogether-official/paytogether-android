@@ -216,7 +216,7 @@ private fun Content(
         model = remember {
             DialogData(
                 title = "여정을 마무리하시겠어요?",
-                subtitle = "더 이상 항목을 추가할 수 없어요",
+                subtitle = "더 이상 지출을 추가할 수 없어요",
                 firstButton = "닫기",
                 secondButton = "마무리하기",
                 icon = R.drawable.travel_insurance
@@ -255,9 +255,7 @@ private fun Content(
                     isShowLeaveDialog = true
                 }
 
-                null -> {
-                    // TODO
-                }
+                null -> {}
             }
         }
     )

@@ -126,7 +126,7 @@ private fun ContentPreview() {
 
 
 enum class ExpenseSettingType(val displayName: String) {
-    UPDATE("항목 수정하기"),
-    SHARE("항목 공유하기"),
-    DELETE("항목 삭제하기"),
+    UPDATE("지출 수정하기"),
+    SHARE("지출 공유하기"),
+    DELETE("지출 삭제하기"),
 }

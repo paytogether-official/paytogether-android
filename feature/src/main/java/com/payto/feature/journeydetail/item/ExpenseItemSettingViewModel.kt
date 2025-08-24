@@ -158,10 +158,6 @@ class ExpenseItemSettingViewModel @Inject constructor(
                 setInitData()
             }
 
-            OnClickClose -> {
-                closeJourney()
-            }
-
             is OnClickDate -> {
                 journeyData.value = journeyData.value?.updateDate(event.date)
                 setInitData()
@@ -209,15 +205,5 @@ class ExpenseItemSettingViewModel @Inject constructor(
                 }
             )
         )
-    }
-
-    private fun closeJourney() {
-        viewModelScope.launch {
-            runCatching {
-                repository.closeJourney(route.journeyId)
-            }.onSuccess {
-                // TODO 여정 결과로 이동
-            }
-        }
     }
 }
