@@ -2,6 +2,7 @@
 
 package com.payto.feature.journeydetail
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -55,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.base.Const
 import com.payto.common.ext.numberFormat
 import com.payto.common.ext.toPx
 import com.payto.model.navigate.JourneyExpenseItemDetail
@@ -100,6 +103,7 @@ fun JourneyDetailRoute(
     onBackClick: () -> Unit
 ) {
     val model by viewModel.model.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     var isShowDeleteDialog by remember {
         mutableStateOf(false)
     }
@@ -136,7 +140,13 @@ fun JourneyDetailRoute(
                 modifier = Modifier.fillMaxWidth(),
                 onBackClick = onBackClick,
                 onShareClick = {
-                    // TODO
+                    val shareText = "${Const.JOURNEY_URL}{model?.journeyInfo?.id}"
+                    val shareIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, "지출 내역 공유"))
                 },
                 onDeleteClick = {
                     isShowDeleteDialog = true

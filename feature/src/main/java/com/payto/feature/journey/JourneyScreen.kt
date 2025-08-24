@@ -2,6 +2,7 @@
 
 package com.payto.feature.journey
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -33,10 +34,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.base.Const
 import com.payto.designsystem.component.PaytoTabRow
 import com.payto.designsystem.dialog.DialogData
 import com.payto.designsystem.dialog.DialogStyle
@@ -194,6 +197,7 @@ private fun Content(
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     var isShowSettingDialog by remember {
         mutableStateOf(false)
@@ -234,7 +238,13 @@ private fun Content(
             when (it) {
                 FINISH -> isShowCloseDialog = true
                 SHARE -> {
-                    // TODO
+                    val shareText = "${Const.JOURNEY_URL}${model.infoModel.id}"
+                    val shareIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, "지출 내역 공유"))
                 }
 
                 SETTINGS -> {
