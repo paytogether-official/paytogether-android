@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.googleKsp)
     alias(libs.plugins.googleHilt)
     alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlyticsPlugin)
 }
 
 android {
@@ -65,11 +66,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
+
     ksp(libs.hilt.compiler)
     implementation(libs.bundles.hilt)
 
-    implementation(libs.bundles.compose)
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
 
     implementation(libs.bundles.coil)
 

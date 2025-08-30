@@ -1,6 +1,6 @@
 [versions]
 agp = "8.6.0"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 kotlinSerialization = "1.7.3"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -15,8 +15,9 @@ navigationCompose = "2.9.0"
 ksp = "2.0.21-1.0.27"
 hilt = "2.52"
 androidHilt = "1.2.0"
-googleService = "4.4.2"
-firebaseBom = "33.9.0"
+googleService = "4.4.3"
+firebaseBom = "32.8.0"
+firebaseCrashlyticsPlugin = "2.9.9"
 retrofit = "2.11.0"
 retrofitKotlinConvertor = "1.0.0"
 okHttp = "4.12.0"
@@ -55,6 +56,9 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -67,6 +71,7 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 googleHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleService"}
+firebaseCrashlyticsPlugin = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 
 [bundles]
 compose = [
@@ -102,4 +107,9 @@ coil = [
 room = [
     "room-ktx",
     "room-runtime"
+]
+
+firebase = [
+    "firebase-crashlytics-ktx",
+    "firebase-analytics-ktx"
 ]

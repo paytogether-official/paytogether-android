@@ -9,4 +9,5 @@ plugins {
     alias(libs.plugins.googleKsp) apply false
     alias(libs.plugins.googleHilt) apply false
     alias(libs.plugins.googleServices) apply false
+    alias(libs.plugins.firebaseCrashlyticsPlugin) apply false
 }
