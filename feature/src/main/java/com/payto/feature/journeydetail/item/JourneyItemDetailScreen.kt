@@ -2,6 +2,7 @@
 
 package com.payto.feature.journeydetail.item
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,11 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.base.Const
 import com.payto.common.ext.numberFormat
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.CurrencyToggle
@@ -73,6 +76,7 @@ private fun JourneyExpenseItemDetailScreen(
     model: JourneyExpenseModel,
     uiEvent: (UiEvent) -> Unit,
 ) {
+    val context = LocalContext.current
     var isShowDialog by remember { mutableStateOf(false) }
     var isShowDeleteDialog by remember { mutableStateOf(false) }
 
@@ -87,7 +91,13 @@ private fun JourneyExpenseItemDetailScreen(
                 }
 
                 ExpenseSettingType.SHARE -> {
-                    // TODO
+                    val shareText = "${Const.JOURNEY_URL}${model.journeyId}/${model.id}"
+                    val shareIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, "지출 내역 공유"))
                 }
 
                 ExpenseSettingType.DELETE -> {

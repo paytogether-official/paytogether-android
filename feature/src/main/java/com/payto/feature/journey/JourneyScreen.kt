@@ -244,7 +244,7 @@ private fun Content(
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, shareText)
                     }
-                    context.startActivity(Intent.createChooser(shareIntent, "지출 내역 공유"))
+                    context.startActivity(Intent.createChooser(shareIntent, "여정 공유"))
                 }
 
                 SETTINGS -> {
