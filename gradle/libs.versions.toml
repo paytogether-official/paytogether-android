@@ -1,29 +1,29 @@
 [versions]
-agp = "8.6.0"
-kotlin = "2.0.21"
-kotlinSerialization = "1.7.3"
+agp = "8.12.2"
+kotlin = "2.2.10"
+kotlinSerialization = "1.9.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.0"
+lifecycleRuntimeKtx = "2.9.3"
 activityCompose = "1.10.1"
-composeBom = "2025.05.00"
-appcompat = "1.7.0"
+composeBom = "2025.08.01"
+appcompat = "1.7.1"
 material = "1.12.0"
-navigationCompose = "2.9.0"
-ksp = "2.0.21-1.0.27"
-hilt = "2.52"
+navigationCompose = "2.9.3"
+ksp = "2.2.10-2.0.2"
+hilt = "2.57.1"
 androidHilt = "1.2.0"
 googleService = "4.4.3"
-firebaseBom = "32.8.0"
-firebaseCrashlyticsPlugin = "2.9.9"
-firebaseAppDistribution = "5.0.0"
-retrofit = "2.11.0"
+firebaseBom = "34.2.0"
+firebaseCrashlyticsPlugin = "3.0.6"
+firebaseAppDistribution = "5.1.1"
+retrofit = "3.0.0"
 retrofitKotlinConvertor = "1.0.0"
-okHttp = "4.12.0"
-coil = "3.1.0"
-room = "2.6.1"
+okHttp = "5.1.0"
+coil = "3.3.0"
+room = "2.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,8 +58,8 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -112,6 +112,6 @@ room = [
 ]
 
 firebase = [
-    "firebase-crashlytics-ktx",
-    "firebase-analytics-ktx"
+    "firebase-crashlytics",
+    "firebase-analytics"
 ]
