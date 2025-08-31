@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.googleHilt)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.firebaseCrashlyticsPlugin)
+    alias(libs.plugins.firebaseAppDistribution)
 }
 
 android {
@@ -57,6 +58,22 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+firebaseAppDistribution {
+    appId = project.findProperty("FIREBASE_APP_ID") as String?
+    artifactType = "APK"
+    groups = "testers"
+    releaseNotes = "Debug build for testing"
+}
+
+tasks.register("distributeDebug") {
+    dependsOn("assembleDebug")
+    finalizedBy("appDistributionUploadDebug")
+    
+    doLast {
+        println("Debug APK build completed and uploaded to Firebase App Distribution")
     }
 }
 

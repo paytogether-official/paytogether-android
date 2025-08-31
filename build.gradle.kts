@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.googleHilt) apply false
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.firebaseCrashlyticsPlugin) apply false
+    alias(libs.plugins.firebaseAppDistribution) apply false
 }

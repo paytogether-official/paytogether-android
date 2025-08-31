@@ -18,6 +18,7 @@ androidHilt = "1.2.0"
 googleService = "4.4.3"
 firebaseBom = "32.8.0"
 firebaseCrashlyticsPlugin = "2.9.9"
+firebaseAppDistribution = "5.0.0"
 retrofit = "2.11.0"
 retrofitKotlinConvertor = "1.0.0"
 okHttp = "4.12.0"
@@ -72,6 +73,7 @@ googleKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 googleHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleService"}
 firebaseCrashlyticsPlugin = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+firebaseAppDistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
 
 [bundles]
 compose = [
