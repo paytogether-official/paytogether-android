@@ -2,6 +2,7 @@
 
 package com.payto.feature.journeyresult
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -39,12 +40,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.payto.common.base.Const
 import com.payto.common.ext.numberFormat
 import com.payto.model.navigate.CategoryDetail
 import com.payto.designsystem.component.CurrencyToggle
@@ -249,7 +252,11 @@ private fun Content(
                     model = model
                 )
 
-                else -> SettlementSummary(Modifier.weight(1f), list = model.settlementSummaryModel)
+                else -> SettlementSummary(
+                    Modifier.weight(1f),
+                    journeyId = model.infoModel.id,
+                    list = model.settlementSummaryModel
+                )
             }
         }
     }
@@ -366,8 +373,11 @@ private fun RatioItem(
 @Composable
 private fun SettlementSummary(
     modifier: Modifier,
+    journeyId: String,
     list: List<SettlementSummaryModel>
 ) {
+    val context = LocalContext.current
+
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = modifier.matchParentSize(),
@@ -415,7 +425,13 @@ private fun SettlementSummary(
                 .padding(16.dp)
                 .align(Alignment.BottomCenter),
         ) {
-            // TODO
+            val shareText = "${Const.JOURNEY_URL}${journeyId}/result"
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shareText)
+            }
+            context.startActivity(Intent.createChooser(shareIntent, "여정 결과 공유"))
         }
     }
 }
@@ -507,5 +523,5 @@ private fun SettlementSummaryPreview() {
         SettlementSummaryModel("sender", "123456.0", "receiver"),
         SettlementSummaryModel("sender", "123456.0", "receiver"),
     )
-    SettlementSummary(modifier = Modifier, list = model)
+    SettlementSummary(modifier = Modifier, journeyId = "", list = model)
 }
