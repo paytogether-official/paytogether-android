@@ -66,7 +66,8 @@ class JourneySettingRepository @Inject internal constructor(
                 val disabled = memberInfo[it.name] ?: false
                 memberInfo[it.name] = disabled
             }
-            dao.insert(data.asEntity(memberInfo = memberInfo))
+            val payer = dao.getJourneyPayer(data.journeyId)
+            dao.insert(data.asEntity(memberInfo = memberInfo, payer = payer))
             return@withContext data.asModel()
         }
 }

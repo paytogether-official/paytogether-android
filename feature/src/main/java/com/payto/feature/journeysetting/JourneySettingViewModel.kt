@@ -92,7 +92,7 @@ class JourneySettingViewModel @Inject constructor(
                     viewModelScope.launch {
                         _sideEffectEvent.emit(
                             ShowSnackbar(
-                                message = "숫자만 입력 TODO 문구",
+                                message = "숫자만 입력해주세요.",
                                 status = ShowSnackbar.Status.FAIL
                             )
                         )
