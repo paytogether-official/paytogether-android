@@ -1,5 +1,6 @@
 package com.payto.feature.common
 
+import android.net.Uri
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ fun HandleSideEffect(
     event: EventInterface,
     onNavigate: (Any) -> Unit,
     popBackStack: () -> Unit,
+    onNavigateUri: (Uri) -> Unit = {},
 ) {
     val errorSnackbarState = remember { SnackbarHostState() }
     val successSnackbarState = remember { SnackbarHostState() }
@@ -29,6 +31,10 @@ fun HandleSideEffect(
             when (sideEffect) {
                 is Navigate -> {
                     onNavigate(sideEffect.route)
+                }
+
+                is NavigateUri -> {
+                    onNavigateUri(sideEffect.uri)
                 }
 
                 is PopBackStack -> {

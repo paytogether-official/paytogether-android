@@ -1,5 +1,6 @@
 package com.payto.feature.common
 
+import android.net.Uri
 import kotlinx.coroutines.flow.SharedFlow
 
 interface EventInterface {
@@ -21,4 +22,5 @@ data class ShowSnackbar(
 }
 
 data class Navigate(val route: Any) : SideEffectEvent
+data class NavigateUri(val uri: Uri) : SideEffectEvent
 data object PopBackStack : SideEffectEvent

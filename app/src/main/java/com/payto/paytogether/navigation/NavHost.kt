@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.createjourney.CreateJourneyRoute
 import com.payto.feature.home.HomeRoute
@@ -45,9 +46,14 @@ fun PayToNavHost(
 ) {
 
     HandleSideEffect(
-        deepLinkViewModel,
-        { navController.navigate(it) },
-        { navController.popBackStack() }
+        event = deepLinkViewModel,
+        onNavigate = { navController.navigate(it) },
+        onNavigateUri = { uri ->
+            if (navController.graph.hasDeepLink(uri)) {
+                navController.navigate(uri)
+            }
+        },
+        popBackStack = { navController.popBackStack() }
     )
 
     NavHost(
@@ -101,7 +107,12 @@ fun PayToNavHost(
                 },
             )
         }
-        composable<Journey> {
+        composable<Journey>(
+            deepLinks = listOf(
+                navDeepLink { uriPattern = "paytogether://app.paytogether.kr/journey/{journeyId}" },
+                navDeepLink { uriPattern = "https://app.paytogether.kr/journey/{journeyId}" }
+            )
+        ) {
             JourneyRoute(
                 onNavigate = { destination ->
                     if (destination == Home) {
@@ -135,7 +146,12 @@ fun PayToNavHost(
                 onBackClick = { navController.popBackStack() }
             )
         }
-        composable<JourneyDetail> {
+        composable<JourneyDetail>(
+            deepLinks = listOf(
+                navDeepLink { uriPattern = "paytogether://app.paytogether.kr/journey/{journeyId}/result" },
+                navDeepLink { uriPattern = "https://app.paytogether.kr/journey/{journeyId}/result" }
+            )
+        ) {
             JourneyDetailRoute(
                 onNavigate = { destination ->
                     if (destination == Home) {
