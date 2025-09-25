@@ -197,7 +197,7 @@ private fun JourneyHistoryCard(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
-            text = "여정 생산자 외 ${model.members.size - 1}명",
+            text = "${model.members.firstOrNull()?.name} 외 ${model.members.size - 1}명",
             color = Color.Label.neutral,
             style = typography.captionAccent
         )
