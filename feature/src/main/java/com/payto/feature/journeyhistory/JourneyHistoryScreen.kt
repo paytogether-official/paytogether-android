@@ -227,7 +227,7 @@ private fun JourneyHistoryCard(
                 )
                 Chips(
                     modifier = Modifier.align(Alignment.CenterVertically),
-                    text = "계산",
+                    text = model.baseCurrency,
                 )
             }
 
@@ -248,19 +248,19 @@ private fun JourneyHistoryScreenPreview() {
         JourneyHistoryModel(
             date = "24년 2월",
             list = List((1..5).random()) {
-                JourneyInfoModel("여정 제목 $it")
+                JourneyInfoModel("여정 제목 $it", baseCurrency = "JPY")
             }
         ),
         JourneyHistoryModel(
             date = "24년 1월",
             list = List((1..5).random()) {
-                JourneyInfoModel("여정 제목 $it")
+                JourneyInfoModel("여정 제목 $it", baseCurrency = "JPY")
             }
         ),
         JourneyHistoryModel(
             date = "23년 12월",
             list = List((1..5).random()) {
-                JourneyInfoModel("여정 제목 $it")
+                JourneyInfoModel("여정 제목 $it", baseCurrency = "JPY")
             }
         )
     )
