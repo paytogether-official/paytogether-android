@@ -641,7 +641,7 @@ private fun JourneyItem(
                 )
             }
             Text(
-                text = "정산 입력자 외 ${model.membersAmount.size.minus(1)}명",
+                text = "${model.payer} 외 ${model.membersAmount.size.minus(1)}명",
                 style = typography.captionRegular,
                 color = Color.Label.neutral
             )
