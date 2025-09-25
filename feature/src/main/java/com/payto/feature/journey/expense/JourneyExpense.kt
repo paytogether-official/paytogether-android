@@ -8,14 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -54,7 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.payto.common.ext.numberFormat
-import com.payto.model.navigate.ExpenseSetting
 import com.payto.designsystem.component.Chips
 import com.payto.designsystem.component.ContentBox
 import com.payto.designsystem.component.PaytoButton
@@ -84,6 +81,7 @@ import com.payto.model.ExpenseCategory
 import com.payto.model.JourneyExpenseModel
 import com.payto.model.JourneyInfoModel
 import com.payto.model.JourneyModel
+import com.payto.model.navigate.ExpenseSetting
 import kotlinx.coroutines.launch
 
 
@@ -621,46 +619,43 @@ private fun MemberAmountTextField(
     }
 
     val focusManager = LocalFocusManager.current
-    Column(modifier = modifier) {
-        BasicTextField(
-            modifier = Modifier
-                .width(IntrinsicSize.Min)
-                .widthIn(min = 1.dp)
-                .drawBehind {
-                    if (isFocused) {
-                        drawRect(
-                            color = Color.Primary.normal,
-                            topLeft = Offset(0f, size.height),
-                            size = Size(width = size.width, height = 2.dp.toPx())
-                        )
-                    }
+    BasicTextField(
+        modifier = modifier
+            .drawBehind {
+                if (isFocused) {
+                    drawRect(
+                        color = Color.Primary.normal,
+                        topLeft = Offset(0f, size.height),
+                        size = Size(width = size.width, height = 2.dp.toPx())
+                    )
                 }
-                .onFocusChanged {
-                    isFocused = it.isFocused
-                },
-            enabled = mode == SplitMode.CUSTOM,
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
-                }
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
-            value = TextFieldValue(
-                text = text,
-                selection = TextRange(text.length)
-            ),
-            onValueChange = {
-                uiEvent.invoke(OnExpenseAmountChange(it.text, mode, model.name))
+            }
+            .onFocusChanged {
+                isFocused = it.isFocused
             },
-            textStyle = typography.contentAccent.copy(
-                textAlign = TextAlign.End,
-                color = if (model.amount == null) Color.Label.disable else Color.Label.alternative
-            ),
-        )
-    }
+        enabled = mode == SplitMode.CUSTOM,
+        singleLine = true,
+        keyboardActions = KeyboardActions(
+            onDone = {
+                focusManager.clearFocus()
+            }
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number
+        ),
+        value = TextFieldValue(
+            text = text,
+            selection = TextRange(text.length)
+        ),
+        onValueChange = {
+            uiEvent.invoke(OnExpenseAmountChange(it.text, mode, model.name))
+        },
+        textStyle = typography.contentAccent.copy(
+            textAlign = TextAlign.End,
+            color = if (model.amount == null) Color.Label.disable else Color.Label.alternative
+        ),
+    )
+
 }
 
 @Preview(showBackground = true)
