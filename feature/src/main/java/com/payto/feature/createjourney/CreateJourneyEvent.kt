@@ -18,6 +18,8 @@ data class OnNameChange(
     val name: String,
 ) : CreateJourneyEvent
 
+data class OnDeleteMember(val index: Int) : CreateJourneyEvent
+
 data class OnCountryChange(val country: Country) : CreateJourneyEvent
 
 data object ClickCreate : CreateJourneyEvent

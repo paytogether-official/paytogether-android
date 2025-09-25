@@ -78,6 +78,18 @@ class CreateJourneyViewModel @Inject constructor(
                 journeyData.value = journeyData.value.copy(members = newMember.toList())
             }
 
+            is OnDeleteMember -> {
+                runCatching {
+                    val members = journeyData.value.members
+                    if (members.size > 1) {
+                        val newMembers = members.toMutableList().apply {
+                            removeAt(event.index)
+                        }
+                        journeyData.value = journeyData.value.copy(members = newMembers.toList())
+                    }
+                }
+            }
+
             is OnCountryChange -> {
                 onCountryChange(selectedCountry = event.country)
 

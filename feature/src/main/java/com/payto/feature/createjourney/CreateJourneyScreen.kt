@@ -3,6 +3,7 @@ package com.payto.feature.createjourney
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import com.payto.designsystem.component.TextBox
 import com.payto.designsystem.icon.IconPack
 import com.payto.designsystem.icon.iconpack.Calendar
 import com.payto.designsystem.icon.iconpack.Caretdown
+import com.payto.designsystem.icon.iconpack.Circleclose
 import com.payto.designsystem.icon.iconpack.Circleplus
 import com.payto.designsystem.icon.iconpack.Circlequestionfill
 import com.payto.designsystem.theme.Color
@@ -382,7 +384,7 @@ private fun LazyListScope.journeyParticipantBox(
         }
     }
 
-    this.participantList(members = members, uiEvent = uiEvent)
+    this.memberList(members = members, uiEvent = uiEvent)
     item {
         PaytoOutlineButton(
             modifier = Modifier
@@ -394,7 +396,7 @@ private fun LazyListScope.journeyParticipantBox(
     }
 }
 
-private fun LazyListScope.participantList(
+private fun LazyListScope.memberList(
     members: () -> List<CreateJourneyModel.Member>,
     uiEvent: (UiEvent) -> Unit,
 ) {
@@ -403,7 +405,18 @@ private fun LazyListScope.participantList(
             modifier = Modifier.padding(bottom = 8.dp),
             value = member.name,
             enabled = member.enable,
-            placeholder = "이름을 입력해주세요"
+            placeholder = "이름을 입력해주세요",
+            endDecoration = {
+                if (members().size > 1) {
+                    Image(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable { uiEvent.invoke(OnDeleteMember(index)) },
+                        imageVector = IconPack.Circleclose,
+                        contentDescription = null
+                    )
+                }
+            }
         ) {
             uiEvent.invoke(OnNameChange(index, it))
         }

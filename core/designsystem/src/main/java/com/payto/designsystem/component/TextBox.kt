@@ -81,7 +81,8 @@ fun TextBox(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .align(Alignment.Center)
+                .align(Alignment.Center),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             BasicTextField(
                 modifier = Modifier
