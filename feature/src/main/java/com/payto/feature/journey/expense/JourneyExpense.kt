@@ -106,7 +106,7 @@ fun ExpenseScreen(
 
     ExpenseDateBottomSheetDialog(
         isShow = isShowDialog,
-        model = model.infoModel,
+        selectedDate = model.createExpenseModel.expenseDate,
         onDismissRequest = {
             if (it != null) {
                 uiEvent.invoke(OnExpenseDateChange(it))

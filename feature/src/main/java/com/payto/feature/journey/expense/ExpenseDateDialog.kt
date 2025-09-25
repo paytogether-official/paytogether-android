@@ -13,7 +13,6 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -30,34 +29,25 @@ import com.payto.designsystem.icon.iconpack.Close
 import com.payto.designsystem.theme.Color
 import com.payto.designsystem.theme.Component
 import com.payto.designsystem.theme.typography
-import com.payto.model.JourneyInfoModel
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.ZoneId
+import java.time.LocalDate
 
 
 @Composable
 fun ExpenseDateBottomSheetDialog(
     modifier: Modifier = Modifier,
     isShow: Boolean = false,
-    model: JourneyInfoModel?,
+    selectedDate: LocalDate? = null,
     onDismissRequest: (Long?) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val state = rememberDatePickerState(
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val localDate = Instant.ofEpochMilli(utcTimeMillis)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate()
-                return !localDate.isBefore(model?.startLocalDate) && !localDate.isAfter(model?.endLocalDate)
-            }
-        }
+        initialSelectedDateMillis = selectedDate?.toEpochDay()?.times(24 * 60 * 60 * 1000),
     )
 
-    val hideAndOnDismissRequest : (Long?) -> Unit = {
+    val hideAndOnDismissRequest: (Long?) -> Unit = {
         coroutineScope
             .launch { sheetState.hide() }
             .invokeOnCompletion {
