@@ -28,6 +28,7 @@ fun CurrencyToggle(
     selectedOption: String,
     onOptionSelected: (String) -> Unit
 ) {
+    if (options.first == options.second) return
     Row(
         modifier = modifier
             .height(28.dp)
