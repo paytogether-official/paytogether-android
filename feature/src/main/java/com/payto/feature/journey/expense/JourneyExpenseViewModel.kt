@@ -39,6 +39,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -88,7 +89,8 @@ class JourneyExpenseViewModel @Inject constructor(
 
         val expenseModel = JourneyExpenseModel(
             payer = payer,
-            membersAmount = journeyInfo.asMemberAmountList()
+            membersAmount = journeyInfo.asMemberAmountList(),
+            expenseDate = LocalDate.now(),
         )
         JourneyModel(
             infoModel = journeyInfo,
