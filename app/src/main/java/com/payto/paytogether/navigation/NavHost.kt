@@ -10,16 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.payto.model.navigate.CategoryDetail
-import com.payto.model.navigate.CreateJourney
-import com.payto.model.navigate.ExpenseSetting
-import com.payto.model.navigate.Home
-import com.payto.model.navigate.JoinJourney
-import com.payto.model.navigate.Journey
-import com.payto.model.navigate.JourneyDetail
-import com.payto.model.navigate.JourneyExpenseItemDetail
-import com.payto.model.navigate.JourneyHistory
-import com.payto.model.navigate.JourneyResult
+import com.payto.feature.common.HandleSideEffect
 import com.payto.feature.createjourney.CreateJourneyRoute
 import com.payto.feature.home.HomeRoute
 import com.payto.feature.joinjourney.JoinJourneyRoute
@@ -32,12 +23,33 @@ import com.payto.feature.journeyhistory.JourneyHistoryRoute
 import com.payto.feature.journeyresult.JourneyResultRoute
 import com.payto.feature.journeyresult.category.CategoryDetailRoute
 import com.payto.feature.journeysetting.JourneySettingRoute
+import com.payto.model.navigate.CategoryDetail
+import com.payto.model.navigate.CreateJourney
 import com.payto.model.navigate.ExpenseItemSetting
+import com.payto.model.navigate.ExpenseSetting
+import com.payto.model.navigate.Home
+import com.payto.model.navigate.JoinJourney
+import com.payto.model.navigate.Journey
+import com.payto.model.navigate.JourneyDetail
+import com.payto.model.navigate.JourneyExpenseItemDetail
+import com.payto.model.navigate.JourneyHistory
+import com.payto.model.navigate.JourneyResult
 import com.payto.model.navigate.JourneySetting
+import com.payto.paytogether.deeplink.DeepLinkViewModel
 
 
 @Composable
-fun PayToNavHost(navController: NavHostController = rememberNavController()) {
+fun PayToNavHost(
+    navController: NavHostController = rememberNavController(),
+    deepLinkViewModel: DeepLinkViewModel,
+) {
+
+    HandleSideEffect(
+        deepLinkViewModel,
+        { navController.navigate(it) },
+        { navController.popBackStack() }
+    )
+
     NavHost(
         navController = navController,
         startDestination = Home,
@@ -262,3 +274,4 @@ fun PayToNavHost(navController: NavHostController = rememberNavController()) {
         }
     }
 }
+
