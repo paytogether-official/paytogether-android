@@ -102,7 +102,7 @@ fun ExpenseScreen(
     }
     val isFullFilled by remember(model) {
         derivedStateOf {
-            model.createExpenseModel.isFullyFilled() == true
+            model.createExpenseModel.isFullyFilled()
         }
     }
 
@@ -223,6 +223,10 @@ private fun Memo(
     var isShowDialog by remember {
         mutableStateOf(false)
     }
+    var hasMemo by remember(model) {
+        mutableStateOf(model?.createExpenseModel?.memo.isNullOrEmpty().not())
+    }
+
     MemoBottomSheetDialog(
         isShow = isShowDialog,
         modifier = Modifier.fillMaxWidth(),
@@ -258,13 +262,13 @@ private fun Memo(
                 modifier = Modifier
                     .size(24.dp),
                 imageVector = IconPack.Bubbleplus,
-                colorFilter = ColorFilter.tint(Color.Label.alternative),
+                colorFilter = ColorFilter.tint(if (hasMemo) Color.Primary.normal else Color.Label.alternative),
                 contentDescription = ""
             )
             Text(
                 text = "메모",
                 style = typography.captionAccent,
-                color = Color.Label.alternative
+                color = if (hasMemo) Color.Primary.normal else Color.Label.alternative
             )
         }
     }
