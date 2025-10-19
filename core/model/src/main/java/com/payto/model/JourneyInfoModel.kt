@@ -127,7 +127,7 @@ enum class ExpenseCategory(val displayName: String) {
     ETC("기타"),
     FOOD("식비"),
     TRANSPORT("교통"),
-    TICKET("티켓"),
+    SIGHTSEEING("관광"),
     SHOPPING("쇼핑"),
     ACCOMMODATION("숙소"),
     FLIGHT("항공"),

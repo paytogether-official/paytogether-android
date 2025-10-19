@@ -1,5 +1,6 @@
 package com.payto.feature.journey.expense
 
+import android.R
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -363,7 +364,8 @@ private fun ModeChangeDialog(
                     text = "총 금액을 기준으로 1/N하여 나눕니다.\n변경하시겠습니까?",
                     style = typography.highlightAccent,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 24.dp)
+                    modifier = Modifier.padding(top = 24.dp),
+                    color = Color.Label.neutral
                 )
 
                 // 버튼 행
