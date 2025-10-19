@@ -27,7 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -88,10 +90,15 @@ fun HomeScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 122.dp),
+            .padding(start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        CreateJourneyBox(onNavigate = onNavigate)
+        Image(
+            modifier = Modifier.padding(top = 24.dp),
+            imageVector = ImageVector.vectorResource(R.drawable.logo_container),
+            contentDescription = "Pay together",
+        )
+        CreateJourneyBox(modifier = Modifier.padding(top = 32.dp), onNavigate = onNavigate)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -115,9 +122,12 @@ fun HomeScreen(
 }
 
 @Composable
-private fun CreateJourneyBox(onNavigate: (Any) -> Unit) {
+private fun CreateJourneyBox(
+    modifier: Modifier,
+    onNavigate: (Any) -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .clip(shape = RoundedCornerShape(24.dp))
             .rippleClickable { onNavigate(CreateJourney) }
             .fillMaxWidth()
