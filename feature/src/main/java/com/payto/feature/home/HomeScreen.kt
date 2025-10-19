@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -100,7 +102,9 @@ fun HomeScreen(
         )
         CreateJourneyBox(modifier = Modifier.padding(top = 32.dp), onNavigate = onNavigate)
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(147.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             JoinJourneyBox(modifier = Modifier.weight(1f), onNavigate = onNavigate)
@@ -147,7 +151,6 @@ private fun CreateJourneyBox(
         )
         Image(
             modifier = Modifier
-                .padding(top = 14.dp)
                 .background(Color.Static.white, shape = CircleShape)
                 .padding(10.dp)
                 .size(24.dp)
@@ -162,27 +165,29 @@ private fun CreateJourneyBox(
 private fun JoinJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> Unit) {
     Column(
         modifier = modifier
+            .fillMaxHeight()
             .clip(shape = RoundedCornerShape(24.dp))
             .rippleClickable {
                 onNavigate.invoke(JoinJourney)
             }
             .background(Component.Fill.primary)
             .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "이미 생성된\n여정이 있다면?",
-            color = Color.Label.normal,
-            style = typography.contentRegular
-        )
-        Text(
-            text = "여정 참여하기",
-            color = Color.Label.normal,
-            style = typography.highlightBold
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = "이미 생성된\n여정이 있다면?",
+                color = Color.Label.normal,
+                style = typography.contentRegular
+            )
+            Text(
+                text = "여정 참여하기",
+                color = Color.Label.normal,
+                style = typography.highlightBold
+            )
+        }
         Image(
             modifier = Modifier
-                .padding(top = 14.dp)
                 .background(Color.Static.white, shape = CircleShape)
                 .padding(10.dp)
                 .size(24.dp)
@@ -194,9 +199,13 @@ private fun JoinJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> U
 }
 
 @Composable
-private fun LastJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> Unit) {
+private fun LastJourneyBox(
+    modifier: Modifier = Modifier,
+    onNavigate: (Any) -> Unit
+) {
     Column(
         modifier = modifier
+            .fillMaxHeight()
             .clip(RoundedCornerShape(24.dp))
             .rippleClickable {
                 onNavigate(JourneyHistory)
@@ -204,16 +213,22 @@ private fun LastJourneyBox(modifier: Modifier = Modifier, onNavigate: (Any) -> U
             .width(147.dp)
             .background(Component.Fill.normal)
             .padding(top = 16.dp, start = 16.dp, end = 8.dp, bottom = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(
-            text = "지난 여정",
-            color = Color.Label.normal,
-            style = typography.highlightBold
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = "마무리된 정산을\n확인하고 싶다면?",
+                color = Color.Label.normal,
+                style = typography.contentRegular
+            )
+            Text(
+                text = "지난 여정",
+                color = Color.Label.normal,
+                style = typography.highlightBold
+            )
+        }
         Image(
             modifier = Modifier
-                .padding(top = 54.dp)
                 .background(Color.Static.white, shape = CircleShape)
                 .padding(10.dp)
                 .size(24.dp)
