@@ -14,8 +14,8 @@ class App : Application(), SingletonImageLoader.Factory {
 
     override fun onCreate() {
         super.onCreate()
-        // Firebase Crashlytics 초기화 // TODO 릴리즈 배포시 디버그 분기 처리
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
+        // Firebase Crashlytics 초기화 (릴리즈 빌드에서만)
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
     }
 
     override fun newImageLoader(context: Context): ImageLoader {
